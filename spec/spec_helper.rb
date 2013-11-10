@@ -13,7 +13,8 @@ def invoke_challenge sdk, challenge
     Dir.chdir sdk_dir do
       challenge_script = Dir["challenges/#{challenge}.*"].first
       pending "Challenge #{challenge} is not implemented" if challenge_script.nil?
-      "bootstrap failed"
+      # Do bootstrap ahead of challenge?
+      `scripts/bootstrap`
       if File.exists? "scripts/wrapper"
         system "scripts/wrapper #{challenge_script}"
       else
