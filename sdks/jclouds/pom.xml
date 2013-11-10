@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.mycompany.app</groupId>
+  <artifactId>my-app</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>Maven Quick Start Archetype</name>
+  <url>http://maven.apache.org</url>
+  <build>
+    <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>1.2.1</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>exec</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <executable>groovy</executable>
+            <!-- optional -->
+            <!-- <workingDirectory>../..</workingDirectory> -->
+            <arguments>
+              <argument>-classpath</argument>
+              <classpath/>
+              <!-- <argument>groovy_runner.groovy</argument> -->
+              <argument>${env.GROOVY_FILE}</argument>
+            </arguments>
+          </configuration>
+        </plugin>
+      </plugins>
+    </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.jclouds.provider</groupId>
+      <artifactId>rackspace-cloudservers-us</artifactId>
+      <version>1.6.1-incubating</version>
+    </dependency>
+  </dependencies>
+</project>
