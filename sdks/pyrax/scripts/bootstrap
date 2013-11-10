@@ -1,0 +1,5 @@
+#/bin/bash
+
+# Assumes virtualenv is already setup
+workon pyrax-kata
+pip install -U pyrax
