@@ -39,7 +39,7 @@ def standard_env_vars
   @standard_env_vars ||= {
     'RAX_USERNAME'   => ENV['RAX_USERNAME'],
     'RAX_API_KEY'    => ENV['RAX_API_KEY'],
-    'RAX_REGION'     => 'dfw',
+    'RAX_REGION'     => 'DFW',
     'RAX_AUTH_URL'   => ENV['PACTO_SERVER'] || 'https://identity.api.rackspacecloud.com'
   }
 end
