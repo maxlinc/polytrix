@@ -23,6 +23,7 @@ class PactoServer < Goliath::API
       safe_response_headers = resp.headers.reject {|k,v| ['connection', 'content-length', 'transfer-encoding'].include? k.downcase}
       body = proxy_rewrite(resp.body)
       env.logger.debug "response headers: #{safe_response_headers}"
+      env.logger.debug "response body: #{body}"
       [code, safe_response_headers, body]
     rescue => e
       [500, {}, e.message]
@@ -31,7 +32,7 @@ class PactoServer < Goliath::API
 
   def proxy_rewrite body
     # Make sure rels continue going through our proxy
-    body.gsub('.com', '.dev:9000').gsub(/https\:(\w-\.+).dev/, 'http:\1.dev')
+    body.gsub('.com', '.dev:9000').gsub(/https\:([\w\-\.\\\/]+).dev/, 'http:\1.dev')
   end
 
   def options_parser(opts, options)
