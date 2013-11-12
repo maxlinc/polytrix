@@ -8,8 +8,10 @@ describe 'managing servers' do
           'SERVER1_IMAGE' => 'f70ed7c7-b42e-4d77-83d8-40fa29825b85',
           'SERVER1_FLAVOR' => '2'
         })
-        success = invoke_challenge sdk, "servers", vars
-        expect(success).to be_true
+        invoke_challenge sdk, "servers", vars do |success|
+          # Assertions
+          expect(success).to be_true
+        end
       end
     end
   end
