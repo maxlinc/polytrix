@@ -14,7 +14,9 @@ class PactoServer < Goliath::API
       env.logger.debug "filtered headers: #{safe_headers}"
       if env['REQUEST_METHOD'] == 'POST'
         env.logger.debug "sending post request"
-        resp = Excon.post(uri, headers: safe_headers, body: MultiJson.encode(env.params))
+        body = MultiJson.encode(env.params)
+        env.logger.debug "sending body: #{body}"
+        resp = Excon.post(uri, headers: safe_headers, body: body)
       else
         env.logger.debug "sending get request"
         resp = Excon.get(uri, headers: safe_headers, query: env.params)
