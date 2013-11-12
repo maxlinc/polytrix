@@ -5,6 +5,7 @@ describe 'authentication' do
         validate_challenge sdk, "authenticate" do |success|
           # Assertions
           expect(success).to be_true
+          expect(WebMock).to have_requested(:post, 'https://identity.api.rackspacecloud.com/v2.0/tokens')
         end
       end
     end

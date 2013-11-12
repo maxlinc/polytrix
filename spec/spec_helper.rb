@@ -1,5 +1,6 @@
 require 'pacto'
 $:.unshift File.expand_path('../pacto', File.dirname(__FILE__))
+require 'webmock/rspec'
 require 'pacto_server'
 require 'tempfile'
 require 'goliath/test_helper'
