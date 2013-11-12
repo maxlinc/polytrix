@@ -2,7 +2,7 @@
 require 'vendor/autoload.php';
 use OpenCloud\Rackspace;
 
-$endpoint = 'https://identity.api.rackspacecloud.com/v2.0/';
+$endpoint = getenv('RAX_AUTH_URL') . '/v2.0/';
 $credentials = array(
     'username' => getenv('RAX_USERNAME'),
     'apiKey' => getenv('RAX_API_KEY')

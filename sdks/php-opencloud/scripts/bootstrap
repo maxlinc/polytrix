@@ -1,3 +1,4 @@
 #!/bin/bash
-curl -sS https://getcomposer.org/installer | php
+wget --timestamping https://getcomposer.org/installer
+php installer
 php composer.phar install
