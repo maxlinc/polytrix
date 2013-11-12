@@ -2,7 +2,7 @@ describe 'authentication' do
   SDKs.each do |sdk|
     context sdk, sdk.to_sym do
       it 'should authenticate' do
-        invoke_challenge sdk, "authenticate" do |success|
+        validate_challenge sdk, "authenticate" do |success|
           # Assertions
           expect(success).to be_true
         end

@@ -11,7 +11,7 @@ RSpec.configure do |c|
   c.include Goliath::TestHelper
 end
 
-def invoke_challenge sdk, challenge, vars = standard_env_vars
+def validate_challenge sdk, challenge, vars = standard_env_vars
   sdk_dir = "sdks/#{sdk}"
   pending "#{sdk} is not setup" unless File.directory? sdk_dir
   with_api(PactoServer, {:log_file => 'pacto.log', :config => 'pacto/config/pacto_server.rb', :live => true, :verbose => true}) do
