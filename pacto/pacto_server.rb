@@ -1,11 +1,14 @@
 require 'goliath'
+require 'em-synchrony'
+require 'em-synchrony/em-http'
 
 class PactoServer < Goliath::API
   use Goliath::Rack::Params
+  PORT = 9900
 
   def response (env)
     path = env[Goliath::Request::REQUEST_PATH]
-    host = env['HTTP_HOST'].gsub('.dev:9000', '.com')
+    host = env['HTTP_HOST'].gsub(".dev:#{PORT}", '.com')
     headers = env['client-headers']
     begin
       uri = "https://#{host}#{path}"
@@ -14,16 +17,17 @@ class PactoServer < Goliath::API
       env.logger.debug "filtered headers: #{safe_headers}"
       if env['REQUEST_METHOD'] == 'POST'
         env.logger.debug "sending post request"
-        body = MultiJson.encode(env.params)
+        body = env[Goliath::Request::RACK_INPUT].read
         env.logger.debug "sending body: #{body}"
-        resp = Excon.post(uri, headers: safe_headers, body: body)
+        resp = EM::Synchrony.sync EventMachine::HttpRequest.new(uri).apost(head: safe_headers, body: body)
       else
         env.logger.debug "sending get request"
-        resp = Excon.get(uri, headers: safe_headers, query: env.params)
+
+        resp = EM::Synchrony.sync EventMachine::HttpRequest.new(uri).aget(head: safe_headers, query: env.params)
       end
-      code = resp.status
-      safe_response_headers = resp.headers.reject {|k,v| ['connection', 'content-length', 'transfer-encoding'].include? k.downcase}
-      body = proxy_rewrite(resp.body)
+      code = resp.response_header.http_status
+      safe_response_headers = normalize_headers(resp.response_header).reject {|k,v| ['connection', 'content-length', 'transfer-encoding'].include? k.downcase}
+      body = proxy_rewrite(resp.response)
       env.logger.debug "response headers: #{safe_response_headers}"
       env.logger.debug "response body: #{body}"
       [code, safe_response_headers, body]
@@ -32,9 +36,20 @@ class PactoServer < Goliath::API
     end
   end
 
+  def normalize_headers headers
+    headers.inject({}) do |res, elem|
+      key = elem.first.dup
+      value = elem.last
+      key.gsub!('_', '-')
+      key = key.split('-').map {|w| w.capitalize}.join '-'
+      res[key] = value
+      res
+    end
+  end
+
   def proxy_rewrite body
     # Make sure rels continue going through our proxy
-    body.gsub('.com', '.dev:9000').gsub(/https\:([\w\-\.\\\/]+).dev/, 'http:\1.dev')
+    body.gsub('.com', ".dev:#{PORT}").gsub(/https\:([\w\-\.\\\/]+).dev/, 'http:\1.dev')
   end
 
   def options_parser(opts, options)
