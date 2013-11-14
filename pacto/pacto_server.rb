@@ -53,8 +53,8 @@ class PactoServer < Goliath::API
   end
 
   def options_parser(opts, options)
-    options[:strict] = false
-    options[:directory] = "contracts"
+    options[:strict] ||= false
+    options[:directory] ||= "contracts"
     opts.on('-l', '--live', 'Send requests to live services (instead of stubs)') { |val| options[:live] = true }
     opts.on('-g', '--generate', 'Generate Contracts from requests') { |val| options[:generate] = true }
     opts.on('-V', '--validate', 'Validate requests/responses against Contracts') { |val| options[:validate] = true }
