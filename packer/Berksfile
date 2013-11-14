@@ -1,0 +1,10 @@
+site :opscode
+
+cookbook 'apt'
+cookbook 'python'
+cookbook 'rbenv'
+cookbook 'golang'
+cookbook 'node'
+cookbook 'php'
+cookbook 'java'
+
