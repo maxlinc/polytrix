@@ -1,4 +1,5 @@
 require 'rspec/core/rake_task'
+require 'pacto/rake_task'
 
 NOT_SETUP = "You need to set RAX_USERNAME and RAX_API_KEY env vars in order to run tests"
 
