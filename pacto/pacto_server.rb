@@ -26,7 +26,7 @@ class PactoServer < Goliath::API
         resp = EM::Synchrony.sync EventMachine::HttpRequest.new(uri).aget(head: safe_headers, query: env.params)
       end
       code = resp.response_header.http_status
-      safe_response_headers = normalize_headers(resp.response_header).reject {|k,v| ['connection', 'content-length', 'transfer-encoding'].include? k.downcase}
+      safe_response_headers = normalize_headers(resp.response_header).reject {|k,v| ['connection', 'content-encoding', 'content-length', 'transfer-encoding'].include? k.downcase}
       body = proxy_rewrite(resp.response)
       env.logger.debug "response headers: #{safe_response_headers}"
       env.logger.debug "response body: #{body}"
