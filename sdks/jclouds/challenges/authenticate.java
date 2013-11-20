@@ -85,9 +85,11 @@ public class Authentication implements Closeable {
          overrides.put(KeystoneProperties.CREDENTIAL_TYPE, CredentialTypes.PASSWORD_CREDENTIALS);
       }
 
+      String endpoint = System.getenv('RAX_AUTH_URL') + "/v2.0/";
       ComputeServiceContext context = ContextBuilder.newBuilder(provider)
             .credentials(username, credential)
             .overrides(overrides)
+            .endpoint(endpoint)
             .buildView(ComputeServiceContext.class);
       compute = context.getComputeService();
       nova = context.unwrap();
