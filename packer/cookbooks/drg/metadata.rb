@@ -12,6 +12,8 @@ depends 'golang'
 depends 'node'
 depends 'php'
 depends 'java'
+depends 'maven'
+depends 'dnsmasq'
 
 recipe "drg", "Installs tools required for testing Rackspace SDKS."
 
