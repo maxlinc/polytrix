@@ -10,7 +10,9 @@ describe 'managing servers' do
         })
         validate_challenge sdk, "servers", vars do |success|
           # Assertions
-          expect(success).to be_true
+          expect(Pacto).to have_validated(:post, /dfw.servers.api.rackspacecloud.com\/v2\/\d+\/servers/) #.twice
+          expect(Pacto).to_not have_failed_validations
+          expect(Pacto).to_not have_unmatched_requests
         end
       end
     end

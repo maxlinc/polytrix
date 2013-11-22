@@ -15,6 +15,11 @@ RSpec.configure do |c|
   c.include Goliath::TestHelper
 
   c.before(:each)  { Pacto.clear! }
+  c.after(:each) { auto_teardown }
+end
+
+def auto_teardown
+  # require 'pry'; binding.pry
 end
 
 def validate_challenge sdk, challenge, vars = standard_env_vars
@@ -24,7 +29,7 @@ def validate_challenge sdk, challenge, vars = standard_env_vars
     :log_file => 'pacto.log',
     :config => 'pacto/config/pacto_server.rb',
     :live => true,
-    :generate => true,
+    # :generate => true,
     :verbose => true,
     :validate => true,
     :directory => File.join(Dir.pwd, 'pacto', 'contracts')
@@ -38,9 +43,9 @@ def validate_challenge sdk, challenge, vars = standard_env_vars
           # `scripts/bootstrap`
           env_file = setup_env_vars vars
           if File.exists? "scripts/wrapper"
-            command = "source #{env_file} && scripts/wrapper #{challenge_script}"
+            command = ". #{env_file} && scripts/wrapper #{challenge_script}"
           else
-            command = "source #{env_file} && ./#{challenge_script}"
+            command = ". #{env_file} && ./#{challenge_script}"
           end
           success = system command
           expect(success).to be_true, "#{sdk} failed to successfully execute the #{challenge} challenge"
