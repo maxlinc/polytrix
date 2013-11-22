@@ -1,3 +1,4 @@
+node.override[:rbenv][:group_users] = ['vagrant']
 include_recipe "rbenv::default"
 include_recipe "rbenv::ruby_build"
 

@@ -9,10 +9,11 @@ depends 'apt'
 depends 'python'
 depends 'rbenv'
 depends 'golang'
-depends 'node'
+depends 'nodejs'
 depends 'php'
 depends 'java'
 depends 'maven'
+depends 'groovy'
 depends 'dnsmasq'
 
 recipe "drg", "Installs tools required for testing Rackspace SDKS."

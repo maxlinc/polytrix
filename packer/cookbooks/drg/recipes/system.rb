@@ -1,6 +1,6 @@
 include_recipe 'apt'
 
-node.force_override[:dnsmasq][:dns] = {
+node.force_default[:dnsmasq][:dns] = {
   # 'no-poll' => nil,
   # 'no-resolv' => nil,
   'bind-interfaces' => nil,
