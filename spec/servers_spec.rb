@@ -1,7 +1,7 @@
 describe 'Servers' do
-  it 'creates a server' do
-    SDKs.each do |sdk|
-      context sdk, sdk.to_sym do
+  SDKs.each do |sdk|
+    context sdk, sdk.to_sym do
+      it 'creates a server' do
         vars = standard_env_vars
         vars.merge!({
           'RAX_REGION' => 'DFW',
