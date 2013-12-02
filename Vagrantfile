@@ -5,6 +5,9 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  # config.vm.box = "drg"
+
+  # Original box used to build pre-packaged DRG box
   config.vm.box = "ubuntu1310"
   config.vm.box_url = "https://dl.dropboxusercontent.com/s/ng79gg5bg24r38p/ubuntu1310.box?token_hash=AAGKH9rJTMozemrLMLw8n8Htvg8-gGhb7xo8cwh0TaYCaw&dl=1"
 
@@ -27,6 +30,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     chef.cookbooks_path = ["packer/cookbooks", "packer/vendor/cookbooks"]
     chef.add_recipe "drg"
     # chef.log_level = :debug
-   end
+    chef.json = {
+      :instance_role => "vagrant"
+    }
+  end
 
 end
