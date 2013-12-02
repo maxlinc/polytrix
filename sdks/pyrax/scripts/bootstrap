@@ -1,4 +1,7 @@
-#/bin/bash
+#!/bin/bash
+
+virtualenv pyrax_env
+source pyrax_env/bin/activate
 
 # Slow!
 # pip -q install -U pyrax
