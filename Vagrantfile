@@ -18,7 +18,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     rs.public_key_path = '~/.ssh/id_rsa.pub'
     rs.username = ENV['RAX_USERNAME']
     rs.api_key  = ENV['RAX_API_KEY']
-    rs.flavor   = /512MB/
+    rs.flavor   = /2 GB Performance/
     rs.image    = "DRG" # image created by packer.  See ./packer/
     rs.rackspace_region = :ord
   end

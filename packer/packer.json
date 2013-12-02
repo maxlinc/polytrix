@@ -13,7 +13,7 @@
       "ssh_username": "root",
       "image_name": "DRG",
       "source_image": "80fbcb55-b206-41f9-9bc2-2dd7aac6c061",
-      "flavor": "2"
+      "flavor": "performance1-2"
     },
     {
       "type": "virtualbox",
