@@ -5,12 +5,14 @@ require 'webmock/rspec'
 require 'pacto_server'
 require 'tempfile'
 require 'goliath/test_helper'
+require 'matrix_formatter'
 
 PACTO_SERVER = 'http://identity.api.rackspacecloud.dev:9900' unless ENV['NO_PACTO']
 
 SDKs = Dir['sdks/*'].map{|sdk| File.basename sdk}
 
 RSpec.configure do |c|
+  c.matrix_implementors = SDKs
   c.treat_symbols_as_metadata_keys_with_true_values = true
   c.include Goliath::TestHelper
 
@@ -70,7 +72,7 @@ def standard_env_vars
   @standard_env_vars ||= {
     'RAX_USERNAME'   => ENV['RAX_USERNAME'],
     'RAX_API_KEY'    => ENV['RAX_API_KEY'],
-    'RAX_REGION'     => 'DFW',
+    'RAX_REGION'     => ENV['RAX_REGION'] || %w{DFW ORD IAD SYS HKG}.sample, # omitted LON since it requires UK account
     'RAX_AUTH_URL'   => PACTO_SERVER || 'https://identity.api.rackspacecloud.com'
   }
 end

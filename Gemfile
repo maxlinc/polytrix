@@ -8,4 +8,5 @@ gem "em-http-request"
 gem "rspec"
 gem "rake"
 gem "pry"
+gem "matrix_formatter"
 
