@@ -10,7 +10,7 @@
   "response": {
     "headers": {
       "Content-Type": "application/json",
-      "Location": "https://:region.servers.api.rackspacecloud.com/v2/:account_id/servers/:server_id"
+      "Location": "https://{region}.servers.api.rackspacecloud.com/v2/{account_id}/servers/{server_id}"
     },
     "status": 202,
     "body": {
