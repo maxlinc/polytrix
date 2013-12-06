@@ -1,7 +1,7 @@
 --format MatrixFormatter::Formatters::HTMLFormatter
---out matrix.html
+--out reports/matrix.html
 --format html
---out rspec.html
+--out reports/rspec.html
 --format documentation
 --color
 --require spec_helper.rb

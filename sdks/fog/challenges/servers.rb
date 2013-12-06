@@ -28,9 +28,6 @@ begin
   end
   
   puts "[DONE]\n\n"
-
-  puts "The server has been successfully created, to login onto the server:\n\n"
-  puts "\t ssh #{server.username}@#{server.public_ip_address}\n\n"
   
 rescue Fog::Errors::TimeoutError
   puts "[TIMEOUT]\n\n"
@@ -38,6 +35,3 @@ rescue Fog::Errors::TimeoutError
   puts "This server is currently #{server.progress}% into the build process and is taking longer to complete than expected."
   puts "You can continute to monitor the build process through the web console at https://mycloud.rackspace.com/\n\n" 
 end
-
-puts "The #{server.username} password is #{server.password}\n\n"
-puts "To delete the server please execute the delete_server.rb script\n\n"
