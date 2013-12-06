@@ -61,6 +61,8 @@
               }
             },
             "key_name": {
+              "type": ["string", "null"],
+              "required": false
             },
             "image": {
               "type": "object",
@@ -93,8 +95,8 @@
               }
             },
             "OS-EXT-STS:task_state": {
-              "type": "string",
-              "required": true
+              "type": ["string", "null"],
+              "required": false
             },
             "OS-EXT-STS:vm_state": {
               "type": "string",
@@ -177,12 +179,7 @@
             "metadata": {
               "type": "object",
               "required": true,
-              "properties": {
-                "sdk": {
-                  "type": "string",
-                  "required": true
-                }
-              }
+              "additionalProperties": true
             }
           }
         }
