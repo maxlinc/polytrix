@@ -6,6 +6,7 @@ require 'pacto_server'
 require 'tempfile'
 require 'goliath/test_helper'
 require 'matrix_formatter'
+require 'helpers/auto_teardown'
 
 PACTO_SERVER = 'http://identity.api.rackspacecloud.dev:9900' unless ENV['NO_PACTO']
 
@@ -18,10 +19,6 @@ RSpec.configure do |c|
 
   c.before(:each)  { Pacto.clear! }
   c.after(:each) { auto_teardown }
-end
-
-def auto_teardown
-  # require 'pry'; binding.pry
 end
 
 def validate_challenge sdk, challenge, vars = standard_env_vars
@@ -41,8 +38,6 @@ def validate_challenge sdk, challenge, vars = standard_env_vars
         Dir.chdir sdk_dir do
           challenge_script = Dir["challenges/#{challenge}.*"].first
           pending "Challenge #{challenge} is not implemented" if challenge_script.nil?
-          # Do bootstrap ahead of challenge?
-          # `scripts/bootstrap`
           env_file = setup_env_vars vars
           if File.exists? "scripts/wrapper"
             command = ". #{env_file} && scripts/wrapper #{challenge_script}"
@@ -72,7 +67,7 @@ def standard_env_vars
   @standard_env_vars ||= {
     'RAX_USERNAME'   => ENV['RAX_USERNAME'],
     'RAX_API_KEY'    => ENV['RAX_API_KEY'],
-    'RAX_REGION'     => ENV['RAX_REGION'] || %w{DFW ORD IAD SYS HKG}.sample, # omitted LON since it requires UK account
+    'RAX_REGION'     => ENV['RAX_REGION'] || %w{DFW ORD IAD SYD HKG}.sample, # omitted LON since it requires UK account
     'RAX_AUTH_URL'   => PACTO_SERVER || 'https://identity.api.rackspacecloud.com'
   }
 end
