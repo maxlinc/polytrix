@@ -1,3 +1,7 @@
+RSpec.configure do |c|
+  c.after(:each) { auto_teardown }
+end
+
 def auth_token
   @auth_token ||= Pacto::ValidationRegistry.instance.validations.map do | val |
     token = val.request.headers['X-Auth-Token']
