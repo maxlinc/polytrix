@@ -19,7 +19,7 @@ def standard_env_vars
 end
 
 def run_challenge challenge, vars
-  challenge_script = Dir["challenges/#{challenge}.*"].first
+  challenge_script = Dir.glob("challenges/#{challenge}.*", File::FNM_CASEFOLD).first
   pending "Challenge #{challenge} is not implemented" if challenge_script.nil?
   env_file = setup_env_vars vars
   if File.exists? "scripts/wrapper"

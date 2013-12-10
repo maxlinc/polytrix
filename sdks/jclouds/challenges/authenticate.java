@@ -44,7 +44,7 @@ import org.jclouds.rest.RestContext;
  * 
  * @author Everett Toews
  */
-public class Authentication implements Closeable {
+public class Authenticate implements Closeable {
    private ComputeService compute;
    private RestContext<NovaApi, NovaAsyncApi> nova;
 
@@ -57,17 +57,17 @@ public class Authentication implements Closeable {
     *            otherwise default to using API key.
     */
    public static void main(String[] args) {
-      Authentication authentication = new Authentication();
+      Authenticate authenticate = new Authenticate();
 
       try {
-         authentication.init(args);
-         authentication.authenticateOnCall();
+         authenticate.init(args);
+         authenticate.authenticateOnCall();
       }
       catch (Exception e) {
          e.printStackTrace();
       }
       finally {
-         authentication.close();
+         authenticate.close();
       }
    }
 
@@ -76,8 +76,8 @@ public class Authentication implements Closeable {
       // To use the Rackspace Cloud (UK) set the provider to "rackspace-cloudservers-uk"
       String provider = "rackspace-cloudservers-us";
 
-      String username = System.getenv('RAX_USERNAME');
-      String credential = System.getenv('RAX_API_KEY');
+      String username = System.getenv("RAX_USERNAME");
+      String credential = System.getenv("RAX_API_KEY");
 
       Properties overrides = new Properties();
 
@@ -85,7 +85,7 @@ public class Authentication implements Closeable {
          overrides.put(KeystoneProperties.CREDENTIAL_TYPE, CredentialTypes.PASSWORD_CREDENTIALS);
       }
 
-      String endpoint = System.getenv('RAX_AUTH_URL') + "/v2.0/";
+      String endpoint = System.getenv("RAX_AUTH_URL") + "/v2.0/";
       ComputeServiceContext context = ContextBuilder.newBuilder(provider)
             .credentials(username, credential)
             .overrides(overrides)

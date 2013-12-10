@@ -10,29 +10,12 @@
   <name>Maven Quick Start Archetype</name>
   <url>http://maven.apache.org</url>
   <build>
+    <sourceDirectory>challenges</sourceDirectory>
     <plugins>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
           <version>1.2.1</version>
-          <executions>
-            <execution>
-              <goals>
-                <goal>exec</goal>
-              </goals>
-            </execution>
-          </executions>
-          <configuration>
-            <executable>groovy</executable>
-            <!-- optional -->
-            <!-- <workingDirectory>../..</workingDirectory> -->
-            <arguments>
-              <argument>-classpath</argument>
-              <classpath/>
-              <!-- <argument>groovy_runner.groovy</argument> -->
-              <argument>${env.GROOVY_FILE}</argument>
-            </arguments>
-          </configuration>
         </plugin>
       </plugins>
     </build>
