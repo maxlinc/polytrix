@@ -18,11 +18,17 @@ def validate_challenge sdk, challenge, vars = standard_env_vars
   with_pacto do
     success = false
     EM::Synchrony.defer do
-      Bundler.with_clean_env do
-        Dir.chdir sdk_dir do
-          success = run_challenge challenge, vars
-          expect(success).to be_true, "#{sdk} failed to successfully execute the #{challenge} challenge"
+      begin
+        Bundler.with_clean_env do
+          Dir.chdir sdk_dir do
+            success = run_challenge challenge, vars
+            expect(success).to be_true, "#{sdk} failed to successfully execute the #{challenge} challenge"
+          end
         end
+      rescue ThreadError => e
+        puts "ThreadError detected: #{e.message}"
+        puts "ThreadError backtrace: #{e.backtrace}"
+        raise e
       end
       EM.stop
     end
