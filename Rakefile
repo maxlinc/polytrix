@@ -12,6 +12,7 @@ task :check_setup do
   fail NOT_SETUP unless ENV['RAX_USERNAME'] && ENV['RAX_API_KEY']
 end
 
+desc 'Fetch dependencies for each SDK'
 task :bootstrap do
   Bundler.with_clean_env do
     Dir['sdks/*'].each do |sdk_dir|
