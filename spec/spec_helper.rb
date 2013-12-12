@@ -4,6 +4,7 @@ require 'matrix_formatter'
 require 'helpers/pacto_helper'
 require 'helpers/challenge_helper'
 require 'helpers/teardown_helper'
+require 'helpers/cloudfiles_helper'
 
 SDKs = Dir['sdks/*'].map{|sdk| File.basename sdk}
 
