@@ -1,6 +1,15 @@
 require 'fog'
 
-def test_file
+def build type
+  case type
+  when :file
+    build_file
+  else
+    raise ArgumentError.new "Don't know how to be a #{type}"
+  end
+end
+
+def build_file
   without_webmock do
     service = Fog::Storage.new({
       :provider             => 'rackspace',
