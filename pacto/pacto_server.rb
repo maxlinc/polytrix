@@ -20,6 +20,9 @@ class PactoServer < Goliath::API
         body = env[Goliath::Request::RACK_INPUT].read
         env.logger.debug "sending body: #{body}"
         resp = EM::Synchrony.sync EventMachine::HttpRequest.new(uri).apost(head: safe_headers, body: body)
+      elsif env['REQUEST_METHOD'] == 'HEAD'
+        env.logger.debug "sending head request"
+        resp = EM::Synchrony.sync EventMachine::HttpRequest.new(uri).ahead(head: safe_headers, query: env.params)
       else
         env.logger.debug "sending get request"
 

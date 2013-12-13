@@ -10,7 +10,9 @@ end
 if options[:generate]
   Pacto.generate!
   logger.info 'Pacto generation mode enabled'
-else
+end
+
+if options[:validate]
   Pacto.validate! if options[:validate]
   Dir["#{contracts_path}/*"].each do |host|
     host = File.basename host
