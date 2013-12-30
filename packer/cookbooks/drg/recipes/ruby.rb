@@ -10,16 +10,20 @@ include_recipe "rbenv::default"
 include_recipe "rbenv::ruby_build"
 include_recipe "rbenv::rbenv_vars"
 
-rbenv_ruby "1.9.3-p448"
-rbenv_ruby "2.0.0-p247" do
-  ruby_version "2.0.0-p247"
+global_ruby = "2.1.0"
+other_rubies = ["1.9.3-p448", "2.0.0-p353"]
+
+rbenv_ruby global_ruby do
+  ruby_version global_ruby
   global true
 end
 
-rbenv_gem "bundler" do
-  ruby_version "1.9.3-p448"
+other_rubies.each do |version|
+  rbenv_ruby version
 end
 
-rbenv_gem "bundler" do
-  ruby_version "2.0.0-p247"
+other_rubies.push(global_ruby).each do |version|
+  rbenv_gem "bundler" do
+    ruby_version version
+  end
 end
