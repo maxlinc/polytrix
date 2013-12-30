@@ -2,6 +2,7 @@
 source "https://rubygems.org"
 
 gem "pacto", :git => 'https://github.com/thoughtworks/pacto', :branch => 'master'
+gem "fog"
 gem "vcr"
 gem "goliath"
 gem "excon"
