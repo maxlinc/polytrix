@@ -14,10 +14,9 @@ end
 
 if options[:validate]
   Pacto.validate! if options[:validate]
-  Dir["#{contracts_path}/*"].each do |host|
-    host = File.basename host
-    Pacto.load_all host, "https://#{host}", host
-    Pacto.use host
+  Dir["#{contracts_path}/*"].each do |host_dir|
+    host = File.basename host_dir
+    Pacto.build_contracts(host_dir, "https://#{host}").stub_all
   end
 end
 
