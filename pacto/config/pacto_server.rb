@@ -16,11 +16,11 @@ if options[:validate]
   Pacto.validate! if options[:validate]
   Dir["#{contracts_path}/*"].each do |host_dir|
     host = File.basename host_dir
-    Pacto.build_contracts(host_dir, "https://#{host}").stub_all
+    Pacto.build_contracts(host_dir, "https://#{host}")
   end
 end
 
 if options[:live]
-  WebMock.reset!
+#  WebMock.reset!
   WebMock.allow_net_connect!
 end
