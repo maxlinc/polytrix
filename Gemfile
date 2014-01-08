@@ -11,4 +11,5 @@ gem "rspec"
 gem "rake"
 gem "pry"
 gem "matrix_formatter"
+gem "highline"
 
