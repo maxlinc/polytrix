@@ -12,9 +12,12 @@ depends 'golang'
 depends 'nodejs'
 depends 'php'
 depends 'java'
-depends 'maven'
 depends 'groovy'
+depends 'maven'
 depends 'dnsmasq'
+depends 'ssh_known_hosts'
+depends 'users'
+depends 'sudo'
 
 recipe "drg", "Installs tools required for testing Rackspace SDKS."
 

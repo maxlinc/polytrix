@@ -1,4 +1,5 @@
 include_recipe 'drg::system'
+include_recipe 'drg::admins'
 include_recipe 'python'
 include_recipe 'drg::ruby'
 include_recipe 'drg::golang'
