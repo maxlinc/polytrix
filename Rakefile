@@ -19,7 +19,11 @@ task :bootstrap do
   Bundler.with_clean_env do
     Dir['sdks/*'].each do |sdk_dir|
       Dir.chdir sdk_dir do
-        system "scripts/bootstrap"
+        if is_windows?
+          system "PowerShell -NoProfile -ExecutionPolicy Bypass .\\scripts\\bootstrap"
+        else
+          system "scripts/bootstrap"
+        end
       end
     end
   end
@@ -47,3 +51,6 @@ task :setup do
   end
 end
 
+def is_windows?
+  RbConfig::CONFIG['host_os'] =~ /mswin(\d+)|mingw/i
+end

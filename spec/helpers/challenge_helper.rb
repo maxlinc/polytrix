@@ -14,7 +14,9 @@ end
 
 class ChallengeRunner
   def setup_env_vars vars
-    file = Tempfile.new('vars')
+    require 'fileutils'
+    FileUtils.mkdir_p 'tmp'
+    file = File.open("tmp/vars.#{script_extension}", 'w')
     vars.each do |key, value|
       file.puts save_environment_variable(key, value)
     end
@@ -40,9 +42,13 @@ class ChallengeRunner
 end
 
 class LinuxChallengeRunner < ChallengeRunner
+  def script_extension
+    "sh"
+  end
+
   def execute_challenge_command env_file, challenge_script
-    if File.exists? "scripts/wrapper.sh"
-      ". #{env_file} && scripts/wrapper.sh #{challenge_script}"
+    if File.exists? "scripts/wrapper"
+      ". #{env_file} && scripts/wrapper #{challenge_script}"
     else
       ". #{env_file} && ./#{challenge_script}"
     end
@@ -55,15 +61,19 @@ end
 
 class WindowsChallengeRunner < ChallengeRunner
   PS_OPTIONS = "-NoProfile -ExecutionPolicy Bypass"
+  def script_extension
+    "ps1"
+  end
+
   def execute_challenge_command env_file, challenge_script
     # I don't know a simple powershell replacement for &&
     # See http://stackoverflow.com/questions/2416662/what-are-the-powershell-equivalent-of-bashs-and-operators
     if File.exists? "scripts/wrapper.ps1"
-      command = ". #{env_file}; ./scripts/wrapper.ps1 #{challenge_script}"
+      command = ". ./#{env_file}; ./scripts/wrapper.ps1 #{challenge_script}"
     else
-      command = ". #{env_file}; ./#{challenge_script}"
+      command = ". ./"#env_file}; ./#{challenge_script}"
     end
-    "PowerShell #{PS_OPTIONS} --Command '#{command}'"
+    "PowerShell #{PS_OPTIONS} -Command \"#{command}\""
   end
 
   def save_environment_variable key, value
