@@ -1,6 +1,12 @@
 require 'tempfile'
 require 'rbconfig'
 
+class ChallengeNotImplemented < StandardError
+  def initialize challenge
+    super "Challenge #{challenge} is not implemented"
+  end
+end
+
 class ChallengeRunnerFactory
   def self.createRunner
     case RbConfig::CONFIG['host_os']
@@ -35,7 +41,7 @@ class ChallengeRunner
 
   def run_challenge challenge, vars
     challenge_script = Dir.glob("challenges/#{challenge}.*", File::FNM_CASEFOLD).first
-    pending "Challenge #{challenge} is not implemented" if challenge_script.nil?
+    raise ChallengeNotImplemented, challenge if challenge_script.nil?
     env_file = setup_env_vars vars
     system execute_challenge_command(env_file, challenge_script)
   end

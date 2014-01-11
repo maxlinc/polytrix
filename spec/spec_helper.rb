@@ -36,6 +36,8 @@ def validate_challenge sdk, challenge, vars = standard_env_vars
             expect(success).to be_true, "#{sdk} failed to successfully execute the #{challenge} challenge"
           end
         end
+      rescue ChallengeNotImplemented => e
+        pending e.message
       rescue ThreadError => e
         puts "ThreadError detected: #{e.message}"
         puts "ThreadError backtrace: #{e.backtrace}"
