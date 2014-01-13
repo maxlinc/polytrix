@@ -43,10 +43,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Authenticate.cs" />
+    <Compile Include="challenges\*.cs" />
+    <Compile Include="Challenge.cs" />
+    <Compile Include="RunChallenge.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="challenges\" />
   </ItemGroup>
 </Project>

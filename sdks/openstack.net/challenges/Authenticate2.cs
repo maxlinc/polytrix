@@ -6,16 +6,17 @@ using net.openstack.Providers.Rackspace.Objects;
 
 namespace openstack.net
 {
-	class MainClass
+	class Authenticate2 : Challenge
 	{
-		public static void Main (string[] args)
+		public int Run (string[] args)
 		{
 			IIdentityProvider identityProvider = new CloudIdentityProvider ();
 			var userAccess = identityProvider.Authenticate (new RackspaceCloudIdentity {
-				Username = args [0], 
-				APIKey = args [1]
+				Username = Environment.GetEnvironmentVariable("RAX_USERNAME"),
+				Password = Environment.GetEnvironmentVariable("RAX_API_KEY")
 			});
 			Console.WriteLine ("Authenticated!");
+			return 0;
 		}
 	}
 }
