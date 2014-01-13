@@ -10,8 +10,10 @@ namespace openstack.net
 	{
 		public int Run (string[] args)
 		{
-			IIdentityProvider identityProvider = new CloudIdentityProvider ();
-			var userAccess = identityProvider.Authenticate (new RackspaceCloudIdentity {
+			var auth_url = new Uri(Environment.GetEnvironmentVariable ("RAX_AUTH_URL"));
+			Console.WriteLine ("Connecting to " + auth_url);
+			IIdentityProvider identityProvider = new CloudIdentityProvider (null, null, null, auth_url);
+			identityProvider.Authenticate (new RackspaceCloudIdentity {
 				Username = Environment.GetEnvironmentVariable("RAX_USERNAME"),
 				APIKey = Environment.GetEnvironmentVariable("RAX_API_KEY")
 			});
