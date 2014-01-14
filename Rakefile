@@ -51,6 +51,12 @@ task :setup do
   end
 end
 
+task :docco do
+  # FIXME: This should probably be OS-agnostic ruby...
+  # Possible layouts: -l linear; -l parallel; -l classic
+  system "for sdk in `ls sdks/`; do find sdks/$sdk/challenges -type f | xargs /Users/Thoughtworker/repos/opensource/docco/bin/docco -l parallel -o docs/$sdk; done"
+end
+
 def is_windows?
   RbConfig::CONFIG['host_os'] =~ /mswin(\d+)|mingw/i
 end
