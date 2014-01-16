@@ -15,8 +15,8 @@ group "sudo" do
 end
 
 # /etc/sudoers should be set for "sudo" instead of "wheel", but let's add them just in case
-group "wheel" do
-  action :modify
-  members ["jenkins"]
-  append true
-end
+# group "wheel" do
+#   action :modify
+#   members ["jenkins"]
+#   append true
+# end
