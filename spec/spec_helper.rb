@@ -23,7 +23,17 @@ def standard_env_vars
   challenge_runner.standard_env_vars
 end
 
-def validate_challenge sdk, challenge, vars = standard_env_vars
+def validate_challenge challenge, vars, &block
+  SDKs.each do |sdk|
+    it sdk, sdk.to_sym, "data-challenge" => challenge, "data-sdk" => sdk do
+      execute_challenge sdk, challenge, vars do
+        instance_eval &block
+      end
+    end
+  end
+end
+
+def execute_challenge sdk, challenge, vars
   sdk_dir = "sdks/#{sdk}"
   pending "#{sdk} is not setup" unless File.directory? sdk_dir
   with_pacto do

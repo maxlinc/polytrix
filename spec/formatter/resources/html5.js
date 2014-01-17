@@ -6,11 +6,11 @@ function SDK(sdk, language, editor) {
     var thissdk = this;
     var suffixMap = {
         'ruby': '.rb',
-            'go': '.go',
-            'java': '.java',
-            'php': '.php',
-            'javascript': '.js',
-            'python': '.py'
+        'go': '.go',
+        'java': '.java',
+        'php': '.php',
+        'javascript': '.js',
+        'python': '.py'
     }
     this.challengeFile = function (challenge) {
         if (this.language === "java") {
@@ -22,7 +22,15 @@ function SDK(sdk, language, editor) {
         return "https://github.com/maxlinc/drg-tests/blob/master/sdks/" + this.sdk + "/challenges/" + this.challengeFile(challenge);
     };
     this.rawSourceURL = function (challenge) {
-        return "https://api.github.com/repos/maxlinc/drg-tests/contents/sdks/" + this.sdk + "/challenges/" + this.challengeFile(challenge);
+        var clientId = "df414b947bcb6137cb74"
+        var secret = "dd437e0eebb70d839eb23d78ae7894ceed021759"
+        var auth = "?client_id=" + clientId + "&client_secret=" + secret
+        return "https://api.github.com/repos/maxlinc/drg-tests/contents/sdks/" + this.sdk + "/challenges/" + this.challengeFile(challenge) + auth;
+    };
+    this.annotatedDocumentationURL = function (challenge) {
+        var challengeFile = this.challengeFile(challenge);
+        var docFile = challengeFile.substr(0, challengeFile.lastIndexOf(".")) + ".html";
+        return this.sdk + "/" + docFile;
     };
     this.loadSource = function (challenge) {
         console.log("Loading " + this.rawSourceURL(challenge));
@@ -38,7 +46,8 @@ function SDK(sdk, language, editor) {
             },
             complete: function (jqXHR, textStatus) {
                 this.editor.getSession().setMode("ace/mode/" + this.language);
-                $("#editor_nav").html("<a target=\"_blank\" href=\"" + this.sourceLinkURL(challenge) + "\">View on GitHub</a>");
+                $("#annotated-nav").html("<a target=\"_blank\" href=\"" + this.annotatedDocumentationURL(challenge) + "\">Annotated</a>");
+                $("#github-nav").html("<a target=\"_blank\" href=\"" + this.sourceLinkURL(challenge) + "\">View on GitHub</a>");
             }
         });
     };
