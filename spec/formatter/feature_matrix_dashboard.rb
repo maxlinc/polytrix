@@ -85,19 +85,6 @@ module Formatter
       @builder.doc.inner_html
     end
 
-    def load_resource name
-      file = File.join(File.dirname(File.expand_path(__FILE__)), 'resources', name)
-      File.read file
-    end
-
-    def css
-      load_resource "html5.css"
-    end
-
-    def javascript
-      load_resource "html5.js"
-    end
-
     def header
       <<-EOS
       <head>
@@ -110,10 +97,8 @@ module Formatter
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
         <!-- Latest compiled and minified JavaScript -->
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-        <style type="text/css">
-          #{css}
-        </style>
-        <script type='text/javascript' src="https://rawgithub.com/jmosbech/StickyTableHeaders/master/js/jquery.stickytableheaders.min.js"></script>
+        <link rel="stylesheet" href="/resources/dashboard.css"></link>
+        <script type='text/javascript' src="/resources/jquery.stickytableheaders.min.js"></script>
         <script type='text/javascript' src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.01/ace.js"></script>
       </head>
       EOS
@@ -215,9 +200,7 @@ module Formatter
         </div>
       </div>
       </body>
-      <script type="text/javascript">
-        #{javascript}
-      </script>
+      <script type="text/javascript" src="/resources/dashboard.js"></script>
       </html>
       EOS
     end

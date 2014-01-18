@@ -59,10 +59,12 @@ end
 
 task :dashboard => :docco do
   require 'formatter/feature_matrix_dashboard'
+  require 'fileutils'
   formatter = Formatter::FeatureMatrixDashboard.new 'reports'
   formatter.merge_results
   # puts MultiJson.encode formatter.matrix
   matrix = formatter.html5_matrix
+  FileUtils.cp_r 'spec/formatter/resources', 'docs/resources'
   File.open("docs/dashboard.html", 'w') {|f| f.write(matrix) }
 end
 
