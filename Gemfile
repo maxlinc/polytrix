@@ -10,6 +10,7 @@ gem "em-http-request"
 gem "rspec"
 gem "rake"
 gem "pry"
-gem "matrix_formatter"
+gem "matrix_formatter", :git => 'https://github.com/maxlinc/matrix_formatter', :branch => 'html5'
 gem "highline"
-
+gem "hashie"
+gem "parallel_tests"

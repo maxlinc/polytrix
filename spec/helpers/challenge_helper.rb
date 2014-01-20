@@ -86,3 +86,12 @@ class WindowsChallengeRunner < ChallengeRunner
     "$Env:#{key}='#{value}'"
   end
 end
+
+def redact(data)
+  Hash[data.map do |k,v|
+    if k =~ /password|api_key/i
+      v = '******'
+    end
+    [k, v]
+  end]
+end

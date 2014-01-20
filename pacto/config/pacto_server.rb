@@ -1,5 +1,6 @@
 require 'pacto'
 
+config[:port] = port
 contracts_path = options[:directory] || File.expand_path('contracts', Dir.pwd)
 Pacto.configure do |config|
   config.contracts_path = contracts_path

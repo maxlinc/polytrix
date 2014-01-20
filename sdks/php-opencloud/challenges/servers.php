@@ -13,7 +13,7 @@ $rackspace = new Rackspace($endpoint, $credentials);
 $compute = $rackspace->computeService('cloudServersOpenStack', getenv('RAX_REGION'));
 
 $server = $compute->Server();
-$server->name = 'MyNewServer';
+$server->name = 'php-opencloud server';
 $flavor_id = intval(getenv('SERVER1_FLAVOR'));
 
 $server->image = $compute->Image(getenv('SERVER1_IMAGE'));

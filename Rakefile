@@ -61,6 +61,37 @@ task :document do
   system "for sdk in `ls sdks/`; do find sdks/$sdk/challenges -type f | xargs /Users/Thoughtworker/repos/opensource/docco/bin/docco -l parallel -o docs/$sdk; done"
 end
 
+task :dashboard => :docco do
+  require 'formatter/feature_matrix_dashboard'
+  require 'fileutils'
+  formatter = Formatter::FeatureMatrixDashboard.new 'reports'
+  formatter.merge_results
+  # puts MultiJson.encode formatter.matrix
+  matrix = formatter.html5_matrix
+  FileUtils.cp_r 'spec/formatter/resources', 'docs/resources'
+  File.open("docs/dashboard.html", 'w') {|f| f.write(matrix) }
+end
+
+desc "Run the tests in parallel, split by SDK.  Doesn't work on Windows, but you can use rspec_parallel to split by file instead."
+task :parallel_spec do
+  tags = Dir['sdks/*'].map{|sdk| File.basename sdk}
+  puts "Detected SDKs: #{tags}"
+  threads = []
+  Thread.main[:results] = []
+  tags.each_with_index do | tag, index |
+    threads << Thread.new do
+      puts "Starting #{tag} on process #{index}"
+      Thread.main[:results] << {
+        :tag => tag,
+        :success  => sh("TEST_ENV_NUMBER=#{index} bundle exec rspec --options .rspec_parallel -t #{tag} spec")
+      }
+    end
+  end
+  threads.each do |thread|
+    thread.join
+  end
+end
+
 namespace :image do
   desc 'Build a Rackspace image (using Packer)'
   task :rackspace do

@@ -4,11 +4,14 @@ require 'em-synchrony/em-http'
 
 class PactoServer < Goliath::API
   use Goliath::Rack::Params
-  PORT = 9900
+
+  def port
+    env.config[:port]
+  end
 
   def response (env)
     path = env[Goliath::Request::REQUEST_PATH]
-    host = env['HTTP_HOST'].gsub(".dev:#{PORT}", '.com')
+    host = env['HTTP_HOST'].gsub(".dev:#{port}", '.com')
     headers = env['client-headers']
     begin
       uri = "https://#{host}#{path}"
@@ -52,7 +55,7 @@ class PactoServer < Goliath::API
 
   def proxy_rewrite body
     # Make sure rels continue going through our proxy
-    body.gsub('.com', ".dev:#{PORT}").gsub(/https\:([\w\-\.\\\/]+).dev/, 'http:\1.dev')
+    body.gsub('.com', ".dev:#{port}").gsub(/https\:([\w\-\.\\\/]+).dev/, 'http:\1.dev')
   end
 
   def options_parser(opts, options)
