@@ -149,8 +149,8 @@ module Formatter
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
         <!-- Latest compiled and minified JavaScript -->
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-        <link rel="stylesheet" href="/resources/dashboard.css"></link>
-        <script type='text/javascript' src="/resources/jquery.stickytableheaders.min.js"></script>
+        <link rel="stylesheet" href="resources/dashboard.css"></link>
+        <script type='text/javascript' src="resources/jquery.stickytableheaders.min.js"></script>
         <script type='text/javascript' src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.01/ace.js"></script>
       </head>
       EOS
@@ -240,7 +240,7 @@ module Formatter
         </div>
       </div>
       </body>
-      <script type="text/javascript" src="/resources/dashboard.js"></script>
+      <script type="text/javascript" src="resources/dashboard.js"></script>
       </html>
       EOS
     end
