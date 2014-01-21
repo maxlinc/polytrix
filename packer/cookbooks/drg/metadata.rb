@@ -18,6 +18,7 @@ depends 'dnsmasq'
 depends 'ssh_known_hosts'
 depends 'users'
 depends 'sudo'
+depends 'mono'
 
 recipe "drg", "Installs tools required for testing Rackspace SDKS."
 
