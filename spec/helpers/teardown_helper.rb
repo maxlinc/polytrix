@@ -17,6 +17,7 @@ def auto_teardown
 end
 
 def auto_find uri_pattern
+  # Pacto doesn't find services in ORD if it is only validating DFW...
   matches = Pacto::ValidationRegistry.instance.validations.find_all {|validation|
     validation.contract && validation.contract.request.path == uri_pattern
   }
