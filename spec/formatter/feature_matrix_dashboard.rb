@@ -106,8 +106,8 @@ module Formatter
                         doc.text result.state
                       }
 
-                      if result.markdown
-                        aside doc, result.markdown
+                      if result.markdown # results should probably prefer docco over markdown metadata
+                        markdown_aside doc, result.markdown
                       end
                     }
                   end

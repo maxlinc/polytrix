@@ -1,16 +1,17 @@
 String.prototype.toCamel = function(){
-    return this.replace(/(\-_[a-z])/g, function($1){return $1.toUpperCase().replace(/[-_]/,'');});
+    return this.replace(/([\-\_][a-z])/g, function($1){return $1.toUpperCase().replace(/[-_]/,'');});
 };
+
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1)
+}
 
 function buildCollapseablePanel(title, href, content) {
     $panel = $("<div class='panel panel-default'>");
     // var href = encodeURIComponent("collapse" + title);
-    $panel.wrapInner("<div class='panel-heading'><h4 class='panel-title'></h4></div><div id='" + href + "'' class='panel-collapse collapse in'>")
+    $panel.wrapInner("<div class='panel-heading'><h4 class='panel-title'></h4></div><div id='" + href + "'' class='panel-collapse collapse'>")
     $panel.find(".panel-heading").wrapInner("<a data-toggle='collapse' data-parent='#accordion' href='#" + href + "'>"+title+"</a>");
-    var body = "<div id='collapse" + title +"' class='panel-collapse collapse in'>"
-        + "<div class='panel-body'>" + content + "</div>"
-        + "</div>";
-    $panel.find("#" + href).wrapInner(body);
+    $panel.find("#" + href).wrapInner("<div class='panel-body'>" + content + "</div>");
     return $panel;
 };
 function updateSideNav(link) {
@@ -41,11 +42,12 @@ function SDK(sdk, language, editor) {
         'java': '.java',
         'php': '.php',
         'javascript': '.js',
-        'python': '.py'
+        'python': '.py',
+        'csharp': '.cs'
     }
     this.challengeFile = function (challenge) {
-        if (this.language === "java") {
-            challenge = challenge.toCamel()
+        if (this.language === "java" || this.language === "csharp") {
+            challenge = challenge.capitalize().toCamel()
         }
         return challenge + suffixMap[this.language];
     }
@@ -53,10 +55,11 @@ function SDK(sdk, language, editor) {
         return "https://github.com/maxlinc/drg-tests/blob/master/sdks/" + this.sdk + "/challenges/" + this.challengeFile(challenge);
     };
     this.rawSourceURL = function (challenge) {
-        var clientId = "df414b947bcb6137cb74"
-        var secret = "dd437e0eebb70d839eb23d78ae7894ceed021759"
-        var auth = "?client_id=" + clientId + "&client_secret=" + secret
-        return "https://api.github.com/repos/maxlinc/drg-tests/contents/sdks/" + this.sdk + "/challenges/" + this.challengeFile(challenge) + auth;
+        // var clientId = "TBD"
+        // var secret = "TBD"
+        // var auth = "?client_id=" + clientId + "&client_secret=" + secret
+        // return "https://api.github.com/repos/maxlinc/drg-tests/contents/sdks/" + this.sdk + "/challenges/" + this.challengeFile(challenge); // + auth;
+        return "src/" + this.sdk + "/challenges/" + this.challengeFile(challenge);
     };
     this.annotatedDocumentationURL = function (challenge) {
         var challengeFile = this.challengeFile(challenge);
@@ -72,7 +75,8 @@ function SDK(sdk, language, editor) {
                 this.editor.setValue("# Not implemented yet");
             },
             success: function (data, status, jqXHR) {
-                source = atob(data.content.replace(/\s/g, ""));
+                // source = atob(data.content.replace(/\s/g, ""));
+                source = data;
                 this.editor.setValue(source);
             },
             complete: function (jqXHR, textStatus) {
@@ -117,11 +121,12 @@ $(document).ready(function () {
 
     var sdks = {
         'fog': new SDK("fog", "ruby", editor),
-            'gophercloud': new SDK("gophercloud", "go", editor),
-            'jclouds': new SDK("jclouds", "java", editor),
-            'php-opencloud': new SDK("php-opencloud", "php", editor),
-            'pkgcloud': new SDK("pkgcloud", "javascript", editor),
-            'pyrax': new SDK("pyrax", "python", editor)
+        'gophercloud': new SDK("gophercloud", "go", editor),
+        'jclouds': new SDK("jclouds", "java", editor),
+        'php-opencloud': new SDK("php-opencloud", "php", editor),
+        'pkgcloud': new SDK("pkgcloud", "javascript", editor),
+        'pyrax': new SDK("pyrax", "python", editor),
+        'openstack.net': new SDK("openstack.net", "csharp", editor)
     };
 
     for (var sdk in sdks) {
