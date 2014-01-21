@@ -44,7 +44,7 @@ import org.jclouds.rest.RestContext;
  * 
  * @author Everett Toews
  */
-public class Authenticate implements Closeable {
+public class AuthenticateToken implements Closeable {
    private ComputeService compute;
    private RestContext<NovaApi, NovaAsyncApi> nova;
 
@@ -57,7 +57,7 @@ public class Authenticate implements Closeable {
     *            otherwise default to using API key.
     */
    public static void main(String[] args) {
-      Authenticate authenticate = new Authenticate();
+      AuthenticateToken authenticate = new AuthenticateToken();
 
       try {
          authenticate.init(args);

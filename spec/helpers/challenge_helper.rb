@@ -40,10 +40,15 @@ class ChallengeRunner
   end
 
   def run_challenge challenge, vars
-    challenge_script = Dir.glob("challenges/#{challenge}.*", File::FNM_CASEFOLD).first
+    challenge_script = find_challenge_file challenge
     raise ChallengeNotImplemented, challenge if challenge_script.nil?
     env_file = setup_env_vars vars
     system execute_challenge_command(env_file, challenge_script)
+  end
+
+  def find_challenge_file challenge
+    Dir.glob("challenges/#{challenge}.*", File::FNM_CASEFOLD).first ||
+      Dir.glob("challenges/#{challenge.gsub('_','')}.*", File::FNM_CASEFOLD).first
   end
 end
 

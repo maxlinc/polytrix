@@ -1,7 +1,10 @@
-function buildCollapseablePanel(title, content) {
+String.prototype.toCamel = function(){
+    return this.replace(/(\-_[a-z])/g, function($1){return $1.toUpperCase().replace(/[-_]/,'');});
+};
+
+function buildCollapseablePanel(title, href, content) {
     $panel = $("<div class='panel panel-default'>");
     // var href = encodeURIComponent("collapse" + title);
-    var href = ("collapse" + title).replace(/ /g, '_');
     $panel.wrapInner("<div class='panel-heading'><h4 class='panel-title'></h4></div><div id='" + href + "'' class='panel-collapse collapse in'>")
     $panel.find(".panel-heading").wrapInner("<a data-toggle='collapse' data-parent='#accordion' href='#" + href + "'>"+title+"</a>");
     var body = "<div id='collapse" + title +"' class='panel-collapse collapse in'>"
@@ -17,17 +20,13 @@ function updateSideNav(link) {
     var feature_group = $(".feature_group[data-feature-group='" + feature_group_name + "']");
     var feature = $(".feature[data-feature='" + feature_name + "']");
     feature_group.find("aside").each(function(index) {
-        var panel = buildCollapseablePanel(feature_group_name + " " + $(this).data('label'), $(this).html());
+        var panel = buildCollapseablePanel($(this).data('label') + ": " + feature_group_name, "fg_aside_" + index, $(this).html());
         $("#accordion").append(panel);
     });
     feature.find("aside").each(function(index) {
-        var panel = buildCollapseablePanel(feature_name + " " + $(this).data('label'), $(this).html());
+        var panel = buildCollapseablePanel($(this).data('label') + ": " + feature_name, "feature_aside_" + index, $(this).html());
         $("#accordion").append(panel);
     });
-    // $fg_panel = buildCollapseablePanel(feature_group.data('feature-group'), feature_group.find("aside").html());
-    // $feature_panel = buildCollapseablePanel(feature.data('feature'), feature.find("aside").html());
-    // $("#accordion").append($fg_panel);
-    // $("#accordion").append($feature_panel);
 };
 
 function SDK(sdk, language, editor) {
@@ -46,7 +45,7 @@ function SDK(sdk, language, editor) {
     }
     this.challengeFile = function (challenge) {
         if (this.language === "java") {
-            challenge = challenge.charAt(0).toUpperCase() + challenge.slice(1)
+            challenge = challenge.toCamel()
         }
         return challenge + suffixMap[this.language];
     }
@@ -93,9 +92,9 @@ function setEditorHeight() {
 
 function createModal(btn) {
     var section = $(btn).closest("td").find("span.section_label").text();
-    var aside = btn.closest(".info-container").find("aside");
+    var aside = btn.closest("td").find("aside[data-label='" + btn.text() + "']");
     var label = aside.data("label");
-    var title = section + " : " + label;
+    var title = label + ": " + section;
     console.log("With title " + title);
     modal = $("#modalPlaceHolder");
     modal.find(".modal-title").text(title);

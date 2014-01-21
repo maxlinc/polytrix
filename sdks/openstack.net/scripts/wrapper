@@ -1,3 +1,7 @@
 #!/bin/bash
-mono bin/Debug/openstack.net.exe "$@"
 
+# Might need to build again...
+# xbuild
+#
+
+mono bin/Debug/openstack.net.exe "$@"

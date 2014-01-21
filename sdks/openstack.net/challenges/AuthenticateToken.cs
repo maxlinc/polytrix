@@ -6,7 +6,7 @@ using net.openstack.Providers.Rackspace.Objects;
 
 namespace openstack.net
 {
-	class Authenticate : Challenge
+	class AuthenticateToken : Challenge
 	{
 		public int Run (string[] args)
 		{

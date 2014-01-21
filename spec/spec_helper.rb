@@ -23,11 +23,16 @@ def standard_env_vars
   challenge_runner.standard_env_vars
 end
 
-def validate_challenge challenge, vars, &block
-  SDKs.each do |sdk|
-    it sdk, sdk.to_sym, "data-challenge" => challenge, "data-sdk" => sdk do
-      execute_challenge sdk, challenge, vars do
-        instance_eval &block
+def validate_challenge challenge, description, environment, services, &block
+  challenge_file = challenge.downcase.gsub(' ', '_')
+  describe challenge, :markdown => description,
+    :environment => redact(environment),
+    :services => services do
+    SDKs.each do |sdk|
+      it sdk, sdk.to_sym, "data-challenge" => challenge_file, "data-sdk" => sdk do
+        execute_challenge sdk, challenge_file, environment do
+          instance_eval &block
+        end
       end
     end
   end

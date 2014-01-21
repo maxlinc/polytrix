@@ -33,7 +33,7 @@ module Formatter
 
     def matrix_html
       @builder = Nokogiri::HTML::Builder.new do |doc|
-        doc.table(:class => "feature_matrix table table-striped") {
+        doc.table(:id => "feature_matrix", :class => "feature_matrix table table-striped") {
           doc.thead(:class => "matrix_labels") {
             doc.tr {
               labels = ['Feature Group', 'Feature', RSpec.configuration.matrix_implementors].flatten
@@ -55,9 +55,18 @@ module Formatter
                       doc.span(:class => "section_label") {
                         doc.text product_key
                       }
-                      if product.markdown
-                        aside doc, product.markdown
-                      end
+                      doc.span(:class => 'btn-group pull-right') {
+                        doc.button(:type => 'button', :class => 'btn btn-xs dropdown-toggle', 'data-toggle' => 'dropdown') {
+                          doc.i(:class => "glyphicon glyphicon-chevron-down")
+                        }
+                        doc.ul(:class => "dropdown-menu", :role => "menu") {
+                          if product.markdown
+                            doc.li {
+                              markdown_aside doc, product.markdown, 'Product Overview'
+                            }
+                          end
+                        }
+                      }
                     }
                     inserted_group_td = true
                   end
@@ -65,9 +74,28 @@ module Formatter
                     doc.span(:class => "section_label" ) {
                       doc.text feature_key
                     }
-                    if feature.markdown
-                      aside doc, feature.markdown
-                    end
+                    doc.span(:class => 'btn-group pull-right') {
+                      doc.button(:type => 'button', :class => 'btn btn-xs dropdown-toggle', 'data-toggle' => 'dropdown') {
+                        doc.i(:class => "glyphicon glyphicon-chevron-down")
+                      }
+                      doc.ul(:class => "dropdown-menu", :role => "menu") {
+                        if feature.markdown
+                          doc.li {
+                            markdown_aside doc, feature.markdown, 'Scenario'
+                          }
+                        end
+                        if feature.environment
+                          doc.li {
+                            environment_table doc, feature.environment, 'Environment'
+                          }
+                        end
+                        if feature.services
+                          doc.li {
+                            services_list doc, feature.services, 'Services'
+                          } 
+                        end
+                      }
+                    }
                   }
                   sorted_results = RSpec.configuration.matrix_implementors.map { |implementor|
                     results[implementor]
@@ -200,13 +228,58 @@ module Formatter
       EOS
     end
 
-    def aside doc, markdown, label="More Info"
-      doc.div(:class => "info-container") {
-        doc.button(:class => "btn btn-info btn-xs modal-button") {
-          doc.text label
+    def markdown_aside doc, markdown, label
+      doc.a(:class => "modal-button") {
+        doc.text label
+      }
+      doc.aside("data-label" => label) {
+        doc << @renderer.render(markdown)
+      }
+    end
+
+    def environment_table doc, environment, label
+      doc.a(:class => "modal-button") {
+        doc.text label
+      }
+      doc.aside("data-label" => label) {
+        doc.table(:class => "table table-striped") {
+          doc.thead {
+            doc.tr {
+              doc.th {
+                doc.text "Environment Variable"
+              }
+              doc.th {
+                doc.text "Value"
+              }
+            }
+          }
+          doc.tbody {
+            environment.each do | key, value |
+              doc.tr {
+                doc.td {
+                  doc.text key
+                }
+                doc.td {
+                  doc.text value
+                }
+              }
+            end
+          }
         }
-        doc.aside("data-label" => label) {
-          doc << @renderer.render(markdown)
+      }
+    end
+
+    def services_list doc, services, label
+      doc.a(:class => "modal-button") {
+        doc.text label
+      }
+      doc.aside("data-label" => label) {
+        doc.ul {
+          services.each do |service|
+            doc.li {
+              doc.text service
+            }
+          end
         }
       }
     end
