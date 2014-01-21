@@ -1,3 +1,35 @@
+function buildCollapseablePanel(title, content) {
+    $panel = $("<div class='panel panel-default'>");
+    // var href = encodeURIComponent("collapse" + title);
+    var href = ("collapse" + title).replace(/ /g, '_');
+    $panel.wrapInner("<div class='panel-heading'><h4 class='panel-title'></h4></div><div id='" + href + "'' class='panel-collapse collapse in'>")
+    $panel.find(".panel-heading").wrapInner("<a data-toggle='collapse' data-parent='#accordion' href='#" + href + "'>"+title+"</a>");
+    var body = "<div id='collapse" + title +"' class='panel-collapse collapse in'>"
+        + "<div class='panel-body'>" + content + "</div>"
+        + "</div>";
+    $panel.find("#" + href).wrapInner(body);
+    return $panel;
+};
+function updateSideNav(link) {
+    $("#accordion").html("");
+    var feature_group_name = link.data('feature-group');
+    var feature_name = link.data('feature');
+    var feature_group = $(".feature_group[data-feature-group='" + feature_group_name + "']");
+    var feature = $(".feature[data-feature='" + feature_name + "']");
+    feature_group.find("aside").each(function(index) {
+        var panel = buildCollapseablePanel(feature_group_name + " " + $(this).data('label'), $(this).html());
+        $("#accordion").append(panel);
+    });
+    feature.find("aside").each(function(index) {
+        var panel = buildCollapseablePanel(feature_name + " " + $(this).data('label'), $(this).html());
+        $("#accordion").append(panel);
+    });
+    // $fg_panel = buildCollapseablePanel(feature_group.data('feature-group'), feature_group.find("aside").html());
+    // $feature_panel = buildCollapseablePanel(feature.data('feature'), feature.find("aside").html());
+    // $("#accordion").append($fg_panel);
+    // $("#accordion").append($feature_panel);
+};
+
 function SDK(sdk, language, editor) {
     this.sdk = sdk;
     this.editor = editor;
@@ -18,7 +50,7 @@ function SDK(sdk, language, editor) {
         }
         return challenge + suffixMap[this.language];
     }
-    this.sourceLinkURL = function () {
+    this.sourceLinkURL = function (challenge) {
         return "https://github.com/maxlinc/drg-tests/blob/master/sdks/" + this.sdk + "/challenges/" + this.challengeFile(challenge);
     };
     this.rawSourceURL = function (challenge) {
@@ -60,9 +92,11 @@ function setEditorHeight() {
 }
 
 function createModal(btn) {
-    title = btn.data("modal-title");
+    var section = $(btn).closest("td").find("span.section_label").text();
+    var aside = btn.closest(".info-container").find("aside");
+    var label = aside.data("label");
+    var title = section + " : " + label;
     console.log("With title " + title);
-    aside = btn.closest(".info-container").find("aside");
     modal = $("#modalPlaceHolder");
     modal.find(".modal-title").text(title);
     console.log("And body " + aside.inner_html);
@@ -82,9 +116,6 @@ $(document).ready(function () {
     editor.setTheme("ace/theme/github");
     editor.getSession().setMode("ace/mode/ruby");
 
-    //$(window).on('resize', setEditorHeight);
-    // setEditorHeight();
-
     var sdks = {
         'fog': new SDK("fog", "ruby", editor),
             'gophercloud': new SDK("gophercloud", "go", editor),
@@ -100,13 +131,21 @@ $(document).ready(function () {
             $("#sdk-nav").append($li);
         }
     }
+
     $(document).on("click", "a[data-sdk]", function (e) {
-        sdk = sdks[$(this).data("sdk")];
-        challenge = $(this).data("challenge");
+        var sdk = sdks[$(this).data("sdk")];
+        var challenge = $(this).data("challenge");
+        var feature_group = $(this).data("feature-group");
+        var feature = $(this).data("feature");
+        $("#code_modal .modal-title").text(feature);
         $("#sdk-nav li a").data("challenge", challenge);
+        $("#sdk-nav li a").data("feature-group", feature_group);
+        $("#sdk-nav li a").data("feature", feature);
         $("#sdk-nav li").removeClass("active");
         $("#" + sdk.sdk + "_tab").addClass("active");
+        updateSideNav($(this));
         console.log("Loading " + sdk);
+        console.log("Challenge " + challenge);
         sdk.loadSource(challenge);
     });
 });

@@ -51,13 +51,20 @@ module Formatter
                 results = feature.results # bad key name
                 doc.tr {
                   unless inserted_group_td
-                    doc.td(:class => "feature_group", :rowspan => product.features.size) {
-                      doc.text product_key
+                    doc.td(:class => "feature_group", 'data-feature-group' => product_key, :rowspan => product.features.size) {
+                      doc.span(:class => "section_label") {
+                        doc.text product_key
+                      }
+                      if product.markdown
+                        aside doc, product.markdown
+                      end
                     }
                     inserted_group_td = true
                   end
-                  doc.td(:class => "feature") {
-                    doc.text feature_key
+                  doc.td(:class => "feature", 'data-feature' => feature_key) {
+                    doc.span(:class => "section_label" ) {
+                      doc.text feature_key
+                    }
                     if feature.markdown
                       aside doc, feature.markdown
                     end
@@ -67,7 +74,7 @@ module Formatter
                   }
                   sorted_results.each do |result|
                     doc.td({:class => result.state}.merge(result.data)) {
-                      doc.a({"data-toggle" => "modal", :href => "#code_modal"}.merge(result.data)) {
+                      doc.a({"data-toggle" => "modal", "data-feature-group" => product_key, "data-feature" => feature_key, :href => "#code_modal"}.merge(result.data)) {
                         doc.text result.state
                       }
 
@@ -171,20 +178,8 @@ module Formatter
                 <!-- Nav Sidebar -->
                 <!-- This is source ordered to be pulled to the left on larger screens -->
                 <div class="col-lg-3 col-lg-pull-9 ">
-                  <ul class="side-nav">
-                    <li><a href="#">Section 1</a>
-                    </li>
-                    <li><a href="#">Section 2</a>
-                    </li>
-                    <li><a href="#">Section 3</a>
-                    </li>
-                    <li><a href="#">Section 4</a>
-                    </li>
-                    <li><a href="#">Section 5</a>
-                    </li>
-                    <li><a href="#">Section 6</a>
-                    </li>
-                  </ul>
+                  <div class="panel-group" id="accordion">
+                  </div>
                 </div>
               </div>
               <!-- Footer -->
@@ -205,12 +200,12 @@ module Formatter
       EOS
     end
 
-    def aside doc, markdown, label="More Info..."
+    def aside doc, markdown, label="More Info"
       doc.div(:class => "info-container") {
-        doc.button(:class => "btn btn-info btn-xs modal-button", "data-modal-title" => 'TBD') {
+        doc.button(:class => "btn btn-info btn-xs modal-button") {
           doc.text label
         }
-        doc.aside {
+        doc.aside("data-label" => label) {
           doc << @renderer.render(markdown)
         }
       }
