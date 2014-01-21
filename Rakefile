@@ -79,6 +79,8 @@ namespace :documentation do
     matrix = formatter.html5_matrix
     FileUtils.cp_r 'spec/formatter/resources', 'docs/resources'
     File.open("docs/dashboard.html", 'w') {|f| f.write(matrix) }
+
+    fail "Combined results contain failures - check the reports" if formatter.has_failures?
   end
 end
 

@@ -3,4 +3,5 @@
 --format documentation
 --color
 --require spec_helper.rb
+--failure-exit-code 0
 

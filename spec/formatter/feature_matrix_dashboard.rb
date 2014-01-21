@@ -20,6 +20,23 @@ module Formatter
       end
     end
 
+    def results
+      results = {:passed => 0, :failed => 0, :pending => 0, :skipped => 0}
+      @matrix.inject(results) do |hash, (_, product)|
+        product.features.each_value do |feature|
+          feature.results.each_value do |result|
+            hash[result.state.to_sym] += 1;
+          end
+        end
+        hash
+      end
+      results
+    end
+
+    def has_failures?
+      results[:failed] != 0
+    end
+
     def html5_matrix
       @renderer = Redcarpet::Markdown.new(Redcarpet::Render::HTML, :tables => true)
 
