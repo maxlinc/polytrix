@@ -54,22 +54,32 @@ task :setup do
   end
 end
 
-desc 'Generate docco annoted source code'
-task :docco do
-  # FIXME: This should probably be OS-agnostic ruby...
-  # Possible layouts: -l linear; -l parallel; -l classic
-  system "for sdk in `ls sdks/`; do find sdks/$sdk/challenges -type f | xargs /Users/Thoughtworker/repos/opensource/docco/bin/docco -l parallel -o docs/$sdk; done"
-end
+namespace :documentation do
+  desc 'Generate docco annoted source code'
+  task :docco do
+    # FIXME: This should probably be OS-agnostic ruby...
+    # Possible layouts: -l linear; -l parallel; -l classic
+    system "for sdk in `ls sdks/`; do find sdks/$sdk/challenges -type f | xargs /Users/Thoughtworker/repos/opensource/docco/bin/docco -l parallel -o docs/$sdk; done"
+  end
 
-task :dashboard => :docco do
-  require 'formatter/feature_matrix_dashboard'
-  require 'fileutils'
-  formatter = Formatter::FeatureMatrixDashboard.new 'reports'
-  formatter.merge_results
-  # puts MultiJson.encode formatter.matrix
-  matrix = formatter.html5_matrix
-  FileUtils.cp_r 'spec/formatter/resources', 'docs/resources'
-  File.open("docs/dashboard.html", 'w') {|f| f.write(matrix) }
+  task :copy_src do
+    sdks = Dir['sdks/*'].each do |sdk|
+      sdk = File.basename sdk
+      FileUtils.mkdir_p "docs/src/#{sdk}"
+      FileUtils.cp_r "sdks/#{sdk}/challenges/", "docs/src/#{sdk}"
+    end
+  end
+
+  task :dashboard => [:docco, :copy_src] do
+    require 'formatter/feature_matrix_dashboard'
+    require 'fileutils'
+    formatter = Formatter::FeatureMatrixDashboard.new 'reports'
+    formatter.merge_results
+    # puts MultiJson.encode formatter.matrix
+    matrix = formatter.html5_matrix
+    FileUtils.cp_r 'spec/formatter/resources', 'docs/resources'
+    File.open("docs/dashboard.html", 'w') {|f| f.write(matrix) }
+  end
 end
 
 desc "Run the tests in parallel, split by SDK.  Doesn't work on Windows, but you can use rspec_parallel to split by file instead."
