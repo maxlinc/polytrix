@@ -14,12 +14,14 @@ pyrax.set_setting("identity_type", "rackspace")
 pyrax._create_identity()
 pyrax.identity.auth_endpoint = os.getenv('RAX_AUTH_URL') + '/v2.0/'
 
+# Set the region, needs to be done before authenticating.
+pyrax.set_setting('region', os.getenv('RAX_REGION'))
+
 # [Authenticate](https://github.com/rackspace/pyrax/blob/master/docs/getting_started.md#authenticating)
 # using an API key.
 pyrax.set_credentials(os.getenv('RAX_USERNAME'), os.getenv('RAX_API_KEY'))
 
-# Set the region, flavor, and image for the test scenario.
-pyrax.set_setting('region', os.getenv('RAX_REGION'))
+# Get the flavor and image for the test scenario.
 flavor = os.getenv('SERVER1_FLAVOR')
 image  = os.getenv('SERVER1_IMAGE')
 
