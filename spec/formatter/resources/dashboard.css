@@ -77,6 +77,17 @@
 .pending {
     color: blue;
 }
+
+.passed .badge {
+    background-color: green;
+}
+.failed .badge {
+    background-color: red;
+}
+.pending .badge {
+    background-color: blue;
+}
+
 /* jquery accordion styling */
  .accordion .ui-accordion-content {
     width: 100%;

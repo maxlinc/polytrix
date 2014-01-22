@@ -120,7 +120,14 @@ module Formatter
                   sorted_results.each do |result|
                     doc.td({:class => result.state}.merge(result.data)) {
                       doc.a({"data-toggle" => "modal", "data-feature-group" => product_key, "data-feature" => feature_key, :href => "#code_modal"}.merge(result.data)) {
-                        doc.text result.state
+                        doc.span {
+                          doc.text result.state
+                        }
+                        if result.state == 'passed'
+                          doc.span(:class => 'badge pull-right') {
+                            doc.text "#{result.runtime.round}s"
+                          }
+                        end
                       }
 
                       if result.markdown # results should probably prefer docco over markdown metadata
