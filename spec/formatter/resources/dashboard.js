@@ -70,6 +70,7 @@ function SDK(sdk, language, editor) {
         console.log("Loading " + this.rawSourceURL(challenge));
         $.ajax({
             context: this,
+            dataType: 'text',
             url: this.rawSourceURL(challenge),
             error: function (jqXHR, textStatus, errorThrown) {
                 this.editor.setValue("# Not implemented yet");
@@ -152,4 +153,6 @@ $(document).ready(function () {
         console.log("Challenge " + challenge);
         sdk.loadSource(challenge);
     });
+
+    $('button#test_changes').popover();
 });

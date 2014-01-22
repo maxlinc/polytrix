@@ -234,7 +234,7 @@ module Formatter
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary disabled">Test changes</button>
+              <button id="test_changes" type="button" class="btn btn-primary" data-container="body" data-toggle="popover" data-placement="top" data-content="Coming soon?">Test changes</button>
             </div>
           </div>
         </div>
