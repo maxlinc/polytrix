@@ -154,5 +154,8 @@ $(document).ready(function () {
         sdk.loadSource(challenge);
     });
 
+    // Links in notes should open in new tabs.
+    $('aside').find('a').attr("target","_blank");
+
     $('button#test_changes').popover();
 });
