@@ -1,5 +1,6 @@
 require 'rspec/core/rake_task'
 require 'pacto/rake_task'
+require 'rake/notes/rake_task'
 require 'highline/import'
 require 'json'
 
@@ -57,6 +58,7 @@ end
 namespace :documentation do
   desc 'Generate docco annoted source code'
   task :docco do
+    # FIXME: Need to include docco in bootstrap or Packer image.
     # FIXME: This should probably be OS-agnostic ruby...
     # Possible layouts: -l linear; -l parallel; -l classic
     system "for sdk in `ls sdks/`; do find sdks/$sdk/challenges -type f | xargs /Users/Thoughtworker/repos/opensource/docco/bin/docco -l parallel -o docs/$sdk; done"
