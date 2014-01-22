@@ -58,10 +58,9 @@ end
 namespace :documentation do
   desc 'Generate docco annoted source code'
   task :docco do
-    # FIXME: Need to include docco in bootstrap or Packer image.
     # FIXME: This should probably be OS-agnostic ruby...
     # Possible layouts: -l linear; -l parallel; -l classic
-    system "for sdk in `ls sdks/`; do find sdks/$sdk/challenges -type f | xargs /Users/Thoughtworker/repos/opensource/docco/bin/docco -l parallel -o docs/$sdk; done"
+    system "for sdk in `ls sdks/`; do find sdks/$sdk/challenges -type f | xargs ./node_modules/.bin/docco -l parallel -o docs/$sdk; done"
   end
 
   task :copy_src do

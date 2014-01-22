@@ -5,3 +5,4 @@ reports/
 .rbenv-vars
 .packer-creds.json
 **/tmp/
+node_modules/
