@@ -82,7 +82,7 @@ class WindowsChallengeRunner < ChallengeRunner
     if File.exists? "scripts/wrapper.ps1"
       command = ". ./#{env_file}; ./scripts/wrapper.ps1 #{challenge_script}"
     else
-      command = ". ./#env_file}; ./#{challenge_script}"
+      command = ". ./#{env_file}; ./#{challenge_script}"
     end
     "PowerShell #{PS_OPTIONS} -Command \"#{command}\""
   end
