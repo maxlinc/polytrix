@@ -1,5 +1,6 @@
-describe 'Servers', :markdown =>
+describe 'Cloud Servers', :markdown =>
   """
+  
   Scenarios using [Next Generation Cloud Servers API V2](http://docs.rackspace.com/servers/api/v2/cs-devguide/content/ch_preface.html).
   """ do
     validate_challenge "Create Server", """
