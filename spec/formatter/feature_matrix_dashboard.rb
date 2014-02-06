@@ -50,7 +50,7 @@ module Formatter
 
     def matrix_html
       @builder = Nokogiri::HTML::Builder.new do |doc|
-        doc.table(:id => "feature_matrix", :class => "feature_matrix table table-striped") {
+        doc.table(:id => "feature_matrix", :class => "feature_matrix table") {
           doc.thead(:class => "matrix_labels") {
             doc.tr {
               labels = ['Feature Group', 'Feature', RSpec.configuration.matrix_implementors].flatten
@@ -115,7 +115,10 @@ module Formatter
                     }
                   }
                   sorted_results = RSpec.configuration.matrix_implementors.map { |implementor|
-                    results[implementor]
+                    results[implementor] || Hashie::Mash.new({
+                      :state => 'unknown',
+                      "data" => {"data-challenge"=>feature['data-challenge'], "data-sdk"=>implementor}
+                    })
                   }
                   sorted_results.each do |result|
                     doc.td({:class => result.state}.merge(result.data)) {

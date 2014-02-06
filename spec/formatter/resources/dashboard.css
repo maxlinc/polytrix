@@ -69,23 +69,23 @@
     border: 1px solid #ddd;
 }
 .passed {
-    color: green;
+    background-color: green;
 }
 .failed {
-    color: red;
+    background-color: red;
 }
 .pending {
-    color: blue;
+    background-color: LightGrey;
 }
 
 .passed .badge {
-    background-color: green;
+    background-color: DarkGreen;
 }
 .failed .badge {
-    background-color: red;
+    background-color: DarkRed;
 }
 .pending .badge {
-    background-color: blue;
+    background-color: DarkGrey;
 }
 
 /* jquery accordion styling */
