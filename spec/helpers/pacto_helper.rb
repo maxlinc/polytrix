@@ -17,6 +17,7 @@ end
 def with_pacto
   puts "Starting Pacto on port #{pacto_port}"
   with_api(PactoServer, {
+    :stdout => true,
     :log_file => 'pacto.log',
     :config => 'pacto/config/pacto_server.rb',
     :live => true,
