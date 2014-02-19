@@ -5,7 +5,10 @@ contracts_path = options[:directory] || File.expand_path('contracts', Dir.pwd)
 Pacto.configure do |config|
   config.contracts_path = contracts_path
   config.strict_matchers = options[:strict]
-  config.generator_options = {:schema_version => :draft3}
+  config.generator_options = {
+    :schema_version => :draft3,
+    :token_map => MultiJson.load(File.read '.tokens.json')
+  }
 end
 
 if options[:generate]

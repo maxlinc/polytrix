@@ -1,7 +1,8 @@
 # A sample Gemfile
 source "https://rubygems.org"
 
-gem "pacto", :git => 'https://github.com/thoughtworks/pacto', :branch => 'master'
+gem "pacto", :git => 'https://github.com/thoughtworks/pacto', :branch => 'tokenization'
+gem "webmock", :git => 'https://github.com/maxlinc/webmock', :branch => 'addressable'
 gem "fog"
 gem "vcr"
 gem "goliath"
