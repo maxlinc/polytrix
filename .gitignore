@@ -6,3 +6,5 @@ reports/
 .packer-creds.json
 **/tmp/
 node_modules/
+.tokens.json
+docs/
