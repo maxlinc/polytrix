@@ -3,8 +3,6 @@ require 'em-synchrony'
 require 'em-synchrony/em-http'
 
 class PactoServer < Goliath::API
-  use Goliath::Rack::Params
-
   def port
     env.config[:port]
   end
@@ -21,7 +19,7 @@ class PactoServer < Goliath::API
       request_body = env[Goliath::Request::RACK_INPUT].read
       request_method = env['REQUEST_METHOD'].downcase
       em_request_method = "a#{request_method}".to_sym
-      em_request_options = {:head => safe_headers, :query => env.params}
+      em_request_options = {:head => safe_headers, :query => env['QUERY_STRING']}
       env.logger.debug "sending #{request_method} request"
       unless request_body.empty?
         em_request_options.merge!({:body => request_body})
