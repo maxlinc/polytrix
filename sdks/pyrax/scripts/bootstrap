@@ -4,6 +4,6 @@ virtualenv pyrax_env
 source pyrax_env/bin/activate
 
 # Slow!
-# pip -q install -U pyrax
+pip -q install -U pyrax
 
-pip -q install pyrax
+# pip -q install pyrax
