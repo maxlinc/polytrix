@@ -21,9 +21,9 @@
     </build>
   <dependencies>
     <dependency>
-      <groupId>org.apache.jclouds.provider</groupId>
-      <artifactId>rackspace-cloudservers-us</artifactId>
-      <version>1.6.1-incubating</version>
+      <groupId>org.jclouds</groupId>
+      <artifactId>jclouds-all</artifactId>
+      <version>[1.6.0,)</version>
     </dependency>
   </dependencies>
 </project>
