@@ -3,6 +3,7 @@
 import os
 import pyrax
 
+pyrax.set_http_debug(True)
 pyrax.set_setting("identity_type", "rackspace")
 # Create the identity object
 pyrax._create_identity()
@@ -23,6 +24,7 @@ print "Networks:", cnw.list()
 
 # Cloud Files API - List Files
 cf = pyrax.cloudfiles
+cf.http_log_debug = True
 print "Cloud Files Containers:", cf.list_containers()
 
 # Cloud Load Balancers
