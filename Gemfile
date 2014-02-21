@@ -16,4 +16,5 @@ gem "highline"
 gem "hashie"
 gem "parallel_tests"
 gem "rake-notes"
+gem "mixlib-shellout"
 

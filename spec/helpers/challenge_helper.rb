@@ -1,5 +1,6 @@
 require 'tempfile'
 require 'rbconfig'
+require 'mixlib/shellout'
 
 class ChallengeNotImplemented < StandardError
   def initialize challenge
@@ -19,6 +20,24 @@ class ChallengeRunnerFactory
 end
 
 class ChallengeRunner
+  def interactive?
+    ENV['INTERACTIVE']
+  end
+
+  def show_output?
+    ENV['SHOW_OUTPUT']
+  end
+
+  def run_command command
+    if interactive? # allows use of pry, code.interact, etc.
+      system command
+    else # better error messages and interrupt handling
+      challenge_process = Mixlib::ShellOut.new(command)
+      challenge_process.live_stream = $stdout if show_output?
+      challenge_process.run_command
+      challenge_process.error!
+    end
+  end
   def setup_env_vars vars
     require 'fileutils'
     FileUtils.mkdir_p 'tmp'
@@ -43,7 +62,7 @@ class ChallengeRunner
     challenge_script = find_challenge_file challenge
     raise ChallengeNotImplemented, challenge if challenge_script.nil?
     env_file = setup_env_vars vars
-    system execute_challenge_command(env_file, challenge_script)
+    run_command challenge_command(env_file, challenge_script)
   end
 
   def find_challenge_file challenge
@@ -57,7 +76,7 @@ class LinuxChallengeRunner < ChallengeRunner
     "sh"
   end
 
-  def execute_challenge_command env_file, challenge_script
+  def challenge_command env_file, challenge_script
     if File.exists? "scripts/wrapper"
       ". #{env_file} && scripts/wrapper #{challenge_script}"
     else
@@ -76,7 +95,7 @@ class WindowsChallengeRunner < ChallengeRunner
     "ps1"
   end
 
-  def execute_challenge_command env_file, challenge_script
+  def challenge_command env_file, challenge_script
     # I don't know a simple powershell replacement for &&
     # See http://stackoverflow.com/questions/2416662/what-are-the-powershell-equivalent-of-bashs-and-operators
     if File.exists? "scripts/wrapper.ps1"

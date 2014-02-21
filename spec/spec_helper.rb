@@ -47,8 +47,7 @@ def execute_challenge sdk, challenge, vars
       begin
         Bundler.with_clean_env do
           Dir.chdir sdk_dir do
-            success = challenge_runner.run_challenge challenge, vars
-            expect(success).to be_true, "#{sdk} failed to successfully execute the #{challenge} challenge"
+            challenge_runner.run_challenge challenge, vars
           end
         end
       rescue ChallengeNotImplemented => e
