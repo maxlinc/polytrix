@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
 require 'fog'
-require './pacto_helper'
 Excon.defaults[:ssl_verify_peer] = false
 
 service = Fog::Compute.new({

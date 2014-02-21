@@ -3,7 +3,6 @@
 # This example demonstrates creating a server with the Rackpace Open Cloud
 
 require 'fog'
-require './pacto_helper'
 
 service = Fog::Compute.new({
     :provider             => 'rackspace',
