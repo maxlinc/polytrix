@@ -18,19 +18,18 @@ class PactoServer < Goliath::API
       env.logger.info 'forwarding to: ' + uri
       safe_headers = headers.reject {|k,v| ['host', 'content-length'].include? k.downcase }
       env.logger.debug "filtered headers: #{safe_headers}"
-      if env['REQUEST_METHOD'] == 'POST'
-        env.logger.debug "sending post request"
-        body = env[Goliath::Request::RACK_INPUT].read
-        env.logger.debug "sending body: #{body}"
-        resp = EM::Synchrony.sync EventMachine::HttpRequest.new(uri).apost(head: safe_headers, body: body)
-      elsif env['REQUEST_METHOD'] == 'HEAD'
-        env.logger.debug "sending head request"
-        resp = EM::Synchrony.sync EventMachine::HttpRequest.new(uri).ahead(head: safe_headers, query: env.params)
-      else
-        env.logger.debug "sending get request"
-
-        resp = EM::Synchrony.sync EventMachine::HttpRequest.new(uri).aget(head: safe_headers, query: env.params)
+      request_body = env[Goliath::Request::RACK_INPUT].read
+      request_method = env['REQUEST_METHOD'].downcase
+      em_request_method = "a#{request_method}".to_sym
+      em_request_options = {:head => safe_headers, :query => env.params}
+      env.logger.debug "sending #{request_method} request"
+      unless request_body.empty?
+        em_request_options.merge!({:body => request_body})
+        env.logger.debug "with request body"
       end
+
+      resp = EM::Synchrony.sync EventMachine::HttpRequest.new(uri).send(em_request_method, em_request_options)
+      
       code = resp.response_header.http_status
       safe_response_headers = normalize_headers(resp.response_header).reject {|k,v| ['connection', 'content-encoding', 'content-length', 'transfer-encoding'].include? k.downcase}
       body = proxy_rewrite(resp.response)
@@ -38,6 +37,7 @@ class PactoServer < Goliath::API
       env.logger.debug "response body: #{body}"
       [code, safe_response_headers, body]
     rescue => e
+      env.logger.warn "responding with error: #{e.message}"
       [500, {}, e.message]
     end
   end

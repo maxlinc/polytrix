@@ -1,13 +1,22 @@
 require 'pacto'
 
+def token_map
+  if File.readable? '.tokens.json'
+    MultiJson.load(File.read '.tokens.json')
+  else
+    {}
+  end
+end
+
 config[:port] = port
 contracts_path = options[:directory] || File.expand_path('contracts', Dir.pwd)
-Pacto.configure do |config|
-  config.contracts_path = contracts_path
-  config.strict_matchers = options[:strict]
-  config.generator_options = {
+Pacto.configure do |pacto_config|
+  pacto_config.logger = logger
+  pacto_config.contracts_path = contracts_path
+  pacto_config.strict_matchers = options[:strict]
+  pacto_config.generator_options = {
     :schema_version => :draft3,
-    :token_map => MultiJson.load(File.read '.tokens.json')
+    :token_map => token_map
   }
 end
 
