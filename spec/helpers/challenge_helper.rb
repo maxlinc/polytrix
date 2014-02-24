@@ -53,7 +53,8 @@ class ChallengeRunner
     @standard_env_vars ||= {
       'RAX_USERNAME'   => ENV['RAX_USERNAME'],
       'RAX_API_KEY'    => ENV['RAX_API_KEY'],
-      'RAX_REGION'     => ENV['RAX_REGION'] || %w{DFW ORD IAD SYD HKG}.sample, # omitted LON since it requires UK account
+      'RAX_REGION'     => 'ORD', # FIXME: stubbing multiple hosts
+      # 'RAX_REGION'     => ENV['RAX_REGION'] || %w{DFW ORD IAD SYD HKG}.sample, # omitted LON since it requires UK account
       'RAX_AUTH_URL'   => PACTO_SERVER || 'https://identity.api.rackspacecloud.com'
     }
   end

@@ -14,6 +14,10 @@ RSpec.configure do |c|
   c.before(:each)  { Pacto.clear! }
 end
 
+def generate?
+  ENV['PACTO_GENERATE'] == 'true'
+end
+
 def with_pacto
   puts "Starting Pacto on port #{pacto_port}"
   with_api(PactoServer, {
@@ -21,7 +25,7 @@ def with_pacto
     :log_file => 'pacto.log',
     :config => 'pacto/config/pacto_server.rb',
     :live => true,
-    # :generate => true,
+    :generate => generate?,
     :verbose => true,
     :validate => true,
     :directory => File.join(Dir.pwd, 'pacto', 'contracts'),
