@@ -41,24 +41,19 @@ end
 def execute_challenge sdk, challenge, vars
   sdk_dir = "sdks/#{sdk}"
   pending "#{sdk} is not setup" unless File.directory? sdk_dir
-  with_pacto do
-    success = false
-    EM::Synchrony.defer do
-      begin
-        Bundler.with_clean_env do
-          Dir.chdir sdk_dir do
-            challenge_runner.run_challenge challenge, vars
-          end
+  with_pacto(pacto_options) do
+    begin
+      Bundler.with_clean_env do
+        Dir.chdir sdk_dir do
+          challenge_runner.run_challenge challenge, vars
         end
-      rescue ChallengeNotImplemented => e
-        pending e.message
-      rescue ThreadError => e
-        puts "ThreadError detected: #{e.message}"
-        puts "ThreadError backtrace: #{e.backtrace}"
-        raise e
       end
-      EM.stop
+    rescue ChallengeNotImplemented => e
+      pending e.message
+    rescue ThreadError => e
+      puts "ThreadError detected: #{e.message}"
+      puts "ThreadError backtrace: #{e.backtrace}"
+      raise e
     end
-    yield success
   end
 end
