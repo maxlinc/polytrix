@@ -5,31 +5,35 @@ use OpenCloud\Rackspace;
 $endpoint = getenv('RAX_AUTH_URL') . '/v2.0/';
 $credentials = array(
     'username' => getenv('RAX_USERNAME'),
-    'apiKey' => getenv('RAX_API_KEY')
+    'apiKey'   => getenv('RAX_API_KEY')
 );
 
 $rackspace = new Rackspace($endpoint, $credentials);
+$compute   = $rackspace->computeService('cloudServersOpenStack', getenv('RAX_REGION'));
 
-$compute = $rackspace->computeService('cloudServersOpenStack', getenv('RAX_REGION'));
+$image_id  = getenv('SERVER1_IMAGE');
+$flavor_id = getenv('SERVER1_FLAVOR');
 
-$server = $compute->Server();
-$server->name = 'php-opencloud server';
-$flavor_id = intval(getenv('SERVER1_FLAVOR'));
-
-$server->image = $compute->Image(getenv('SERVER1_IMAGE'));
-$server->flavor = $compute->Flavor($flavor_id);
-
+// Create a server in DFW
+$server    = $compute->Server();
 // create it
 print("Creating server...");
-$server->Create();
+$server->create(array(
+    'name' => 'php-opencloud server',
+    // Using the image ID from ORD
+    'image' => $compute->image($image_id),
+    // And a flavor that's too small
+    'flavor' => $compute->flavor($flavor_id)
+));
 print("requested, now waiting...\n");
-print("ID=".$server->id."...\n");
+print("ID=" . $server->id . "...\n");
 $server->WaitFor("ACTIVE", 600, 'dot');
 print("done\n");
 exit(0);
 
-function dot($server) {
-  printf("%s %3d%%\n", $server->status, $server->progress);
+function dot($server)
+{
+    printf("%s %3d%%\n", $server->status, $server->progress);
 }
 
 ?>
