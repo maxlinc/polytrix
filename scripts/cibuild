@@ -1,2 +1,4 @@
 #!/bin/bash
-bundle exec rake -Ispec bootstrap parallel_spec documentation:dashboard
+#bundle exec rake -Ispec bootstrap parallel_spec documentation:dashboard
+bundle exec rake spec
+bundle exec rspec spec/phase2/feature_coverage_report.rb
