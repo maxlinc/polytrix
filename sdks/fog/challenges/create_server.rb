@@ -12,7 +12,7 @@ service = Fog::Compute.new({
 })
 
 server = service.servers.create :name => 'Fog Server',
-                       :flavor_id => ENV['SERVER1_FLAVOR'].to_i,
+                       :flavor_id => ENV['SERVER1_FLAVOR'],
                        :image_id => ENV['SERVER1_IMAGE']
 
 puts "\n"

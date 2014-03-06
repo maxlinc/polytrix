@@ -15,6 +15,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision :shell, :inline => "curl -L https://opscode.com/chef/install.sh | bash"
 
+  config.vm.define :polytrix do |vm|
+  end
+
   config.vm.provider :rackspace do |rs, override|
     override.vm.box = "dummy"
     override.ssh.private_key_path = '~/.ssh/id_rsa'
