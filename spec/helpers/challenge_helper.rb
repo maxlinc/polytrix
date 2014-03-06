@@ -66,9 +66,9 @@ class ChallengeRunner
     run_command challenge_command(env_file, challenge_script)
   end
 
-  def find_challenge_file challenge
-    Dir.glob("challenges/#{challenge}.*", File::FNM_CASEFOLD).first ||
-      Dir.glob("challenges/#{challenge.gsub('_','')}.*", File::FNM_CASEFOLD).first
+  def find_challenge_file challenge, basedir = Dir.pwd
+    Dir.glob("#{basedir}/challenges/#{challenge}.*", File::FNM_CASEFOLD).first ||
+      Dir.glob("#{basedir}/challenges/#{challenge.gsub('_','')}.*", File::FNM_CASEFOLD).first
   end
 end
 

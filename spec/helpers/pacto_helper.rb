@@ -7,6 +7,7 @@ def pacto_port
   @pacto_port ||= 9900 + ENV['TEST_ENV_NUMBER'].to_i
 end
 
+COVERAGE_FILE = 'reports/api_coverage.yaml'
 PACTO_SERVER = "http://identity.api.rackspacecloud.dev:#{pacto_port}" unless ENV['NO_PACTO']
 
 RSpec.configure do |c|
@@ -33,4 +34,12 @@ def with_pacto
   }) do
     yield
   end
+  save_coverage
+end
+
+def save_coverage
+  data = File.exists?(COVERAGE_FILE) ? YAML::load(File.read(COVERAGE_FILE)) : {}
+  validations = Pacto::ValidationRegistry.instance.validations
+  data[example.full_description] = validations.reject{|v| v.contract.nil?}.map{|v| v.contract.name }
+  File.open(COVERAGE_FILE, 'w') {|f| f.write data.to_yaml }
 end
