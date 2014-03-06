@@ -13,7 +13,7 @@ describe 'Cloud Files', :markdown =>
   Use the SDK to list your existing cloud Cloud Files containers.
   """, vars, [] do |success|
     # Assertions
-    expect(Pacto).to have_validated(:get, /\/v1\/[\w-]+/) #.twice
+    expect(Pacto).to have_validated_service('Cloud Files', 'List Containers')
     expect(Pacto).to_not have_failed_validations
     expect(Pacto).to_not have_unmatched_requests
   end
@@ -21,10 +21,9 @@ describe 'Cloud Files', :markdown =>
   validate_challenge "Get object metadata", """
   Now, use the SDK to retrieve a file from Cloud Files.
   """, env, [] do
-    # Will use Service nicknames or nicer URI templates in the future
-    uri_pattern = /\/v1\/[\w-]+\/[\w-]+\/[\w-]+/
-    expect(Pacto).to have_validated(:head, uri_pattern)
-    expect(Pacto).to_not have_validated(:get, uri_pattern)
+    expect(Pacto).to have_validated_service('Cloud Files', 'Get Object Metadata')
+    # Not that we're validated it did *not* get the data
+    expect(Pacto).to_not have_validated('Cloud Files', 'Get Object Data')
   end
 
   validate_challenge "Upload a single file", """

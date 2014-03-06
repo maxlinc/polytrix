@@ -27,10 +27,11 @@ end
 
 if options[:validate]
   Pacto.validate! if options[:validate]
-  Dir["#{contracts_path}/*"].each do |host_dir|
-    host = File.basename host_dir
-    Pacto.load_contracts(host_dir, "https://#{host}")
-  end
+  # Dir["#{contracts_path}/*"].each do |host_dir|
+  #   host = File.basename host_dir
+  #   Pacto.load_contracts(host_dir, "https://#{host}")
+  # end
+  contracts = Pacto::Extensions::Loaders::URIMapLoader.load(File.absolute_path('pacto/rackspace_uri_map.yaml'))
 end
 
 if options[:live]

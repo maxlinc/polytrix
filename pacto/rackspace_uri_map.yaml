@@ -1,0 +1,160 @@
+---
+# Provides a simple map of request patterns to service names,
+# so Pacto can do basic validation that services are called
+# and testing of services before a complete contract is available.
+services:
+  Identity:
+    servers:
+      - identity.api.rackspacecloud.com
+    services:
+      # contract is available
+      Authenticate:
+        method: post
+        uriTemplate: /v2.0/tokens
+  Cloud Servers:
+    servers:
+      - syd.servers.api.rackspacecloud.com
+      - iad.servers.api.rackspacecloud.com
+      - ord.servers.api.rackspacecloud.com
+      - dfw.servers.api.rackspacecloud.com
+      - hkg.servers.api.rackspacecloud.com
+    services:
+      Create Server:
+        method: post
+        uriTemplate: /v2/{tenant_id}/servers
+        responseStatusCode: 202
+      Get Server Details:
+        method: get
+        uriTemplate: /v2/{tenant_id}/servers/{id}
+      Attach Volume:
+        method: post
+        uriTemplate: /v2/{tenant_id}/servers/{server_id}/os-volume_attachments
+        # Documented code is 202, but I'm receiving 200
+        responseStatusCode: 200
+      List Extensions:
+        method: get
+        uriTemplate: /v2/{tenant_id}/extensions
+      Get Image Details:
+        method: get
+        uriTemplate: /v2/{tenant_id}/images/{image_id}
+      Get Flavor Details:
+        method: get
+        uriTemplate: /v2/{tenant_id}/flavors/{flavor_id}
+  Cloud Files:
+    servers:
+      - snet-storage101.dfw1.clouddrive.com
+      - storage101.dfw1.clouddrive.com
+      - snet-storage101.iad3.clouddrive.com
+      - storage101.iad3.clouddrive.com
+      - snet-storage101.ord1.clouddrive.com
+      - snet-storage101.syd2.clouddrive.com
+      - storage101.syd2.clouddrive.com
+      - snet-storage101.hkg1.clouddrive.com
+      - storage101.hkg1.clouddrive.com
+    services:
+      List Containers:
+        method: get
+        # uriTemplate only supports RFC 6570 level 0
+        # uriTemplate: v1/{account}{?limit,marker,end_marker,format}
+        # Trailing '/' is required, because SDKs send /?format...
+        uriTemplate: /v1/{account}/
+      Get Object Metadata:
+        method: head
+        uriTemplate: /v1/{account}/{container}/{object}
+  CDN:
+    servers:
+      - cdn1.clouddrive.com
+      - cdn4.clouddrive.com
+      - cdn2.clouddrive.com
+      - cdn5.clouddrive.com
+      - cdn6.clouddrive.com
+    services:
+  Load Balancers:
+    servers:
+      - syd.loadbalancers.api.rackspacecloud.com
+      - iad.loadbalancers.api.rackspacecloud.com
+      - ord.loadbalancers.api.rackspacecloud.com
+      - dfw.loadbalancers.api.rackspacecloud.com
+      - hkg.loadbalancers.api.rackspacecloud.com
+    services:
+      Create:
+        method: post
+        uriTemplate: /loadbalancers
+      Add Node:
+        method: post
+        uriTemplate: /loadbalancers/{loadBalancerId}/nodes
+  Block Storage:
+    # Note that OpenStack docs currently have v2, Rackspace is v1
+    servers:
+      - syd.blockstorage.api.rackspacecloud.com
+      - iad.blockstorage.api.rackspacecloud.com
+      - ord.blockstorage.api.rackspacecloud.com
+      - dfw.blockstorage.api.rackspacecloud.com
+      - hkg.blockstorage.api.rackspacecloud.com
+    services:
+      Create Volume:
+        method: post
+        uriTemplate: /v1/{tenant_id}/volumes
+  Cloud Database:
+    servers:
+      - syd.databases.api.rackspacecloud.com
+      - iad.databases.api.rackspacecloud.com
+      - ord.databases.api.rackspacecloud.com
+      - dfw.databases.api.rackspacecloud.com
+      - hkg.databases.api.rackspacecloud.com
+    services:
+      Create Instance:
+        method: post
+        uriTemplate: /instances
+      Create Database:
+        method: post
+        uriTemplate: /instances/{instanceId}/databases
+  DNS:
+    servers:
+      - dns.api.rackspacecloud.com
+    services:
+      Create Domain:
+        method: post
+        uriTemplate: /domains
+      Add Records:
+        method: post
+        uriTemplate: /domains/{domainId}/records
+  Monitoring:
+    servers:
+      - monitoring.api.rackspacecloud.com
+    services:
+  Backups:
+    servers:
+      - backup.api.rackspacecloud.com
+      - syd.backup.api.rackspacecloud.com
+      - iad.backup.api.rackspacecloud.com
+      - ord.backup.api.rackspacecloud.com
+      - dfw.backup.api.rackspacecloud.com
+      - hkg.backup.api.rackspacecloud.com
+    services:
+      Create Backup Configuration:
+        method: post
+        uriTemplate: /backup-configuration
+      Start or Stop a Backup Manually:
+        method: post
+        uriTemplate: /backup/action-requested
+  Autoscale:
+    servers:
+      - syd.autoscale.api.rackspacecloud.com
+      - iad.autoscale.api.rackspacecloud.com
+      - ord.autoscale.api.rackspacecloud.com
+      - dfw.autoscale.api.rackspacecloud.com
+      - hkg.autoscale.api.rackspacecloud.com
+    services:
+  Cloud Queues:
+    servers:
+      - snet-hkg.queues.api.rackspacecloud.com
+      - hkg.queues.api.rackspacecloud.com
+      - snet-iad.queues.api.rackspacecloud.com
+      - iad.queues.api.rackspacecloud.com
+      - snet-dfw.queues.api.rackspacecloud.com
+      - dfw.queues.api.rackspacecloud.com
+      - snet-syd.queues.api.rackspacecloud.com
+      - syd.queues.api.rackspacecloud.com
+      - snet-ord.queues.api.rackspacecloud.com
+      - ord.queues.api.rackspacecloud.com
