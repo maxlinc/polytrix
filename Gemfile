@@ -3,7 +3,7 @@ source "https://rubygems.org"
 
 gem "pacto", :git => 'https://github.com/thoughtworks/pacto', :branch => 'master'
 gem "webmock", :git => 'https://github.com/maxlinc/webmock', :branch => 'addressable'
-gem "fog"
+gem "fog", '~> 1.19'
 gem "vcr"
 gem "goliath"
 gem "excon"
