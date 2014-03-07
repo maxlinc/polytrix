@@ -4,7 +4,8 @@ var pkgcloud = require('pkgcloud');
 var client = pkgcloud.providers.rackspace.compute.createClient({
   username: process.env.RAX_USERNAME,
   apiKey: process.env.RAX_API_KEY,
-  authUrl: process.env.RAX_AUTH_URL
+  authUrl: process.env.RAX_AUTH_URL,
+  region: process.env.RAX_REGION
 });
 client.auth(function(err) {
   if (err) {
