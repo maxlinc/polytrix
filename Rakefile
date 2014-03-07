@@ -7,7 +7,7 @@ require 'json'
 NOT_SETUP = "You need to set RAX_USERNAME and RAX_API_KEY env vars in order to run tests"
 
 RSpec::Core::RakeTask.new('spec')
-task :default => [:bootstrap, :spec]
+task :default => :spec
 
 desc 'Run all the SDK tests'
 task :spec => [:check_setup]

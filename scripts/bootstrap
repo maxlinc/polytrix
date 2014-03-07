@@ -2,6 +2,6 @@
 gem install bundler --no-ri --no-rdoc
 rbenv rehash
 bundle update
-
 npm install git+https://github.com/jashkenas/docco.git#master
+bundle exec rake bootstrap
 
