@@ -16,6 +16,10 @@ RSpec.configure do |c|
   c.treat_symbols_as_metadata_keys_with_true_values = true
 end
 
+def challenge_editor
+  ENV['CHALLENGE_EDITOR']
+end
+
 def challenge_runner
   @challenge_runner ||= ChallengeRunnerFactory.createRunner
 end
@@ -34,7 +38,7 @@ def validate_challenge challenge, description, environment, services, &block
         begin
           sdk_dir = "sdks/#{sdk}"
           pending "#{sdk} is not setup" unless File.directory? sdk_dir
-          raise ChallengeNotImplemented, challenge if challenge_runner.find_challenge_file(challenge_file, sdk_dir).nil?
+          challenge_runner.find_challenge! challenge_file, sdk_dir
           execute_challenge sdk_dir, challenge_file, environment do
             instance_eval &block
           end
@@ -63,4 +67,8 @@ def execute_challenge sdk_dir, challenge, vars
     end
     yield success
   end
+end
+
+def launch_editor challenge_file
+  system "#{challenge_editor} #{challenge_file}"
 end
