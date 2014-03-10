@@ -8,11 +8,13 @@ require 'helpers/cloudfiles_helper'
 
 SDKs = Dir['sdks/*'].map{|sdk| File.basename sdk}
 
-@challenge_runner = ChallengeRunnerFactory.createRunner
-
 RSpec.configure do |c|
   c.matrix_implementors = SDKs
   c.treat_symbols_as_metadata_keys_with_true_values = true
+end
+
+def challenge_editor
+  ENV['CHALLENGE_EDITOR']
 end
 
 def challenge_runner
@@ -30,35 +32,40 @@ def validate_challenge challenge, description, environment, services, &block
     :services => services do
     SDKs.each do |sdk|
       it sdk, sdk.to_sym, "data-challenge" => challenge_file, "data-sdk" => sdk do
-        execute_challenge sdk, challenge_file, environment do
-          instance_eval &block
+        begin
+          sdk_dir = "sdks/#{sdk}"
+          pending "#{sdk} is not setup" unless File.directory? sdk_dir
+          challenge_runner.find_challenge! challenge_file, sdk_dir
+          execute_challenge sdk_dir, challenge_file, environment do
+            instance_eval &block
+          end
+        rescue ChallengeNotImplemented => e
+          pending e.message
+        rescue ThreadError => e
+          puts "ThreadError detected: #{e.message}"
+          puts "ThreadError backtrace: #{e.backtrace}"
+          raise e
         end
       end
     end
   end
 end
 
-def execute_challenge sdk, challenge, vars
-  sdk_dir = "sdks/#{sdk}"
-  pending "#{sdk} is not setup" unless File.directory? sdk_dir
+def execute_challenge sdk_dir, challenge, vars
   with_pacto do
     success = false
     EM::Synchrony.defer do
-      begin
-        Bundler.with_clean_env do
-          Dir.chdir sdk_dir do
-            challenge_runner.run_challenge challenge, vars
-          end
+      Bundler.with_clean_env do
+        Dir.chdir sdk_dir do
+          challenge_runner.run_challenge challenge, vars
         end
-      rescue ChallengeNotImplemented => e
-        pending e.message
-      rescue ThreadError => e
-        puts "ThreadError detected: #{e.message}"
-        puts "ThreadError backtrace: #{e.backtrace}"
-        raise e
       end
       EM.stop
     end
     yield success
   end
+end
+
+def launch_editor challenge_file
+  system "#{challenge_editor} #{challenge_file}"
 end

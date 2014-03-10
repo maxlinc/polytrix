@@ -20,6 +20,14 @@ class ChallengeRunnerFactory
 end
 
 class ChallengeRunner
+  def editor_enabled?
+    !challenge_editor.nil?
+  end
+
+  def challenge_editor
+    ENV['CHALLENGE_EDITOR']
+  end
+
   def interactive?
     ENV['INTERACTIVE']
   end
@@ -60,15 +68,24 @@ class ChallengeRunner
   end
 
   def run_challenge challenge, vars
-    challenge_script = find_challenge_file challenge
+    challenge_script = find_challenge! challenge
     raise ChallengeNotImplemented, challenge if challenge_script.nil?
     env_file = setup_env_vars vars
     run_command challenge_command(env_file, challenge_script)
   end
 
-  def find_challenge_file challenge
-    Dir.glob("challenges/#{challenge}.*", File::FNM_CASEFOLD).first ||
-      Dir.glob("challenges/#{challenge.gsub('_','')}.*", File::FNM_CASEFOLD).first
+  def find_challenge! challenge, basedir = Dir.pwd
+    challenge_file = Dir.glob("#{basedir}/challenges/#{challenge}.*", File::FNM_CASEFOLD).first ||
+      Dir.glob("#{basedir}/challenges/#{challenge.gsub('_','')}.*", File::FNM_CASEFOLD).first
+    challenge_file = edit_challenge("#{basedir}/challenges/#{challenge}") if challenge_file.nil? && editor_enabled?
+    raise ChallengeNotImplemented, challenge if challenge_file.nil? or !File.readable?(challenge_file)
+    challenge_file
+  end
+
+  def edit_challenge challenge, suffix = '.php'
+    challenge_file = "#{challenge}#{suffix}"
+    system "#{challenge_editor} #{challenge_file}"
+    File.absolute_path challenge_file
   end
 end
 
