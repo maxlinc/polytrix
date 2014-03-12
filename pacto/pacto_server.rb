@@ -18,7 +18,7 @@ class PactoServer < Goliath::API
     host = env['HTTP_HOST'].gsub(".dev:#{port}", '.com')
     headers = env['client-headers']
     begin
-      uri = "https://#{host}#{path}"
+      uri = normalize_uri(env, "https://#{host}#{path}")
       env.logger.info 'forwarding to: ' + uri
       safe_headers = headers.reject {|k,v| ['host', 'content-length', 'transfer-encoding'].include? k.downcase }
       env.logger.debug "filtered headers: #{safe_headers}"
@@ -47,6 +47,14 @@ class PactoServer < Goliath::API
       env.logger.warn "responding with error: #{e.message}"
       [500, {}, e.message]
     end
+  end
+
+  def normalize_uri env, uri
+    if uri[-1] == '/'
+      env.logger.warn 'Normalizing uri with trailing /, this may be detected as a consistency issue in the future'
+      uri = uri[0..-2]
+    end
+    uri
   end
 
   def normalize_headers headers
