@@ -85,7 +85,8 @@ class ChallengeRunner
   def edit_challenge challenge
     suffix = infer_suffix File.dirname(challenge)
     challenge_file = "#{challenge}#{suffix}"
-    system "#{challenge_editor} #{challenge_file}"
+    puts "Would you like to create #{challenge_file} (y/n)? "
+    system "#{challenge_editor} #{challenge_file}" if $stdin.gets.strip == 'y'
     File.absolute_path challenge_file
   end
 
