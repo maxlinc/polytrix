@@ -16,10 +16,6 @@ RSpec.configure do |c|
   c.treat_symbols_as_metadata_keys_with_true_values = true
 end
 
-def challenge_editor
-  ENV['CHALLENGE_EDITOR']
-end
-
 def challenge_runner
   @challenge_runner ||= ChallengeRunnerFactory.createRunner
 end
@@ -67,8 +63,4 @@ def execute_challenge sdk_dir, challenge, vars
     end
     yield success
   end
-end
-
-def launch_editor challenge_file
-  system "#{challenge_editor} #{challenge_file}"
 end

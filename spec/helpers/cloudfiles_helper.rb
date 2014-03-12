@@ -1,20 +1,21 @@
 require 'fog'
 
-def build type
+def build type, env = {}
   case type
   when :file
-    build_file
+    build_file env
   else
     raise ArgumentError.new "Don't know how to be a #{type}"
   end
 end
 
-def build_file
+def build_file env
   without_webmock do
     service = Fog::Storage.new({
       :provider             => 'rackspace',
-      :rackspace_username   => ENV['RAX_USERNAME'],
-      :rackspace_api_key    => ENV['RAX_API_KEY'],
+      :rackspace_username   => env['RAX_USERNAME'],
+      :rackspace_api_key    => env['RAX_API_KEY'],
+      :rackspace_region     => env['RAX_REGION']
     })
 
     directory = service.directories.create :key => 'asdf'

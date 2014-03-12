@@ -44,7 +44,8 @@ class Pacto::Extensions::Loaders::URIMapLoader < Pacto::Extensions::Loaders::Yam
     end
 
     def convert_template path
-      path.gsub(/{(\w+)}/, ':\1') if path
+      Addressable::Template.new(path) if path
+      # path.gsub(/{(\w+)}/, ':\1') if path
     end
   end
 end

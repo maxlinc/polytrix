@@ -2,8 +2,9 @@ describe 'Cloud Files', :markdown =>
   """
   In this section we'll cover Cloud Files.  We'll start with a few simple services.  In the final example for this section, we will upload static assets to a CDN-enabled Cloud Files container that will be used by our sample application.
   """ do
-  file = build :file
-  env = standard_env_vars.merge(
+  env = standard_env_vars
+  file = build :file, env
+  env.merge!(
     'TEST_DIRECTORY' => file.directory.key,
     'TEST_FILE' => file.key
   )

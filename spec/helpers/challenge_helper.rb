@@ -82,10 +82,16 @@ class ChallengeRunner
     challenge_file
   end
 
-  def edit_challenge challenge, suffix = '.php'
+  def edit_challenge challenge
+    suffix = infer_suffix File.dirname(challenge)
     challenge_file = "#{challenge}#{suffix}"
     system "#{challenge_editor} #{challenge_file}"
     File.absolute_path challenge_file
+  end
+
+  def infer_suffix source_dir
+    # FIXME: Should be configurable or have a better way to infer
+    Dir["#{source_dir}/**/*.*"].map{|f| File.extname f}.first
   end
 end
 
