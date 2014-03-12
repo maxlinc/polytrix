@@ -19,21 +19,24 @@ services:
       - dfw.servers.api.rackspacecloud.com
       - hkg.servers.api.rackspacecloud.com
     services:
+      List Servers:
+        method: get
+        uriTemplate: /v2/{tenant_id}/servers/detail{?limit}
       Create Server:
         method: post
-        uriTemplate: /v2/{tenant_id}/servers
+        uriTemplate: /v2/{tenant_id}/servers{?limit}
         responseStatusCode: 202
       Get Server Details:
         method: get
         uriTemplate: /v2/{tenant_id}/servers/{id}
       Attach Volume:
         method: post
-        uriTemplate: /v2/{tenant_id}/servers/{server_id}/os-volume_attachments
+        uriTemplate: /v2/{tenant_id}/servers/{server_id}/os-volume_attachments{?limit}
         # Documented code is 202, but I'm receiving 200
         responseStatusCode: 200
       List Extensions:
         method: get
-        uriTemplate: /v2/{tenant_id}/extensions
+        uriTemplate: /v2/{tenant_id}/extensions{?limit}
       Get Image Details:
         method: get
         uriTemplate: /v2/{tenant_id}/images/{image_id}
@@ -57,11 +60,12 @@ services:
         method: get
         # uriTemplate only supports RFC 6570 level 0
         # uriTemplate: v1/{account}{?limit,marker,end_marker,format}
-        # Trailing '/' is required, because SDKs send /?format...
-        uriTemplate: /v1/{account}/
+        # Fog and php-opencloud require a trailing '/' before '?', which works
+        # but is inconsistent with documentation
+        uriTemplate: /v1/{account}{?format,limit}
       Get Object Metadata:
         method: head
-        uriTemplate: /v1/{account}/{container}/{object}
+        uriTemplate: /v1/{account}/{container}/{object}{?format}
   CDN:
     servers:
       - cdn1.clouddrive.com
@@ -86,7 +90,7 @@ services:
         uriTemplate: /loadbalancers/{loadBalancerId}/nodes
       List Load Balancers:
         method: get
-        uriTemplate: /v1.0/{token_id}/loadbalancers
+        uriTemplate: /v1.0/{token_id}/loadbalancers{.format}{?limit}
   Block Storage:
     # Note that OpenStack docs currently have v2, Rackspace is v1
     servers:
@@ -101,7 +105,7 @@ services:
         uriTemplate: /v1/{tenant_id}/volumes
       List Volumes:
         method: get
-        uriTemplate: /v1/{token_id}/volumes
+        uriTemplate: /v1/{token_id}/volumes{?limit}
   Cloud Database:
     servers:
       - syd.databases.api.rackspacecloud.com
@@ -118,7 +122,7 @@ services:
         uriTemplate: /instances/{instanceId}/databases
       List Instances:
         method: get
-        uriTemplate: /v1.0/{token_id}/instances
+        uriTemplate: /v1.0/{token_id}/instances{?limit}
   DNS:
     servers:
       - dns.api.rackspacecloud.com
@@ -131,7 +135,7 @@ services:
         uriTemplate: /domains/{domainId}/records
       List Domains:
         method: get
-        uriTemplate: /v1.0/{token_id}/domains
+        uriTemplate: /v1.0/{token_id}/domains{?limit}
   Monitoring:
     servers:
       - monitoring.api.rackspacecloud.com
@@ -161,7 +165,7 @@ services:
     services:
       List Groups:
         method: get
-        uriTemplate: /v1.0/{token_id}/groups
+        uriTemplate: /v1.0/{token_id}/groups{?limit}
   Cloud Queues:
     servers:
       - snet-hkg.queues.api.rackspacecloud.com
@@ -177,7 +181,7 @@ services:
     services:
       List Queues:
         method: get
-        uriTemplate: /v1/{token_id}/queues
+        uriTemplate: /v1/{token_id}/queues{?limit}
         responseStatusCode: 204
   Cloud Networks:
     servers:
@@ -189,7 +193,7 @@ services:
     services:
       List Networks:
         method: get
-        uriTemplate: /v2/{token_id}/os-networksv2
+        uriTemplate: /v2/{token_id}/os-networksv2{?limit}
   Cloud Monitoring:
     servers:
       - monitoring.api.rackspacecloud.com
