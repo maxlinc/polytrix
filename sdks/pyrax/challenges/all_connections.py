@@ -7,7 +7,7 @@ pyrax.set_http_debug(True)
 pyrax.set_setting("region", os.getenv("RAX_REGION"))
 pyrax.set_setting("identity_type", "rackspace")
 # Create the identity object
-# pyrax._create_identity()
+pyrax._create_identity()
 # Change its endpoint
 pyrax.identity.auth_endpoint = os.getenv('RAX_AUTH_URL') + '/v2.0/'
 
