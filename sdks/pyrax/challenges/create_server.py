@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-# Overcommented to illustrate docco....
-
 import os
 import pyrax
 # [Configure Pyrax](https://github.com/rackspace/pyrax/blob/master/docs/getting_started.md#pyrax-configuration)

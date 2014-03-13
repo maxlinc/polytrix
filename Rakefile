@@ -63,11 +63,9 @@ task :setup do
 end
 
 namespace :documentation do
-  desc 'Generate docco annoted source code'
-  task :docco do
-    # FIXME: This should probably be OS-agnostic ruby...
-    # Possible layouts: -l linear; -l parallel; -l classic
-    system "for sdk in `ls sdks/`; do find sdks/$sdk/challenges -type f | xargs ./node_modules/.bin/docco -l linear -o docs/$sdk; done"
+  desc 'Generate annoted source code'
+  task :annotated do
+    system "groc"
   end
 
   task :copy_src do
@@ -79,7 +77,7 @@ namespace :documentation do
   end
 
   desc 'Generate the Feature Matrix dashboard'
-  task :dashboard => [:docco, :copy_src] do
+  task :dashboard => [:annotated, :copy_src] do
     $: << 'spec'
     require  'spec_helper'
     require "matrix_formatter/assets/generator"

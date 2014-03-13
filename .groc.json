@@ -1,0 +1,7 @@
+{
+  "glob": ["sdks/*/challenges/**.*"],
+  "strip": ["sdks"],
+  "github": false,
+  "index": "samples/samples.rb",
+  "out": "docs/groc"
+}
