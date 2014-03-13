@@ -1,3 +1,4 @@
+require 'polytrix'
 require 'rspec/core/rake_task'
 require 'pacto/rake_task'
 require 'rake/notes/rake_task'
@@ -15,6 +16,12 @@ task :spec => [:check_setup]
 desc 'Check pre-requisites'
 task :check_setup do
   fail NOT_SETUP unless ENV['RAX_USERNAME'] && ENV['RAX_API_KEY']
+end
+
+desc 'Remove reports and other generated artifacts'
+task :clean do
+  FileUtils.rm_rf 'docs'
+  FileUtils.rm_rf 'reports'
 end
 
 desc 'Fetch dependencies for each SDK'
@@ -71,15 +78,26 @@ namespace :documentation do
     end
   end
 
+  desc 'Generate the Feature Matrix dashboard'
   task :dashboard => [:docco, :copy_src] do
-    require 'formatter/feature_matrix_dashboard'
+    $: << 'spec'
+    require  'spec_helper'
+    require "matrix_formatter/assets/generator"
+    require "matrix_formatter/formatters/html5_report_writer"
     require 'fileutils'
-    formatter = Formatter::FeatureMatrixDashboard.new 'reports'
-    formatter.merge_results
+
+    asset_generator_options = {
+      :extra_resource_paths => ['lib/formatter/resources']
+    }
+    asset_generator = MatrixFormatter::Assets::Generator.new asset_generator_options
+    asset_generator.generate
+
+    output = File.open("docs/dashboard.html", 'w')
+    formatter = MatrixFormatter::Formatters::HTML5ReportWriter.new output
+    matrix = formatter.parse_results Dir['reports/matrix*.json']
     # puts MultiJson.encode formatter.matrix
-    matrix = formatter.html5_matrix
-    FileUtils.cp_r 'spec/formatter/resources', 'docs/resources'
-    File.open("docs/dashboard.html", 'w') {|f| f.write(matrix) }
+    formatter.write_report
+    output.close
 
     fail "Combined results contain failures - check the reports" if formatter.has_failures?
   end

@@ -61,4 +61,3 @@ module Pacto
 end
 
 # contracts = Pacto::Extensions::Loaders::APIBlueprintLoader.load('pacto/blueprints/otter.json')
-# require 'pry'; binding.pry

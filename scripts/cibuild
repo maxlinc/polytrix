@@ -1,4 +1,3 @@
 #!/bin/bash
-#bundle exec rake -Ispec bootstrap parallel_spec documentation:dashboard
-bundle exec rake
+bundle exec rake cleanup bootstrap parallel_spec documentation:dashboard
 bundle exec rspec spec/phase2/feature_coverage_report.rb --format MatrixFormatter::Formatters::HTMLFormatter --out reports/api_coverage.html

@@ -1,7 +1,12 @@
 require 'spec_helper'
 require 'yaml'
 
-coverage = YAML::load(File.read('reports/api_coverage.yaml'))
+yaml_files = Dir['reports/api_coverage*.yaml']
+coverage = {}
+yaml_files.each do |file|
+  coverage.merge! YAML::load(File.read(file))
+end
+
 data = YAML::load(File.read('pacto/rackspace_uri_map.yaml'))
 data['services'].each do |service_group_name, service_group|
   describe service_group_name do

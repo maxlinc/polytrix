@@ -1,5 +1,6 @@
 # A sample Gemfile
 source "https://rubygems.org"
+gemspec
 
 gem "pacto", :git => 'https://github.com/thoughtworks/pacto', :branch => 'master'
 # uriTemplate support merged  into webmock but not yet released - webmock#334
@@ -12,7 +13,6 @@ gem "goliath"
 gem "excon"
 gem "em-http-request"
 gem "rspec"
-gem "rake"
 gem "pry"
 gem "matrix_formatter", :git => 'https://github.com/maxlinc/matrix_formatter', :branch => 'html5'
 gem "highline"

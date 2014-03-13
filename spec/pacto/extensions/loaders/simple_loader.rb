@@ -52,4 +52,3 @@ end
 
 # Pacto.configuration.strict_matchers = false
 # contracts = Pacto::Extensions::Loaders::URIMapLoader.load('pacto/rackspace_uri_map.yaml')
-# require 'pry'; binding.pry

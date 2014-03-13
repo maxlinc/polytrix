@@ -37,3 +37,12 @@ There is a Vagrantfile in the project.  It uses a "DRG" box.  There isn't curren
 
 ### Running tests
 
+
+
+### (Tenative) Roadmap
+* Use standard, shared images (travis-images? vagrantcloud?)
+* Integrate with travis-build for .travis.yml support
+* Separate Polytrix framework from reference tests
+
+### BHAG
+* Run tests as an interactive course via a browser

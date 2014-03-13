@@ -3,11 +3,15 @@ require 'pacto/rspec'
 require 'pacto_server'
 require 'goliath/test_helper'
 
-def pacto_port
-  @pacto_port ||= 9900 + ENV['TEST_ENV_NUMBER'].to_i
+def test_env_number
+  ENV['TEST_ENV_NUMBER'].to_i
 end
 
-COVERAGE_FILE = 'reports/api_coverage.yaml'
+def pacto_port
+  @pacto_port ||= 9900 + test_env_number
+end
+
+COVERAGE_FILE = "reports/api_coverage#{test_env_number}.yaml"
 PACTO_SERVER = "http://identity.api.rackspacecloud.dev:#{pacto_port}" unless ENV['NO_PACTO']
 
 RSpec.configure do |c|
