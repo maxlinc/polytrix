@@ -8,17 +8,12 @@ $credentials = array(
     'username' => getenv('RAX_USERNAME'),
     'apiKey' => getenv('RAX_API_KEY')
 );
+$directory = getenv('TEST_DIRECTORY');
+$file = getenv('TEST_FILE');
 
-$rackspace = new Rackspace(RACKSPACE_US, $credentials);
+$rackspace = new Rackspace($endpoint, $credentials);
 $cloudFilesService = $rackspace->objectStoreService('cloudFiles', $region);
-$container = $cloudFilesService->getContainer('asdf');
-$object = $container->getPartialObject('asdf');
-$object->getMetadata();
-echo($object->getEtag());
-echo("\n");
-echo($object->getContent());
-echo("\n");
-$object->refresh();
-echo($object->getContent());
+$container = $cloudFilesService->getContainer($directory);
+$object = $container->getPartialObject($file);
 
 ?>
