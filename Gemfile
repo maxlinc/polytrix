@@ -2,7 +2,7 @@
 source "https://rubygems.org"
 gemspec
 
-gem "pacto", :git => 'https://github.com/thoughtworks/pacto', :branch => 'master'
+gem "pacto", :git => 'https://github.com/thoughtworks/pacto', :branch => 'uri_templates'
 # uriTemplate support merged  into webmock but not yet released - webmock#334
 gem "webmock", :git => 'https://github.com/bblimke/webmock', :branch => 'master'
 # optional param fix merged but not yet released - addressable#140
