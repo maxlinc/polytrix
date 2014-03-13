@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e
 bundle exec rake clean bootstrap parallel_spec documentation:dashboard
-bundle exec rspec spec/phase2/feature_coverage_report.rb --format MatrixFormatter::Formatters::HTMLFormatter --out reports/api_coverage.html
+bundle exec rspec spec/phase2/feature_coverage_report.rb --format MatrixFormatter::Formatters::HTML5Formatter --out docs/api_coverage.html
