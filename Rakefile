@@ -77,7 +77,7 @@ namespace :documentation do
   end
 
   desc 'Generate the Feature Matrix dashboard'
-  task :dashboard => [:annotated, :copy_src] do
+  task :dashboard => [:copy_src, :annotated] do
     $: << 'spec'
     require  'spec_helper'
     require "matrix_formatter/assets/generator"

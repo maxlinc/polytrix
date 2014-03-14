@@ -2,6 +2,9 @@
 gem install bundler --no-ri --no-rdoc
 rbenv rehash
 bundle update
+virtualenv polytrix
+source polytrix/bin/activate
+pip install pygments
 npm install groc
 bundle exec rake bootstrap
 
