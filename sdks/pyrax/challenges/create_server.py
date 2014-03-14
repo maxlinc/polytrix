@@ -8,9 +8,12 @@ import pyrax
 pyrax.set_setting("identity_type", "rackspace")
 
 
-# Change the identity endpoint (to enable test assertions w/ Pacto)
-pyrax._create_identity()
-pyrax.identity.auth_endpoint = os.getenv('RAX_AUTH_URL') + '/v2.0/'
+# Change the authentication endpoint if requested, otherwise use the default
+custom_endpoint = os.getenv('RAX_AUTH_URL')
+if custom_endpoint is not None:
+  pyrax._create_identity()
+  # Pyrax requires the endpoint to contain the version
+  pyrax.identity.auth_endpoint = custom_endpoint + '/v2.0/'
 
 # Set the region, needs to be done before authenticating.
 pyrax.set_setting('region', os.getenv('RAX_REGION'))
