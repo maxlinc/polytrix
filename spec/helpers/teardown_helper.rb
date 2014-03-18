@@ -10,20 +10,21 @@ end
 
 def auto_teardown
   # HACK: This should be simplified and moved to Pacto
-  
 
-  created_servers = auto_find '/v2/:account_id/servers'
-  auto_delete created_servers, auth_token
+  created_resources = auto_find_prg
+  auto_delete created_resources, auth_token
 end
 
-def auto_find uri_pattern
-  # Pacto doesn't find services in ORD if it is only validating DFW...
-  matches = Pacto::ValidationRegistry.instance.validations.find_all {|validation|
-    validation.contract && validation.contract.request.path == uri_pattern
-  }
+REDIRECTS = [201, 202, (300...400).to_a.flatten]
 
-  matches.map do | match |
-    Addressable::URI.parse match.response.headers['Location']
+def auto_find_prg
+  # Find URLs that were the "Get" part of a Post-Redirect-Get pattern
+  created_uris = Pacto::ValidationRegistry.instance.validations.map {|validation|
+    validation.response.headers['Location'] if validation.request.method == :post and REDIRECTS.include? validation.response.status
+  }.compact
+
+  created_uris.map do | created_uri |
+    Addressable::URI.parse created_uri
   end
 end
 
