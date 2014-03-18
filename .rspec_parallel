@@ -1,6 +1,7 @@
 --format MatrixFormatter::Formatters::JSONFormatter --out reports/matrix<%= ENV['TEST_ENV_NUMBER'].to_i %>.json
 --format ParallelTests::RSpec::SummaryLogger --out reports/spec_summary.log
 --format ParallelTests::RSpec::FailuresLogger --out reports/failing_specs.log
+--format RspecJunitFormatter --out reports/junit/rspec<%= ENV['TEST_ENV_NUMBER'].to_i %>.xml
 --format documentation
 --color
 --require spec_helper.rb

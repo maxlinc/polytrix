@@ -13,6 +13,7 @@ gem "goliath"
 gem "excon"
 gem "em-http-request"
 gem "rspec"
+gem "rspec_junit_formatter"
 gem "pry"
 gem "matrix_formatter", :git => 'https://github.com/maxlinc/matrix_formatter', :branch => 'html5'
 gem "highline"
