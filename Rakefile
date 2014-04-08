@@ -91,7 +91,8 @@ namespace :documentation do
     asset_generator.generate
 
     output = File.open("docs/dashboard.html", 'w')
-    formatter = MatrixFormatter::Formatters::HTML5ReportWriter.new output
+    options = {:view => 'angular.html.slim', :layout => 'default_layout.html.slim'}
+    formatter = MatrixFormatter::Formatters::HTML5ReportWriter.new output, options
     matrix = formatter.parse_results Dir['reports/matrix*.json']
     # puts MultiJson.encode formatter.matrix
     formatter.write_report
