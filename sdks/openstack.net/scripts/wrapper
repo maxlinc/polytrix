@@ -4,4 +4,4 @@
 # xbuild
 #
 
-mono bin/Debug/openstack.net.exe "$@"
+mono --debug bin/Debug/openstack.net.exe "$@"
