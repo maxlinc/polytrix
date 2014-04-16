@@ -33,12 +33,13 @@ class Pacto::Extensions::Loaders::URIMapLoader < Pacto::Extensions::Loaders::Yam
       request_clause = Pacto::RequestClause.new(host, {
         'method' => service_definition['method'],
         'headers' => [], #not supporting this yet, probably needs conversion
-        'path' => convert_template(service_definition['uriTemplate'])
+        'path' => convert_template(service_definition['uriTemplate']),
+        'body' => service_definition['requestSchema'] || {}
       })
       response_clause = Pacto::ResponseClause.new({
         'status' => service_definition['responseStatusCode'] || 200,
         'headers' => [], #not supporting this yet, probably needs conversion
-        'body' => {}
+        'body' => service_definition['responseSchema'] || {}
       })
       Pacto::Contract.new(request_clause, response_clause, file, service_name)
     end

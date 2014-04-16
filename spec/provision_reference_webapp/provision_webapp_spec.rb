@@ -9,7 +9,7 @@ describe 'Provision scalable webapp architecture', :markdown =>
     'SERVER1_IMAGE' => 'f70ed7c7-b42e-4d77-83d8-40fa29825b85',
     'SERVER1_FLAVOR' => 'performance1-1'
   )
-  validate_challenge "Provision scalable webapp", """
+  feature "Provision scalable webapp", """
   Use the SDK to provision all the resources necessary for the webapp architecture.
   """, env, [] do |success|
     expect(Pacto).to have_validated_service('Token Service', 'Authenticate')

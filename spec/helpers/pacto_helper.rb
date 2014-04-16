@@ -24,20 +24,22 @@ def generate?
   ENV['PACTO_GENERATE'] == 'true'
 end
 
-def with_pacto
-  puts "Starting Pacto on port #{pacto_port}"
-  with_api(PactoServer, {
-    :stdout => true,
-    :log_file => 'pacto.log',
-    :config => 'pacto/config/pacto_server.rb',
-    :live => true,
-    :generate => generate?,
-    :verbose => true,
-    :validate => true,
-    :directory => File.join(Dir.pwd, 'pacto', 'contracts'),
-    :port => pacto_port
-  }) do
-    yield
+module MyPactoHelper
+  def with_pacto
+    puts "Starting Pacto on port #{pacto_port}"
+    with_api(PactoServer, {
+      :stdout => true,
+      :log_file => 'pacto.log',
+      :config => 'pacto/config/pacto_server.rb',
+      :live => true,
+      :generate => generate?,
+      :verbose => true,
+      :validate => true,
+      :directory => File.join(Dir.pwd, 'pacto', 'contracts'),
+      :port => pacto_port
+    }) do
+      yield
+    end
   end
 end
 

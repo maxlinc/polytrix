@@ -11,6 +11,26 @@ services:
       Authenticate:
         method: post
         uriTemplate: /v2.0/tokens
+        requestSchema:
+          $schema: "http://json-schema.org/draft-03/schema#"
+          description: "Generated from pacto with shasum b5ec82bb381eac4a445c35bbfbfcc324135a742c"
+          type: "object"
+          required: true
+          properties: 
+            auth: 
+              type: "object"
+              required: true
+              properties: 
+                RAX-KSKEY:apiKeyCredentials: 
+                  type: "object"
+                  required: true
+                  properties: 
+                    username: 
+                      type: "string"
+                      required: true
+                    apiKey: 
+                      type: "string"
+                      required: true
   Cloud Servers:
     servers:
       - syd.servers.api.rackspacecloud.com

@@ -7,7 +7,7 @@ describe 'Deploy a static website', :markdown =>
     'TEST_DIRECTORY' => File.absolute_path(File.join(__FILE__, '../fixtures/'))
   )
 
-  validate_challenge "Create a Container", """
+  feature "Create a Container", """
   Use the SDK to create a container to deploy the site.
   """, env, [] do |success|
     expect(Pacto).to have_validated(:put, /clouddrive\.com\/v1\/.*\/my-site\z/)
@@ -16,7 +16,7 @@ describe 'Deploy a static website', :markdown =>
     # expect(Pacto).to_not have_unmatched_requests
   end
 
-  validate_challenge "Upload Folder", """
+  feature "Upload Folder", """
   Use the SDK to create a container to deploy the site.
   """, env, [] do |success|
     expect(Pacto).to have_validated(:post, /identity.api.rackspacecloud.com\/v2\.0\/tokens\z/)
@@ -28,7 +28,7 @@ describe 'Deploy a static website', :markdown =>
     # expect(Pacto).to_not have_unmatched_requests
   end
 
-  validate_challenge "CDN Enable Container", """
+  feature "CDN Enable Container", """
   Use the SDK to create a container to deploy the site.
   """, env, [] do |success|
     expect(Pacto).to have_validated(:put, /cdn\w*.clouddrive.com\/v1\/.*\/.*\z/)
@@ -37,7 +37,7 @@ describe 'Deploy a static website', :markdown =>
     # expect(Pacto).to_not have_unmatched_requests
   end
 
-  validate_challenge "Sync change", """
+  feature "Sync change", """
   This test will update the site with a small change.  Ideally you should upload the changed file but avoid re-uploading
   large files.
   """, env, [] do |success|
