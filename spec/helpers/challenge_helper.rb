@@ -75,8 +75,8 @@ class ChallengeRunner
   end
 
   def find_challenge! challenge, basedir = Dir.pwd
-    challenge_file = Dir.glob("#{basedir}/challenges/#{challenge}.*", File::FNM_CASEFOLD).first ||
-      Dir.glob("#{basedir}/challenges/#{challenge.gsub('_','')}.*", File::FNM_CASEFOLD).first
+    challenge_file = Dir.glob("#{basedir}/challenges/*#{challenge.gsub('_','[_-]')}.*", File::FNM_CASEFOLD).first ||
+      Dir.glob("#{basedir}/challenges/*#{challenge.gsub('_','')}.*", File::FNM_CASEFOLD).first 
     challenge_file = edit_challenge("#{basedir}/challenges/#{challenge}") if challenge_file.nil? && editor_enabled?
     raise ChallengeNotImplemented, challenge if challenge_file.nil? or !File.readable?(challenge_file)
     challenge_file
