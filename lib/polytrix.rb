@@ -1,9 +1,9 @@
-require "polytrix/version"
-require "polytrix/configuration"
-require "polytrix/challenge_runner"
-require "polytrix/result"
-require "polytrix/code_extractor"
-require "polytrix/output_extractor"
+require 'polytrix/version'
+require 'polytrix/configuration'
+require 'polytrix/challenge_runner'
+require 'polytrix/result'
+require 'polytrix/code_extractor'
+require 'polytrix/output_extractor'
 
 module Polytrix
   class << self

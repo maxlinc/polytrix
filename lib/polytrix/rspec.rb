@@ -19,20 +19,20 @@ module Polytrix
       end
     end
 
-    def execute_challenge sdk_dir, challenge, vars
+    def execute_challenge(sdk_dir, challenge, vars)
       result = challenge_runner.run_challenge challenge, vars, sdk_dir
       yield result
     end
   end
 end
 
-def feature challenge, description = "", environment = [], services = [], &block
+def feature(challenge, description = '', environment = [], services = [], &block)
   challenge_file = challenge.downcase.gsub(' ', '_')
-  describe challenge, :markdown => description,
+  describe challenge, markdown: description,
     # :environment => redact(environment),
-    :services => services do
+                      services: services do
     Polytrix.implementors.each do |sdk|
-      it sdk, sdk.to_sym => true, "data-challenge" => challenge_file, "data-sdk" => sdk do
+      it sdk, sdk.to_sym => true, 'data-challenge' => challenge_file, 'data-sdk' => sdk do
         begin
           sdk_dir = Polytrix.sdk_dir sdk
           pending "#{sdk} is not setup" unless File.directory? sdk_dir

@@ -2,18 +2,18 @@ module Polytrix
   module Runners
     class LinuxChallengeRunner < ChallengeRunner
       def script_extension
-        "sh"
+        'sh'
       end
 
-      def challenge_command env_file, challenge_script
-        if File.exists? "scripts/wrapper"
+      def challenge_command(env_file, challenge_script)
+        if File.exist? 'scripts/wrapper'
           ". #{env_file} && scripts/wrapper #{challenge_script}"
         else
           ". #{env_file} && #{challenge_script}"
         end
       end
 
-      def save_environment_variable key, value
+      def save_environment_variable(key, value)
         "export #{key}=#{value}"
       end
     end

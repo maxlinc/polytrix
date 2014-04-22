@@ -2,7 +2,6 @@ module Polytrix
   module Runners
     module Middleware
       class ChangeDirectory
-
         def initialize(app)
           @app   = app
         end
@@ -16,7 +15,6 @@ module Polytrix
             end
           end
         end
-
       end
     end
   end

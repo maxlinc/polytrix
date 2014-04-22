@@ -14,14 +14,14 @@ module Polytrix
   end
 
   class FeatureNotImplementedError < StandardError
-    def initialize feature
+    def initialize(feature)
       super "Feature #{feature} is not implemented"
     end
   end
 
   class ChallengeRunner
     attr_accessor :middleware
-    
+
     def initialize
       @middleware = Middleware::Builder.new do
         use Polytrix::Runners::Middleware::ChangeDirectory
@@ -54,7 +54,7 @@ module Polytrix
       ENV['SHOW_OUTPUT']
     end
 
-    def run_command command
+    def run_command(command)
       if interactive? # allows use of pry, code.interact, etc.
         system command
       else # better error messages and interrupt handling
@@ -66,7 +66,7 @@ module Polytrix
       end
     end
 
-    def setup_env_vars vars
+    def setup_env_vars(vars)
       require 'fileutils'
       FileUtils.mkdir_p 'tmp'
       file = File.open("tmp/vars.#{script_extension}", 'w')
@@ -77,19 +77,19 @@ module Polytrix
       file.path
     end
 
-    def run_challenge challenge, vars, basedir = Dir.pwd
-      @middleware.call(:challenge => challenge, :vars => vars, :basedir => basedir, :challenge_runner => self)
+    def run_challenge(challenge, vars, basedir = Dir.pwd)
+      @middleware.call(challenge: challenge, vars: vars, basedir: basedir, challenge_runner: self)
     end
 
-    def find_challenge! challenge, basedir = Dir.pwd
+    def find_challenge!(challenge, basedir = Dir.pwd)
       challenge_file = Dir.glob("#{basedir}/challenges/#{challenge}.*", File::FNM_CASEFOLD).first ||
-        Dir.glob("#{basedir}/challenges/#{challenge.gsub('_','')}.*", File::FNM_CASEFOLD).first
+        Dir.glob("#{basedir}/challenges/#{challenge.gsub('_', '')}.*", File::FNM_CASEFOLD).first
       challenge_file = edit_challenge("#{basedir}/challenges/#{challenge}") if challenge_file.nil? && editor_enabled?
-      raise FeatureNotImplementedError, challenge if challenge_file.nil? or !File.readable?(challenge_file)
+      fail FeatureNotImplementedError, challenge if challenge_file.nil? or !File.readable?(challenge_file)
       challenge_file
     end
 
-    def edit_challenge challenge
+    def edit_challenge(challenge)
       suffix = infer_suffix File.dirname(challenge)
       challenge_file = "#{challenge}#{suffix}"
       puts "Would you like to create #{challenge_file} (y/n)? "
@@ -97,9 +97,9 @@ module Polytrix
       File.absolute_path challenge_file
     end
 
-    def infer_suffix source_dir
+    def infer_suffix(source_dir)
       # FIXME: Should be configurable or have a better way to infer
-      Dir["#{source_dir}/**/*.*"].map{|f| File.extname f}.first
+      Dir["#{source_dir}/**/*.*"].map { |f| File.extname f }.first
     end
   end
 end
