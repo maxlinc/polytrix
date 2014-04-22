@@ -1,3 +1,4 @@
+require 'middleware'
 require 'mixlib/shellout'
 require 'rbconfig'
 
@@ -5,6 +6,11 @@ module Polytrix
   module Runners
     autoload :LinuxChallengeRunner, 'polytrix/runners/linux_challenge_runner'
     autoload :WindowsChallengeRunner, 'polytrix/runners/windows_challenge_runner'
+
+    module Middleware
+      autoload :FeatureExecutor, 'polytrix/runners/middleware/feature_executor'
+      autoload :ChangeDirectory, 'polytrix/runners/middleware/change_directory'
+    end
   end
 
   class FeatureNotImplementedError < StandardError
@@ -14,6 +20,15 @@ module Polytrix
   end
 
   class ChallengeRunner
+    attr_accessor :middleware
+    
+    def initialize
+      @middleware = Middleware::Builder.new do
+        use Polytrix::Runners::Middleware::ChangeDirectory
+        use Polytrix::Runners::Middleware::FeatureExecutor
+      end
+    end
+
     def self.createRunner
       case RbConfig::CONFIG['host_os']
       when /mswin(\d+)|mingw/i
@@ -62,12 +77,8 @@ module Polytrix
       file.path
     end
 
-    def run_challenge challenge, vars
-      challenge_script = find_challenge! challenge
-      raise FeatureNotImplementedError, challenge if challenge_script.nil?
-      env_file = setup_env_vars vars
-      process = run_command challenge_command(env_file, challenge_script)
-      Result.new(:process => process, :source => challenge_script, :data => env_file)
+    def run_challenge challenge, vars, basedir = Dir.pwd
+      @middleware.call(:challenge => challenge, :vars => vars, :basedir => basedir, :challenge_runner => self)
     end
 
     def find_challenge! challenge, basedir = Dir.pwd

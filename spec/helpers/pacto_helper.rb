@@ -24,28 +24,6 @@ def generate?
   ENV['PACTO_GENERATE'] == 'true'
 end
 
-module MyPactoHelper
-  def with_pacto
-    puts "Starting Pacto on port #{pacto_port}"
-    with_api(PactoServer, {
-      :stdout => true,
-      :log_file => 'pacto.log',
-      :config => 'pacto/config/pacto_server.rb',
-      :live => true,
-      :generate => generate?,
-      :verbose => true,
-      :validate => true,
-      :directory => File.join(Dir.pwd, 'pacto', 'contracts'),
-      :port => pacto_port
-    }) do
-      EM::Synchrony.defer do
-        yield
-        EM.stop
-      end
-    end
-  end
-end
-
 def save_coverage
   data = YAML::load(File.read(COVERAGE_FILE)) if File.exists?(COVERAGE_FILE)
   data ||= {}

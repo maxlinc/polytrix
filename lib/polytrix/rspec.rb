@@ -9,17 +9,19 @@ end
 module Polytrix
   module RSpec
     def challenge_runner
-      @challenge_runner ||= Polytrix::ChallengeRunner.createRunner
+      @challenge_runner ||= begin
+        @challenge_runner = Polytrix::ChallengeRunner.createRunner
+        if ENV['USE_PACTO']
+          require 'polytrix/runners/middleware/pacto'
+          @challenge_runner.middleware.insert 0, Polytrix::Runners::Middleware::Pacto, {}
+        end
+        @challenge_runner
+      end
     end
 
     def execute_challenge sdk_dir, challenge, vars
-      with_pacto do
-        Bundler.with_clean_env do
-          Dir.chdir sdk_dir do
-            yield challenge_runner.run_challenge challenge, vars
-          end
-        end
-      end
+      result = challenge_runner.run_challenge challenge, vars, sdk_dir
+      yield result
     end
   end
 end

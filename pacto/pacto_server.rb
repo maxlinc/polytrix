@@ -4,6 +4,7 @@ require 'em-synchrony/em-http'
 
 class PactoServer < Goliath::API
   use ::Rack::ContentLength
+
   def port
     env.config[:port]
   end
