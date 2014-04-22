@@ -38,13 +38,17 @@ module MyPactoHelper
       :directory => File.join(Dir.pwd, 'pacto', 'contracts'),
       :port => pacto_port
     }) do
-      yield
+      EM::Synchrony.defer do
+        yield
+        EM.stop
+      end
     end
   end
 end
 
 def save_coverage
-  data = File.exists?(COVERAGE_FILE) ? YAML::load(File.read(COVERAGE_FILE)) : {}
+  data = YAML::load(File.read(COVERAGE_FILE)) if File.exists?(COVERAGE_FILE)
+  data ||= {}
   validations = Pacto::ValidationRegistry.instance.validations
   data[example.full_description] = validations.reject{|v| v.contract.nil?}.map{|v| v.contract.name }
   File.open(COVERAGE_FILE, 'w') {|f| f.write data.to_yaml }

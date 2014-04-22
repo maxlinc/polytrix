@@ -14,16 +14,11 @@ module Polytrix
 
     def execute_challenge sdk_dir, challenge, vars
       with_pacto do
-        result = nil
-        EM::Synchrony.defer do
-          Bundler.with_clean_env do
-            Dir.chdir sdk_dir do
-              result = challenge_runner.run_challenge challenge, vars
-            end
+        Bundler.with_clean_env do
+          Dir.chdir sdk_dir do
+            yield challenge_runner.run_challenge challenge, vars
           end
-          EM.stop
         end
-        yield result
       end
     end
   end
