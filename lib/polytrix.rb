@@ -10,7 +10,7 @@ module Polytrix
     attr_accessor :implementors
 
     def configuration
-      raise "configuration doesn't take a block, use configure" if block_given?
+      fail "configuration doesn't take a block, use configure" if block_given?
       @configuration ||= Configuration.new
     end
 

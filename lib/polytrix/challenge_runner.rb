@@ -72,7 +72,7 @@ module Polytrix
     def find_challenge!(challenge, basedir = Dir.pwd)
       find_file basedir, challenge
     rescue Polytrix::Core::FileFinder::FileNotFound
-      fail FeatureNotImplementedError, challenge
+      raise FeatureNotImplementedError, challenge
     end
 
     def edit_challenge(challenge)
