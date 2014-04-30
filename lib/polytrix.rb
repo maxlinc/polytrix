@@ -1,9 +1,9 @@
 require 'polytrix/version'
+require 'polytrix/core/file_finder'
 require 'polytrix/configuration'
 require 'polytrix/challenge_runner'
 require 'polytrix/result'
-require 'polytrix/code_extractor'
-require 'polytrix/output_extractor'
+require 'polytrix/documentation_generator'
 
 module Polytrix
   class << self
