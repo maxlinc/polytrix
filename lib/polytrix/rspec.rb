@@ -2,37 +2,43 @@ require 'polytrix'
 begin
   require 'rspec/core'
   require 'rspec/expectations'
+  require 'rspec/core/formatters/base_text_formatter'
 rescue LoadError
   raise 'polytrix/rspec requires rspec 2 or later'
 end
 
 module Polytrix
   module RSpec
-    def challenge_runner
-      @challenge_runner ||= Polytrix::ChallengeRunner.createRunner
-    end
+    module Helper
+      def challenge_runner
+        @challenge_runner ||= Polytrix::ChallengeRunner.createRunner
+      end
 
-    def execute_challenge(sdk_dir, challenge, vars)
-      result = challenge_runner.run_challenge challenge, vars, sdk_dir
-      yield result
+      def execute_challenge(sdk_dir, challenge, vars)
+        result = challenge_runner.run_challenge challenge, vars, sdk_dir
+        yield result
+      end
     end
   end
 end
 
-def feature(challenge, description = '', environment = [], services = [], &block)
+def code_sample(challenge, description = '', environment = [], services = [], &block)
   challenge_file = challenge.downcase.gsub(' ', '_')
   describe challenge, markdown: description,
     # :environment => redact(environment),
                       services: services do
     Polytrix.implementors.each do |sdk|
       it sdk, sdk.to_sym => true, 'data-challenge' => challenge_file, 'data-sdk' => sdk do
+        Polytrix.results.example_started example
         begin
           sdk_dir = Polytrix.sdk_dir sdk
           pending "#{sdk} is not setup" unless File.directory? sdk_dir
           challenge_runner.find_challenge! challenge_file, sdk_dir
           execute_challenge sdk_dir, challenge_file, environment do |result|
+            Polytrix.results.execution_result example, result
             instance_exec result, &block
           end
+
         rescue Polytrix::FeatureNotImplementedError => e
           pending e.message
         rescue ThreadError => e

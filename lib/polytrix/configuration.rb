@@ -1,5 +1,7 @@
 require 'middleware'
 require 'logger'
+require 'hashie/dash'
+require 'hashie/extensions/coercion'
 
 module Polytrix
   # Autoload pool
@@ -7,21 +9,21 @@ module Polytrix
     module Middleware
       autoload :FeatureExecutor, 'polytrix/runners/middleware/feature_executor'
       autoload :ChangeDirectory, 'polytrix/runners/middleware/change_directory'
+
+      STANDARD_MIDDLEWARE = ::Middleware::Builder.new do
+        use Polytrix::Runners::Middleware::ChangeDirectory
+        use Polytrix::Runners::Middleware::FeatureExecutor
+      end
     end
   end
 
-  class Configuration
-    attr_accessor :logger
-    attr_accessor :middleware
+  class Configuration < Hashie::Dash
+    include Hashie::Extensions::Coercion
 
-    STANDARD_MIDDLEWARE = Middleware::Builder.new do
-      use Polytrix::Runners::Middleware::ChangeDirectory
-      use Polytrix::Runners::Middleware::FeatureExecutor
-    end
+    property :logger,       :default => Logger.new($stdout)
+    property :middleware,   :default => Polytrix::Runners::Middleware::STANDARD_MIDDLEWARE
+    property :implementors
+    coerce_key :implementors, Polytrix::Implementor
 
-    def initialize
-      @logger = Logger.new $stdout
-      @middleware = STANDARD_MIDDLEWARE
-    end
   end
 end

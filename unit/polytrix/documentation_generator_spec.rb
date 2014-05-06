@@ -18,8 +18,8 @@ module Polytrix
       end
 
       context 'ERB processing' do
-        it 'processes feature_name' do
-          expect(generated_doc).to include 'Examples for Quine feature:'
+        it 'processes scenario' do
+          expect(generated_doc).to include 'Examples for Quine scenario:'
         end
 
         it 'processes Polytrix.implementors' do

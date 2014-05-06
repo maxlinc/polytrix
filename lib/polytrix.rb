@@ -1,5 +1,7 @@
 require 'polytrix/version'
+require 'polytrix/core/result_tracker'
 require 'polytrix/core/file_finder'
+require 'polytrix/core/implementor'
 require 'polytrix/configuration'
 require 'polytrix/challenge_runner'
 require 'polytrix/result'
@@ -20,6 +22,10 @@ module Polytrix
 
     def sdk_dir(sdk)
       "sdks/#{sdk}"
+    end
+
+    def results
+      Polytrix::ResultTracker.instance
     end
   end
 end

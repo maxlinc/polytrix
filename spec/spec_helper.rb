@@ -21,7 +21,7 @@ end
 RSpec.configure do |c|
   c.matrix_implementors = SDKs
   c.treat_symbols_as_metadata_keys_with_true_values = true
-  c.include Polytrix::RSpec
+  c.include Polytrix::RSpec::Helper
 end
 
 def standard_env_vars

@@ -6,8 +6,8 @@ module Polytrix
       @search_path = search_path
     end
 
-    def process(feature_name)
-      template_file = find_file @search_path, feature_name
+    def process(scenario)
+      template_file = find_file @search_path, scenario
       erb = ERB.new File.read(template_file)
       erb.result binding
     rescue Polytrix::Core::FileFinder::FileNotFound
