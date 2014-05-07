@@ -32,7 +32,7 @@ class CSVFeatureMatrix
   end
 
   def implementers product, service_name
-    feature = @feature_matrix.find{|f| f['Feature'] == service_name}
+    code_sample = @feature_matrix.find{|f| f['Feature'] == service_name}
     feature.keys.select{|k| feature[k] == 'Done'}
   end
 end

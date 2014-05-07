@@ -10,7 +10,7 @@ describe 'Getting Started', :markdown =>
 
   In the sections that follow, we will build the cloud infrastructure for a sample application using the OpenStack services.
   """ do
-  feature 'authenticate token', """
+  code_sample 'authenticate token', """
   Please use the SDK to [authenticate](http://docs.rackspace.com/auth/api/v2.0/auth-client-devguide/content/POST_authenticate_v2.0_tokens_Token_Calls.html) using a username and API key.
   """, standard_env_vars, [:Authenticate] do
     # Assertions
@@ -19,7 +19,7 @@ describe 'Getting Started', :markdown =>
     expect(Pacto).to_not have_unmatched_requests
   end
 
-  feature 'all connections', """
+  code_sample 'all connections', """
   Let's make a connection to each of the available OpenStack products
   """, standard_env_vars, [] do
     expect(Pacto).to have_validated_service('Identity', 'Authenticate')

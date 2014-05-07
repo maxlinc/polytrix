@@ -10,7 +10,7 @@ describe 'Cloud Files', :markdown =>
   )
 
   vars = standard_env_vars
-  feature "List Containers", """
+  code_sample "List Containers", """
   Use the SDK to list your existing cloud Cloud Files containers.
   """, vars, [] do |success|
     # Assertions
@@ -19,7 +19,7 @@ describe 'Cloud Files', :markdown =>
     expect(Pacto).to_not have_unmatched_requests
   end
 
-  feature "Get object metadata", """
+  code_sample "Get object metadata", """
   Now, use the SDK to retrieve a file from Cloud Files.
   """, env, [] do
     expect(Pacto).to have_validated_service('Cloud Files', 'Get Object Metadata')
@@ -27,19 +27,19 @@ describe 'Cloud Files', :markdown =>
     expect(Pacto).to_not have_validated('Cloud Files', 'Get Object Data')
   end
 
-  feature "Upload a single file", """
+  code_sample "Upload a single file", """
   Now, let's upload logo.png to Cloud Files so we can start building a website.
   """, env, [] do
     pending
   end
 
-  feature "Upload static assets", """
+  code_sample "Upload static assets", """
   Finally, let's upload static assets (javascript, css, images, fonts) for a website.
   """, env, [] do
     pending
   end
 
-  feature "Upload static assets", """
+  code_sample "Upload static assets", """
   Let's enable the CDN for our assets.
   """, env, [] do
     pending
