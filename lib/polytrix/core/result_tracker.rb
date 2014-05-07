@@ -1,4 +1,5 @@
 require 'singleton'
+require 'hashie/mash'
 
 module Polytrix
   class ResultTracker

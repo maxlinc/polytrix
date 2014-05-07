@@ -66,7 +66,9 @@ module Polytrix
     end
 
     def run_challenge(challenge, vars, basedir = Dir.pwd)
-      middleware.call(challenge: challenge, vars: vars, basedir: basedir, challenge_runner: self)
+      env = {challenge: challenge, vars: vars, basedir: basedir, challenge_runner: self}
+      middleware.call(env)
+      env[:result]
     end
 
     def find_challenge!(challenge, basedir = Dir.pwd)

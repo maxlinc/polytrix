@@ -4,7 +4,7 @@ module Polytrix
       class FileNotFound < StandardError; end
 
       # Incomplete list
-      SOURCE_FILE_EXTENSIONS = %(.java .rb .js .go .php .cs)
+      SOURCE_FILE_EXTENSIONS = %(.java .rb .js .go .php .cs .py)
       DOC_FILE_EXTENSIONS = %(.md .asciidoc .rdoc .erb)
 
       # Finds a file by loosely matching the file name to a scenario name

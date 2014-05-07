@@ -19,6 +19,14 @@ module Polytrix
           with_pacto do
             @app.call(env)
           end
+          # Hacky - need better Pacto API
+          contracts = ::Pacto::ValidationRegistry.instance.validations.map(&:contract)
+          # Unknown services aren't captured in detected services
+          detected_services = contracts.compact.map(&:name)
+          puts "Services detected: #{detected_services.join ','}"
+          env[:pacto] = {
+            :detected_services => detected_services
+          }
           # ...
         end
 
