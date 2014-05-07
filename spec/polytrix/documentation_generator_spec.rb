@@ -1,6 +1,6 @@
 module Polytrix
   describe DocumentationGenerator do
-    let(:search_path) { 'unit/fixtures/src-doc' }
+    let(:search_path) { 'spec/fixtures/src-doc' }
     subject(:generator) { DocumentationGenerator.new(search_path) }
 
     context 'when no documentation exists' do

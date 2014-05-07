@@ -8,11 +8,19 @@ require 'json'
 
 NOT_SETUP = "You need to set RAX_USERNAME and RAX_API_KEY env vars in order to run tests"
 
-RSpec::Core::RakeTask.new('spec')
+RSpec::Core::RakeTask.new('features') do |t|
+  t.rspec_opts = "-I features"
+  t.pattern = 'features/*/_spec.rb'
+end
+
+RSpec::Core::RakeTask.new('spec') do |t|
+  t.rspec_opts = "-f documentation"
+end
+
 task :default => :spec
 
 desc 'Run all the SDK tests'
-task :spec => [:check_setup]
+task :features => [:check_setup]
 
 desc 'Check pre-requisites'
 task :check_setup do
@@ -79,7 +87,7 @@ namespace :documentation do
 
   desc 'Generate the Feature Matrix dashboard'
   task :dashboard => [:copy_src, :annotated] do
-    $: << 'spec'
+    $: << 'features'
     require  'spec_helper'
     require "matrix_formatter/assets/generator"
     require "matrix_formatter/formatters/html5_report_writer"
@@ -114,7 +122,7 @@ task :parallel_spec do
       puts "Starting #{tag} on process #{index}"
       Thread.main[:results] << {
         :tag => tag,
-        :success  => sh("TEST_ENV_NUMBER=#{index} bundle exec rspec --options .rspec_parallel -t #{tag} spec")
+        :success  => sh("TEST_ENV_NUMBER=#{index} bundle exec rspec --options .rspec_parallel -t #{tag} features")
       }
     end
   end

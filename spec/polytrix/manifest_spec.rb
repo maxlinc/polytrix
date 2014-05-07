@@ -2,7 +2,7 @@ module Polytrix
   module Core
     describe Manifest do
       describe '#from_yaml' do
-        subject(:manifest) { described_class.from_yaml 'unit/fixtures/polytrix.yml' }
+        subject(:manifest) { described_class.from_yaml 'spec/fixtures/polytrix.yml' }
 
         it 'initializes a manifest' do
           expect(manifest).to be_an_instance_of Polytrix::Manifest

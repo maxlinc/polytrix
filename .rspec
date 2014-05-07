@@ -1,3 +1,4 @@
+-I features
 --format MatrixFormatter::Formatters::JSONFormatter
 --out reports/matrix<%= ENV['TEST_ENV_NUMBER'].to_i %>.json
 --format MatrixFormatter::Formatters::HTMLFormatter
