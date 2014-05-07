@@ -6,13 +6,13 @@ module Polytrix
       end
 
       it 'finds files within the search path' do
-        search_path = 'unit/polytrix/fixtures/src-doc'
+        search_path = 'unit/fixtures/src-doc'
         file = finder.find_file search_path, 'quine'
         expect(file.relative_path_from path(search_path)).to eq(path('quine.md.erb'))
       end
 
       it 'raises FileNotFound except if a file is not found' do
-        expect { finder.find_file 'unit/polytrix/fixtures/src-doc', 'quinez' }.to raise_error FileFinder::FileNotFound
+        expect { finder.find_file 'unit/fixtures/src-doc', 'quinez' }.to raise_error FileFinder::FileNotFound
       end
 
       private
