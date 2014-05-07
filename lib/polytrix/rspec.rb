@@ -50,3 +50,7 @@ def code_sample(challenge, description = '', environment = [], services = [], &b
     end
   end
 end
+
+RSpec.configure do |c|
+  c.include Polytrix::RSpec::Helper
+end
