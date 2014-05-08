@@ -7,5 +7,5 @@
 --out reports/rspec.html
 --format documentation
 --color
---require spec_helper.rb
+--require features_helper.rb
 

@@ -10,7 +10,7 @@ NOT_SETUP = "You need to set RAX_USERNAME and RAX_API_KEY env vars in order to r
 
 RSpec::Core::RakeTask.new('features') do |t|
   t.rspec_opts = "-I features"
-  t.pattern = 'features/*/_spec.rb'
+  t.pattern = 'features/**/*_spec.rb'
 end
 
 RSpec::Core::RakeTask.new('spec') do |t|
@@ -88,7 +88,7 @@ namespace :documentation do
   desc 'Generate the Feature Matrix dashboard'
   task :dashboard => [:copy_src, :annotated] do
     $: << 'features'
-    require  'spec_helper'
+    require  'features_helper'
     require "matrix_formatter/assets/generator"
     require "matrix_formatter/formatters/html5_report_writer"
     require 'fileutils'

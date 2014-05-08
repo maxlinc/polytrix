@@ -5,6 +5,6 @@
 --format RspecJunitFormatter --out reports/junit/rspec<%= ENV['TEST_ENV_NUMBER'].to_i %>.xml
 --format documentation
 --color
---require spec_helper.rb
+--require features_helper.rb
 --failure-exit-code 0
 
