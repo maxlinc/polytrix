@@ -7,14 +7,13 @@ module Polytrix
         end
 
         def call(env)
-          challenge = env[:challenge]
-          vars = env[:vars]
           challenge_runner = env[:challenge_runner]
-          challenge_script = challenge_runner.find_challenge! challenge
-          env_file = challenge_runner.setup_env_vars vars
-          command = challenge_runner.challenge_command(env_file, challenge_script)
+          env_file = env[:env_file]
+          source_file = env[:source_file]
+          relative_source_file = source_file.relative_path_from env[:basedir]
+          command = challenge_runner.challenge_command(env_file, relative_source_file)
           process = challenge_runner.run_command command
-          env[:result] = Result.new(process: process, source: challenge_script, data: env_file)
+          env[:result] = Result.new(process: process, source: env[:source_file])
           @app.call env
           env[:result]
         end

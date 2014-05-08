@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Content above the snippet is ignored
 
 print 'Hello, world!'

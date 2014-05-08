@@ -6,6 +6,7 @@ module Polytrix
       end
 
       def challenge_command(env_file, challenge_script)
+        challenge_script = "./#{challenge_script}" unless challenge_script.to_s.start_with? '/'
         if File.exist? 'scripts/wrapper'
           ". #{env_file} && scripts/wrapper #{challenge_script}"
         else

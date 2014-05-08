@@ -1,5 +1,0 @@
-Hello, world!
-{{snippet factorial_result}}
-The result of factorial(7) is:
-  5040
-{{endsnippet}}

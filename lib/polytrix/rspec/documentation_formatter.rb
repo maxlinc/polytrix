@@ -22,7 +22,8 @@ module Polytrix
         }
         doc_gen = Polytrix::DocumentationGenerator.new 'doc-src'
         doc = doc_gen.process(example.example_group.description)
-        File.open("docs/#{example_group.description}.md", 'wb') do |f|
+        target_file = doc_gen.template_file.to_s.gsub 'doc-src', 'docs'
+        File.open(target_file, 'wb') do |f|
           f.write doc
         end
       end

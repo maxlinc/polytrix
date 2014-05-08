@@ -14,9 +14,25 @@ module Polytrix
         @challenge_runner ||= Polytrix::ChallengeRunner.createRunner
       end
 
-      def execute_challenge(sdk_dir, challenge, vars)
-        result = challenge_runner.run_challenge challenge, vars, sdk_dir
+      def execute_challenge(sdk_dir, challenge_name, vars)
+        implementor = Polytrix::Implementor.new :name => File.basename(sdk_dir), :basedir => sdk_dir
+        challenge = ChallengeBuilder.new(implementor).build :name => challenge_name, :vars => vars, :basedir => sdk_dir
+        result = challenge.run
         yield result
+      end
+    end
+
+    class << self
+      def run_manifest(manifest)
+        manifest['suites'].each do |suite_name, suite_config|
+          describe suite_name do
+            suite_config['samples'].each do |scenario|
+              code_sample scenario, '', suite_config['env'].to_hash do |result|
+                instance_exec result, &Polytrix.default_validator_callback
+              end
+            end
+          end
+        end
       end
     end
   end
@@ -28,6 +44,7 @@ def code_sample(challenge, description = '', environment = [], services = [], &b
     # :environment => redact(environment),
                       services: services do
     Polytrix.implementors.each do |sdk|
+      sdk = sdk.name if sdk.respond_to? :name
       it sdk, sdk.to_sym => true, 'data-challenge' => challenge_file, 'data-sdk' => sdk do
         Polytrix.results.example_started example
         begin

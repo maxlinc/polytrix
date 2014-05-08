@@ -9,16 +9,16 @@ module Polytrix
         describe '#call' do
           let(:env) do
             {
-              challenge: 'challenge_name',
-              vars: { 'ENVIRONMENT' => 'VARIABLES' },
+              basedir: Pathname.new('spec/fixtures'),
+              env_file: 'tmp/vars.sh',
+              source_file: Pathname.new('spec/fixtures/test.js'),
+              command: 'some command to execute',
               challenge_runner: challenge_runner
             }
           end
 
           before do
-            allow(challenge_runner).to receive(:find_challenge!).with('challenge_name').and_return '/path/to/script'
-            allow(challenge_runner).to receive(:setup_env_vars).with(env[:vars]).and_return '/path/to/varfile'
-            allow(challenge_runner).to receive(:challenge_command).with('/path/to/varfile', '/path/to/script').and_return 'some command to execute'
+            allow(challenge_runner).to receive(:challenge_command).with(env[:env_file], Pathname.new('test.js')).and_return('some command to execute')
             allow(challenge_runner).to receive(:run_command).with('some command to execute').and_return Polytrix::Result.new(process: 'a', source: 'b', data: 'c')
             allow(app).to receive(:call).with(env)
           end

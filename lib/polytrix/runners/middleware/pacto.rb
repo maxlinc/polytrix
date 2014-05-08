@@ -24,7 +24,7 @@ module Polytrix
           # Unknown services aren't captured in detected services
           detected_services = contracts.compact.map(&:name)
           puts "Services detected: #{detected_services.join ','}"
-          env[:pacto] = {
+          env[:plugin_data][:pacto] = {
             :detected_services => detected_services
           }
           # ...

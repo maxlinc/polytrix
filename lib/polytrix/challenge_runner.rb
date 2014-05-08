@@ -54,21 +54,9 @@ module Polytrix
       end
     end
 
-    def setup_env_vars(vars)
-      require 'fileutils'
-      FileUtils.mkdir_p 'tmp'
-      file = File.open("tmp/vars.#{script_extension}", 'w')
-      vars.each do |key, value|
-        file.puts save_environment_variable(key, value)
-      end
-      file.close
-      file.path
-    end
-
-    def run_challenge(challenge, vars, basedir = Dir.pwd)
-      env = {challenge: challenge, vars: vars, basedir: basedir, challenge_runner: self}
-      middleware.call(env)
-      env[:result]
+    def run_challenge(challenge)
+      middleware.call(challenge)
+      challenge[:result]
     end
 
     def find_challenge!(challenge, basedir = Dir.pwd)
