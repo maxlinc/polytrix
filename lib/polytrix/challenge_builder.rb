@@ -9,6 +9,7 @@ module Polytrix
     def build(challenge_data)
       challenge_data[:source_file] ||= find_file @implementor.basedir, challenge_data[:name]
       challenge_data[:basedir] ||= @implementor.basedir
+      challenge_data[:implementor] ||= @implementor.name
       Challenge.new challenge_data
     end
   end

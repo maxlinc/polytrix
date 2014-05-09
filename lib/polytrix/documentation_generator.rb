@@ -7,7 +7,7 @@ module Polytrix
       @search_path = search_path
     end
 
-    def process(scenario)
+    def process(scenario, challenges)
       @template_file = find_file @search_path, scenario, ""
       erb = ERB.new File.read(template_file)
       erb.result binding

@@ -1,6 +1,7 @@
 require 'polytrix/rspec'
 require 'hashie/mash'
 require 'yaml'
+require 'fileutils'
 
 module Polytrix
   module RSpec
@@ -10,31 +11,31 @@ module Polytrix
         super
       end
 
-      def process_example(example)
-        group_names = example.example_group.parent_groups.map{|g| g.description}
-        group_names.inject(@results, :initializing_reader)[example.description] = {
-          :results => example.execution_result,
-          :source => 'file:///blah',
-          :env => {
-            'ABC' => 'DEF',
-            'DEF' => 'GHI'
-          }
-        }
-        doc_gen = Polytrix::DocumentationGenerator.new 'doc-src'
-        doc = doc_gen.process(example.example_group.description)
-        target_file = doc_gen.template_file.to_s.gsub 'doc-src', 'docs'
-        File.open(target_file, 'wb') do |f|
-          f.write doc
-        end
+      def example_group_finished(example_group)
+        group_names = example_group.parent_groups.map{|g| g.description}
+        polytrix_challenges = example_group.examples.map { |e| e.metadata[:polytrix] }
+        produce_doc example_group.description, polytrix_challenges
       end
 
       def dump_summary(duration, example_count, failure_count, pending_count)
-        @output.puts YAML::dump(Polytrix.results.results.to_hash)
+        doc_gen = Polytrix::DocumentationGenerator.new 'doc-src'
+        all_challenges = examples.map{|e| e.metadata[:polytrix]}
+        grouped_challenges = all_challenges.compact.group_by(&:name)
+        produce_doc 'index', grouped_challenges
       end
 
-      alias_method :example_passed, :process_example
-      alias_method :example_pending, :process_example
-      alias_method :example_failed, :process_example
+      private
+      def produce_doc(name, data)
+        doc_gen = Polytrix::DocumentationGenerator.new 'doc-src'
+        doc = doc_gen.process(name, data)
+        target_file = doc_gen.template_file.to_s.gsub 'doc-src', 'docs'
+        unless target_file.empty?
+          FileUtils.mkdir_p File.dirname(target_file)
+          File.open(target_file, 'wb') do |f|
+            f.write doc
+          end
+        end
+      end
     end
   end
 end

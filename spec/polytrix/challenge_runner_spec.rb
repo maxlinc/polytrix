@@ -7,7 +7,7 @@ module Polytrix
 
     describe '#run_challenge' do
       it 'executes a challenge' do
-        expect(runner.run_challenge challenge).to be_an_instance_of Result
+        expect(runner.run_challenge challenge).to be_an_instance_of Challenge
       end
     end
   end

@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 describe Polytrix do
   describe '.load_manifest' do
     it 'parses the YAML file' do

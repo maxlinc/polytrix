@@ -11,7 +11,9 @@ require 'helpers/cloudfiles_helper'
 
 SDKs = Dir['sdks/*'].map{|sdk| File.basename sdk}
 
-Polytrix.implementors = SDKs
+Polytrix.implementors = SDKs.map{ |sdk|
+  Polytrix::Implementor.new :name => sdk #, :language => lang
+}
 
 require 'polytrix/runners/middleware/pacto'
 Polytrix.configure do |c|

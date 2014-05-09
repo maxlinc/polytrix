@@ -10,7 +10,14 @@ module Polytrix
 
         def call(env)
           challenge_runner = env[:challenge_runner]
-          env[:env_file] = setup_env_vars(env[:vars], challenge_runner)
+          vars = begin
+            Polytrix.manifest[:global_env].dup
+          rescue
+            {}
+          end
+          vars = vars.merge env[:vars].dup
+
+          env[:env_file] = setup_env_vars(vars, challenge_runner)
           @app.call env
         end
 

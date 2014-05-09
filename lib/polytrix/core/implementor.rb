@@ -6,7 +6,7 @@ module Polytrix
     include Hashie::Extensions::Coercion
     property :name
     property :basedir
-    property :language, :default => 'ruby'
+    property :language
     coerce_key :basedir, Pathname
 
     def initialize(data)

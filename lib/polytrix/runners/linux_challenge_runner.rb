@@ -15,7 +15,7 @@ module Polytrix
       end
 
       def save_environment_variable(key, value)
-        "export #{key}=#{value}"
+        "export #{key}=\"#{value}\""
       end
     end
   end

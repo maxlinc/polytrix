@@ -15,8 +15,10 @@ module Polytrix
       end
 
       def execute_challenge(sdk_dir, challenge_name, vars)
-        implementor = Polytrix::Implementor.new :name => File.basename(sdk_dir), :basedir => sdk_dir
-        challenge = ChallengeBuilder.new(implementor).build :name => challenge_name, :vars => vars, :basedir => sdk_dir
+        implementor_name = File.basename(sdk_dir) # Might not be a good assumption
+        implementor = Polytrix.implementors.find { |i| i.name == implementor_name }
+        challenge = ChallengeBuilder.new(implementor).build :name => challenge_name, :vars => vars, :basedir => sdk_dir, :implementor => implementor.name
+        example.metadata[:polytrix] = challenge
         result = challenge.run
         yield result
       end

@@ -7,6 +7,7 @@ module Polytrix
     include Hashie::Extensions::Coercion
     include Hashie::Extensions::IndifferentAccess
     property :name
+    property :implementor
     property :vars, :default => {}
     property :source_file
     coerce_key :source_file, Pathname

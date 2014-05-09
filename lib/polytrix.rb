@@ -19,8 +19,8 @@ module Polytrix
     attr_accessor :default_validator_callback
 
     def default_validator_callback
-      @default_validator_callback ||= proc{ |result|
-        expect(result.process.exitstatus).to eq(0)
+      @default_validator_callback ||= proc{ |challenge|
+        expect(challenge[:result].process.exitstatus).to eq(0)
       }
     end
 
