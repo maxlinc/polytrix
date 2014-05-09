@@ -3,7 +3,7 @@ describe 'Cloud Servers', :markdown =>
   
   Scenarios using [Next Generation Cloud Servers API V2](http://docs.rackspace.com/servers/api/v2/cs-devguide/content/ch_preface.html).
   """ do
-    validate_challenge "Create Server", """
+    code_sample "Create Server", """
     [Create a Server](http://docs.rackspace.com/servers/api/v2/cs-devguide/content/CreateServers.html)
     using the image and flavor, and region specified in the environment.
     """, standard_env_vars.merge({

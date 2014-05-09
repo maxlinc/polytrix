@@ -18,3 +18,6 @@ gem "matrix_formatter", :git => 'https://github.com/maxlinc/matrix_formatter', :
 gem "highline"
 gem "parallel_tests"
 gem "rake-notes"
+gem "simplecov"
+gem "mixlib-shellout"
+

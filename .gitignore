@@ -8,4 +8,6 @@ reports/
 node_modules/
 .tokens.json
 docs/
-polytrix/
+/polytrix/
+pkg/
+coverage/

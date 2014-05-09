@@ -4,12 +4,13 @@ require 'em-synchrony/em-http'
 
 class PactoServer < Goliath::API
   use ::Rack::ContentLength
+
   def port
     env.config[:port]
   end
 
   def on_body(env, data)
-    env.logger.info 'received data: ' + data
+    env.logger.info 'received data: ' + safe_log(data)
     (env['async-body'] ||= '') << data
   end
 
@@ -41,7 +42,7 @@ class PactoServer < Goliath::API
       body = proxy_rewrite(resp.response)
 
       env.logger.debug "response headers: #{safe_response_headers}"
-      env.logger.debug "response body: #{body}"
+      env.logger.debug "response body: #{safe_log(body)}"
       [code, safe_response_headers, body]
     rescue => e
       env.logger.warn "responding with error: #{e.message}"
@@ -89,4 +90,11 @@ class PactoServer < Goliath::API
     env['client-headers'] = headers
   end
 
+  def safe_log(string_to_log)
+    if string_to_log.ascii_only?
+     string_to_log
+    else
+      "(Supressed logging of non-ASCII content)"
+    end
+  end
 end
