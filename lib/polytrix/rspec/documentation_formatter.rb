@@ -18,7 +18,6 @@ module Polytrix
       end
 
       def dump_summary(duration, example_count, failure_count, pending_count)
-        doc_gen = Polytrix::DocumentationGenerator.new 'doc-src'
         all_challenges = examples.map{|e| e.metadata[:polytrix]}
         grouped_challenges = all_challenges.compact.group_by(&:name)
         produce_doc 'index', grouped_challenges
