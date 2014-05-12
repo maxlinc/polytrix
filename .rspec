@@ -1,4 +1,4 @@
--I features
+-r spec_helper
 --format MatrixFormatter::Formatters::JSONFormatter
 --out reports/matrix<%= ENV['TEST_ENV_NUMBER'].to_i %>.json
 --format MatrixFormatter::Formatters::HTMLFormatter
@@ -7,5 +7,4 @@
 --out reports/rspec.html
 --format documentation
 --color
---require features_helper.rb
 
