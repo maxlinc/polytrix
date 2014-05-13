@@ -47,13 +47,13 @@ Scenario: Running all SDKs
     describe 'Katas' do
       code_sample 'Hello World' do |challenge|
         # You can make assertions about the process using the Mixlib::ShellOut API
-        expect(challenge[:result].process.stdout).to include 'Hello, world!'
-        expect(challenge[:result].process.stderr).to be_empty
-        expect(challenge[:result].process.exitstatus).to eq(1) # normally this would be 0
+        expect(challenge[:result].execution_result.stdout).to include 'Hello, world!'
+        expect(challenge[:result].execution_result.stderr).to be_empty
+        expect(challenge[:result].execution_result.exitstatus).to eq(1) # normally this would be 0
       end
 
       code_sample 'Quine' do |challenge|
-        expect(challenge[:result].process.stdout).to eq File.read(challenge[:result].source)
+        expect(challenge[:result].execution_result.stdout).to eq File.read(challenge[:result].source)
       end
     end
     """

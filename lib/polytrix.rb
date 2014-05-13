@@ -26,7 +26,7 @@ module Polytrix
 
     def default_validator_callback
       @default_validator_callback ||= proc{ |challenge|
-        expect(challenge[:result].process.exitstatus).to eq(0)
+        expect(challenge[:result].execution_result.exitstatus).to eq(0)
       }
     end
 
@@ -41,6 +41,14 @@ module Polytrix
 
     def configure
       yield(configuration)
+    end
+
+    def merge_results(result_files)
+      merged_results = Polytrix::Manifest.new
+      result_files.each do |result_file|
+        merged_results.deep_merge! YAML::load(File.read(result_file))
+      end
+      YAML::dump(merged_results.to_hash)
     end
 
     def load_manifest(yaml_file)

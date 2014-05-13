@@ -2,8 +2,8 @@ require 'hashie/dash'
 
 module Polytrix
   class Result < Hashie::Dash
-    property :process, required: true
-    property :source
+    property :execution_result, required: true
+    property :source_file, required: true
     property :data
   end
 end

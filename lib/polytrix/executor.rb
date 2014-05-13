@@ -1,8 +1,17 @@
+require 'hashie/dash'
+
 module Polytrix
   module Executor
+    class ExecutionResult < Hashie::Dash
+      property :exitstatus, :require => true
+      property :stdout, :required => true
+      property :stderr, :required => true
+    end
+
     class InteractiveExecutor
       def execute(command, opts)
         system command
+        # Fixme: This needs to return execution result, if interactive remains supported
       end
     end
 
@@ -12,7 +21,7 @@ module Polytrix
         shell.live_stream = $stdout unless Polytrix.configuration.suppress_output
         shell.run_command
         shell.error!
-        shell
+        ExecutionResult.new :exitstatus => shell.exitstatus, :stdout => shell.stdout, :stderr => shell.stderr
       end
     end
 

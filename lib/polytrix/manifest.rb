@@ -2,9 +2,12 @@ require 'yaml'
 require 'hashie/dash'
 require 'hashie/mash'
 require 'hashie/extensions/coercion'
+require 'hashie/extensions/deep_merge'
 
 module Polytrix
   class Manifest < Hashie::Dash
+    include Hashie::Extensions::DeepMerge
+
     class Environment < Hashie::Mash
       # Hashie Coercion - automatically treat all values as string
       def self.coerce(obj)
@@ -19,6 +22,7 @@ module Polytrix
     class Suite < Hashie::Dash
       property :env, :default => {}
       property :samples, :default => []
+      property :results
     end
 
     class Suites < Hashie::Mash
