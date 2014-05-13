@@ -1,10 +1,7 @@
 require 'polytrix'
 require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
-require 'pacto/rake_task'
 require 'rake/notes/rake_task'
-require 'highline/import'
-require 'json'
 
 RSpec::Core::RakeTask.new('spec') do |t|
   t.rspec_opts = "-f documentation"
