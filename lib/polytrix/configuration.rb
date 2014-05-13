@@ -26,6 +26,7 @@ module Polytrix
     property :middleware,   :default => Polytrix::Runners::Middleware::STANDARD_MIDDLEWARE
     property :implementors
     coerce_key :implementors, Polytrix::Implementor
+    property :suppress_output, :default => false
 
   end
 end

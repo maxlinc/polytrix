@@ -14,10 +14,10 @@ module Polytrix
         @challenge_runner ||= Polytrix::ChallengeRunner.createRunner
       end
 
-      def execute_challenge(sdk_dir, challenge_name, vars)
+      def execute_challenge(sdk_dir, challenge_name)
         implementor_name = File.basename(sdk_dir) # Might not be a good assumption
         implementor = Polytrix.implementors.find { |i| i.name == implementor_name }
-        challenge = ChallengeBuilder.new(implementor).build :name => challenge_name, :vars => vars, :basedir => sdk_dir, :implementor => implementor.name
+        challenge = ChallengeBuilder.new(implementor).build :name => challenge_name, :basedir => sdk_dir, :implementor => implementor.name #, :vars => vars
         example.metadata[:polytrix] = challenge
         result = challenge.run
         yield result
@@ -28,8 +28,9 @@ module Polytrix
       def run_manifest(manifest)
         manifest['suites'].each do |suite_name, suite_config|
           describe suite_name do
-            suite_config['samples'].each do |scenario|
-              code_sample scenario, '', suite_config['env'].to_hash do |result|
+            samples = suite_config['samples'] || []
+            samples.each do |scenario|
+              code_sample scenario do |result|
                 instance_exec result, &Polytrix.default_validator_callback
               end
             end
@@ -40,24 +41,18 @@ module Polytrix
   end
 end
 
-def code_sample(challenge, description = '', environment = [], services = [], &block)
-  challenge_file = challenge.downcase.gsub(' ', '_')
-  describe challenge, markdown: description,
-    # :environment => redact(environment),
-                      services: services do
+def code_sample(challenge, &block)
+  describe challenge do
     Polytrix.implementors.each do |sdk|
-      sdk = sdk.name if sdk.respond_to? :name
-      it sdk, sdk.to_sym => true, 'data-challenge' => challenge_file, 'data-sdk' => sdk do
-        Polytrix.results.example_started example
+      sdk_name = sdk.name
+      sdk_dir = sdk.basedir
+      it sdk_name, sdk_name.to_sym => true do
         begin
-          sdk_dir = Polytrix.sdk_dir sdk
-          pending "#{sdk} is not setup" unless File.directory? sdk_dir
-          challenge_runner.find_challenge! challenge_file, sdk_dir
-          execute_challenge sdk_dir, challenge_file, environment do |result|
-            Polytrix.results.execution_result example, result
+          pending "#{sdk_name} is not setup" unless File.directory? sdk_dir
+          challenge_runner.find_challenge! challenge, sdk_dir
+          execute_challenge sdk_dir, challenge do |result|
             instance_exec result, &block
           end
-
         rescue Polytrix::FeatureNotImplementedError => e
           pending e.message
         rescue ThreadError => e

@@ -1,7 +1,7 @@
 require 'polytrix/version'
+require 'polytrix/executor'
 require 'polytrix/manifest'
 require 'polytrix/core/implementor'
-require 'polytrix/core/result_tracker'
 require 'polytrix/core/file_finder'
 require 'polytrix/challenge_runner'
 require 'polytrix/challenge'
@@ -17,6 +17,12 @@ module Polytrix
     attr_accessor :implementors
     attr_accessor :manifest
     attr_accessor :default_validator_callback
+
+    def bootstrap
+      implementors.each do |implementor|
+        implementor.bootstrap
+      end
+    end
 
     def default_validator_callback
       @default_validator_callback ||= proc{ |challenge|
@@ -37,16 +43,8 @@ module Polytrix
       yield(configuration)
     end
 
-    def sdk_dir(sdk)
-      "sdks/#{sdk}"
-    end
-
     def load_manifest(yaml_file)
       @manifest = Polytrix::Manifest.from_yaml yaml_file
-    end
-
-    def results
-      Polytrix::ResultTracker.instance
     end
 
     def run_tests

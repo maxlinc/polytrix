@@ -16,7 +16,9 @@ module Polytrix
       end
     end
 
-    class Suite < Hashie::Mash
+    class Suite < Hashie::Dash
+      property :env, :default => {}
+      property :samples, :default => []
     end
 
     class Suites < Hashie::Mash

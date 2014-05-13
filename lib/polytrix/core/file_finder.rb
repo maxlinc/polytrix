@@ -7,7 +7,7 @@ module Polytrix
       def find_file(search_path, scenario_name, ignored_patterns = read_gitignore(search_path))
         potential_files = Dir.glob("#{search_path}/**/*#{scenario_name}.*", File::FNM_CASEFOLD)
         potential_files.concat Dir.glob("#{search_path}/**/*#{scenario_name.gsub(' ', '_')}.*", File::FNM_CASEFOLD)
-        potential_files.concat Dir.glob("#{search_path}/**/*#{scenario_name.gsub('_', '')}.*", File::FNM_CASEFOLD)
+        potential_files.concat Dir.glob("#{search_path}/**/*#{scenario_name.gsub(' ', '')}.*", File::FNM_CASEFOLD)
 
         # Find the first file, not including generated files
         file = potential_files.find { |file|

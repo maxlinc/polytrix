@@ -16,6 +16,7 @@ module Polytrix
 
   class ChallengeRunner
     include Polytrix::Core::FileFinder
+    include Polytrix::Executor
 
     def self.createRunner
       case RbConfig::CONFIG['host_os']
@@ -34,24 +35,8 @@ module Polytrix
       ENV['CHALLENGE_EDITOR']
     end
 
-    def interactive?
-      ENV['INTERACTIVE']
-    end
-
-    def show_output?
-      ENV['SHOW_OUTPUT']
-    end
-
     def run_command(command)
-      if interactive? # allows use of pry, code.interact, etc.
-        system command
-      else # better error messages and interrupt handling
-        challenge_process = Mixlib::ShellOut.new(command)
-        challenge_process.live_stream = $stdout if show_output?
-        challenge_process.run_command
-        challenge_process.error!
-        challenge_process
-      end
+      execute command
     end
 
     def run_challenge(challenge)
