@@ -1,0 +1,14 @@
+apply plugin: 'java'
+sourceSets {
+    main {
+        java {
+            srcDir 'challenges'
+        }
+    }
+}
+version = '1.0'
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Java Samples', 'Implementation-Version': version
+    }
+}
