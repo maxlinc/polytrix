@@ -10,7 +10,7 @@ module Polytrix
       def initialize(output)
         @source_dir = 'doc-src'
         @results = Hashie::Mash.new
-        @summary_files = %w(index slate)
+        @summary_files = %w(index)
         super
       end
 
