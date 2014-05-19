@@ -52,6 +52,10 @@ module Polytrix
       @default_validator_callback = callback
     end
 
+    def reset
+      @configuration = nil
+    end
+
     # @see Polytrix::Configuration
     def configuration
       fail "configuration doesn't take a block, use configure" if block_given?

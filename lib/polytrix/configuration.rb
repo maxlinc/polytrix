@@ -27,6 +27,6 @@ module Polytrix
     property :implementors
     coerce_key :implementors, Polytrix::Implementor
     property :suppress_output, :default => false
-
+    property :default_doc_template
   end
 end

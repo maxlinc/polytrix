@@ -30,13 +30,14 @@ module Polytrix
 
       private
       def produce_doc(name, data)
-        doc_gen = Polytrix::DocumentationGenerator.new @source_dir
-        doc = doc_gen.process(name, data)
-        target_file = doc_gen.template_file.to_s.gsub @source_dir, 'docs'
+        doc_gen = Polytrix::DocumentationGenerator.new @source_dir, name
+        template_file = doc_gen.template_file.to_s
+        suffix = template_file[template_file.index('.')..-1]
+        target_file = File.join('docs', "#{name}#{suffix}")
         unless target_file.empty?
           FileUtils.mkdir_p File.dirname(target_file)
           File.open(target_file, 'wb') do |f|
-            f.write doc
+            f.write doc_gen.process(data)
           end
         end
       end
