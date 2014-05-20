@@ -11,20 +11,10 @@ module Polytrix
       end
 
       context 'when the default_doc_template is set' do
-        before do
-          Polytrix.configure do |c|
-            c.default_doc_template = 'spec/fixtures/src-doc/_scenario.md.erb'
-          end
-        end
-
-        after do
-          Polytrix.reset
-        end
+        let(:default_template) { 'spec/fixtures/src-doc/_scenario.md.erb' }
+        subject(:generator) { DocumentationGenerator.new(search_path, 'no_doc', default_template) }
 
         it 'uses the default_doc_template if one is set' do
-          Polytrix.configure do |c|
-            c.default_doc_template = 'spec/fixtures/src-doc/_scenario.md.erb'
-          end
           expect(generator.process bound_data).to eql('I am a generic template that is being used for the no_doc scenario.')
         end
       end

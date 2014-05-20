@@ -39,7 +39,11 @@ Scenario: Running all SDKs
     And the standard rspec setup
     And a file named "spec/custom_spec.rb" with:
     """
-    require 'spec_helper'
+    require 'polytrix/rspec'
+    Polytrix.implementors = Dir['sdks/*'].map{ |sdk|
+      name = File.basename(sdk)
+      Polytrix::Implementor.new :name => name
+    }
 
     # This is more of an integration test, but makes sure the rspec API is working.
     # Expect results to all be pending, because there's no implementors in this proj.
