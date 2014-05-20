@@ -7,7 +7,6 @@ reports/
 **/tmp/
 node_modules/
 .tokens.json
-docs/
 /polytrix/
 pkg/
 coverage/
