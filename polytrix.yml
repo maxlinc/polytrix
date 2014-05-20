@@ -1,0 +1,19 @@
+---
+global_env:                          # global_env defines input available for all scenarios
+  LOCALE: <%= ENV['LANG'] %>         # templating is allowed
+  FAVORITE_NUMBER: 5
+suites:
+  Bootstrapping:
+    samples:
+      - default bootstrap
+      - custom bootstrap
+  Testing:                             # "Katas" is the name of the first suite
+    env:                             # These "env" values are only available within the "Katas" suite
+      NAME: 'Max'
+    samples:                         # samples defines the individual tests in a suite
+      - hello world
+      - quine
+  Plugins:                         # "Tutorials" is the name of the second suite
+        env:
+        samples:
+          - pacto
