@@ -14,10 +14,16 @@ require 'polytrix/rspec'
 
 module Polytrix
   class << self
+    # The {Polytrix::Manifest} that describes the test scenarios known to Polytrix.
+    def manifest
+      configuration.test_manifest
+    end
+
+    def implementors
+      configuration.implementors
+    end
     # The set of {Polytrix::Implementor}s registered with Polytrix.
     attr_accessor :implementors
-    # The {Polytrix::Manifest} that describes the test scenarios known to Polytrix.
-    attr_accessor :manifest
 
     # Invokes the bootstrap  action for each SDK.
     # @see Polytrix::Implementor#bootstrap
@@ -27,29 +33,9 @@ module Polytrix
       end
     end
 
-    # Loads the {manifest} from a YAML file.
-    def load_manifest(yaml_file)
-      @manifest = Polytrix::Manifest.from_yaml yaml_file
-    end
-
     # Runs all of the tests described in the {manifest}
     def run_tests
       Polytrix::RSpec.run_manifest(@manifest)
-    end
-
-    # The callback used to validate code samples that
-    # don't have a custom validator.  The default 
-    # checks that the sample code runs successfully.
-    def default_validator_callback
-      @default_validator_callback ||= proc{ |challenge|
-        expect(challenge[:result].execution_result.exitstatus).to eq(0)
-      }
-    end
-
-    # Sets a new default validator to use with code
-    # samples that don't have a custom validator.
-    def default_validator_callback=(callback)
-      @default_validator_callback = callback
     end
 
     def reset

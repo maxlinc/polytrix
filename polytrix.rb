@@ -6,6 +6,8 @@ Polytrix.implementors = [
 ]
 Polytrix.configuration.default_doc_template = 'samples/_markdown.md'
 
-Polytrix.load_manifest 'polytrix.yml'
+Polytrix.configure do |polytrix|
+  polytrix.test_manifest = 'polytrix.yml'
+end
 Polytrix.bootstrap
 Polytrix.run_tests

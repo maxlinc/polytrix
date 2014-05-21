@@ -45,6 +45,10 @@ Scenario: Running all SDKs
       Polytrix::Implementor.new :name => name
     }
 
+    Polytrix.configure do |polytrix|
+      polytrix.test_manifest = 'polytrix.yml'
+    end
+
     # This is more of an integration test, but makes sure the rspec API is working.
     # Expect results to all be pending, because there's no implementors in this proj.
 

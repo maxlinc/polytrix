@@ -24,13 +24,13 @@ module Polytrix
 
     class << self
       def run_manifest(manifest)
-        manifest['suites'].each do |suite_name, suite_config|
+        Polytrix.manifest['suites'].each do |suite_name, suite_config|
           describe suite_name do
             samples = suite_config['samples'] || []
             samples.each do |scenario|
               vars = suite_config['env']
               code_sample scenario, vars do |result|
-                instance_exec result, &Polytrix.default_validator_callback
+                instance_exec result, &Polytrix.configuration.default_validator_callback
               end
             end
           end
