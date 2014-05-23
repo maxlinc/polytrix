@@ -11,9 +11,10 @@ suites:
     env:                             # These "env" values are only available within the "Katas" suite
       NAME: 'Max'
     samples:                         # samples defines the individual tests in a suite
-      - hello world
-      - quine
+      - default validation
+      - custom validation
   Plugins:                         # "Tutorials" is the name of the second suite
         env:
         samples:
-          - pacto
+          - validating
+          - reporting

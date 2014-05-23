@@ -1,6 +1,6 @@
 module Polytrix
   class ChallengeBuilder
-    include Polytrix::Core::FileFinder
+    include Polytrix::Core::FileSystemHelper
 
     def initialize(implementor)
       @implementor = implementor

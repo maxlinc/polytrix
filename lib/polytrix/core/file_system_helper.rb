@@ -1,6 +1,6 @@
 module Polytrix
   module Core
-    module FileFinder
+    module FileSystemHelper
       class FileNotFound < StandardError; end
 
       # Finds a file by loosely matching the file name to a scenario name
@@ -15,6 +15,10 @@ module Polytrix
 
         fail FileNotFound, "No file was found for #{scenario_name} within #{search_path}" if file.nil?
         Pathname.new file
+      end
+
+      def slugify(path)
+        path.downcase.gsub(' ','_')
       end
 
       private

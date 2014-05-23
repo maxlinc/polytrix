@@ -1,47 +1,27 @@
 module Polytrix
   describe DocumentationGenerator do
-    let(:search_path) { 'spec/fixtures/src-doc' }
+    let(:scenario_name) { 'Quine' }
+    # let(:search_path) { 'spec/fixtures/src-doc' }
     let(:bound_data) { double }
 
-    context 'when no documentation template exists for the scenario' do
-      subject(:generator) { DocumentationGenerator.new(search_path, 'no_doc') }
-
-      it 'does nothing if there is no documentation for the scenario' do
-        expect(generator.process bound_data).to be_nil
-      end
-
-      context 'when the default_doc_template is set' do
-        let(:default_template) { 'spec/fixtures/src-doc/_scenario.md.erb' }
-        subject(:generator) { DocumentationGenerator.new(search_path, 'no_doc', default_template) }
-
-        it 'uses the default_doc_template if one is set' do
-          expect(generator.process bound_data).to eql('I am a generic template that is being used for the no_doc scenario.')
-        end
-      end
-
-    end
-
-    context 'when documentation does exist' do
-      subject(:generator) { DocumentationGenerator.new(search_path, 'Quine') }
+    describe 'process' do
       let(:generated_doc) { generator.process bound_data }
 
-      it 'returns the generated document as a string' do
-        expect(generated_doc).to be_a(String)
-      end
+      context 'when template is readable' do
+        subject(:generator) { DocumentationGenerator.new('spec/fixtures/src-doc/quine.md.erb', scenario_name) }
 
-      context 'ERB processing' do
-        it 'processes scenario' do
+        it 'processes the template' do
           expect(generated_doc).to include 'Examples for Quine scenario:'
         end
+      end
 
-        it 'processes Polytrix.implementors' do
-          fail 'This test requires implementors' unless Polytrix.implementors
-
-          Polytrix.implementors.each do |implementor|
-            expect(generated_doc).to include "## #{implementor}"
-          end
+      context 'when template is not readable' do
+        subject(:generator) { DocumentationGenerator.new('non_existant_file.md', scenario_name) }
+        it 'processes the template' do
+          expect(generated_doc).to be_nil
         end
       end
     end
+
   end
 end

@@ -15,7 +15,7 @@ module Polytrix
   end
 
   class ChallengeRunner
-    include Polytrix::Core::FileFinder
+    include Polytrix::Core::FileSystemHelper
     include Polytrix::Executor
 
     def self.createRunner
@@ -46,7 +46,7 @@ module Polytrix
 
     def find_challenge!(challenge, basedir = Dir.pwd)
       find_file basedir, challenge
-    rescue Polytrix::Core::FileFinder::FileNotFound
+    rescue Polytrix::Core::FileSystemHelper::FileNotFound
       raise FeatureNotImplementedError, challenge
     end
 

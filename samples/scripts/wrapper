@@ -1,2 +1,2 @@
 #!/bin/bash
-bundle exec ruby
+bundle exec ruby "$@"

@@ -2,7 +2,7 @@ require 'polytrix/version'
 require 'polytrix/executor'
 require 'polytrix/manifest'
 require 'polytrix/core/implementor'
-require 'polytrix/core/file_finder'
+require 'polytrix/core/file_system_helper'
 require 'polytrix/challenge_runner'
 require 'polytrix/challenge'
 require 'polytrix/challenge_builder'
@@ -19,11 +19,10 @@ module Polytrix
       configuration.test_manifest
     end
 
+    # The set of {Polytrix::Implementor}s registered with Polytrix.
     def implementors
       configuration.implementors
     end
-    # The set of {Polytrix::Implementor}s registered with Polytrix.
-    attr_accessor :implementors
 
     # Invokes the bootstrap  action for each SDK.
     # @see Polytrix::Implementor#bootstrap

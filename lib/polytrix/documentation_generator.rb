@@ -1,25 +1,29 @@
 module Polytrix
   class DocumentationGenerator
-    include Polytrix::Core::FileFinder
-    attr_reader :template_file
     attr_reader :scenario
 
-    def initialize(search_path, scenario, default_template = nil)
-      @search_path = search_path
+    def initialize(template_file, scenario)
       @scenario = scenario
       @template_file = template_file
-      begin
-        @template_file ||= find_file @search_path, scenario, ""
-      rescue Polytrix::Core::FileFinder::FileNotFound
-        @template_file = default_template
-      end
     end
 
     def process(challenges)
-      if @template_file
-        @template_file ||= find_file @search_path, scenario, ""
-        erb = ERB.new File.read(template_file)
-        erb.result binding
+      if File.readable? @template_file
+        # @template_file ||= find_file @search_path, scenario, ""
+        erb = ERB.new File.read(@template_file)
+        @result = erb.result(binding) || ''
+      end
+    end
+
+    def save(target_file)
+      raise 'No results to write, please call process before save' if @result.nil?
+      if @result.empty?
+        # Warn: skip creating empty file
+      else
+        FileUtils.mkdir_p File.dirname(target_file)
+        File.open(target_file, 'wb') do |f|
+          f.write @result
+        end
       end
     end
   end
