@@ -2,8 +2,10 @@
 
 require 'polytrix'
 
-Polytrix.implementors = Dir['../features/fixtures/sdks/*'].map{ |sdk|
-  name = File.basename(sdk)
-  Polytrix::Implementor.new :name => name, :basedir => sdk
-}
+Polytrix.configure do |polytrix|
+  Dir['../features/fixtures/sdks/*'].each do |sdk|
+    name = File.basename(sdk)
+    polytrix.implementor :name => name, :basedir => sdk
+  end
+end
 Polytrix.bootstrap

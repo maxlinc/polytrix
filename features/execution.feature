@@ -40,12 +40,12 @@ Scenario: Running all SDKs
     And a file named "spec/custom_spec.rb" with:
     """
     require 'polytrix/rspec'
-    Polytrix.implementors = Dir['sdks/*'].map{ |sdk|
-      name = File.basename(sdk)
-      Polytrix::Implementor.new :name => name
-    }
 
     Polytrix.configure do |polytrix|
+      Dir['sdks/*'].each do |sdk|
+        name = File.basename(sdk)
+        polytrix.implementor :name => name
+      end
       polytrix.test_manifest = 'polytrix.yml'
     end
 

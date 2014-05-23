@@ -4,4 +4,8 @@ SimpleCov.start
 require 'polytrix'
 require 'polytrix/rspec'
 
-Polytrix.implementors = Dir['sdks/*'].map{|sdk| File.basename sdk}
+Polytrix.configure do |polytrix|
+  Dir['sdks/*'].each do |sdk|
+    polytrix.implementor(File.basename sdk)
+  end
+end
