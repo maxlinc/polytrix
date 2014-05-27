@@ -1,5 +1,16 @@
+require 'tilt' # seems to be a bug where padrino-helpers should require tilt
+require 'padrino-helpers'
+
 module Polytrix
   class DocumentationGenerator
+    [
+      Padrino::Helpers::OutputHelpers,
+      Padrino::Helpers::AssetTagHelpers,
+      Padrino::Helpers::TagHelpers
+    ].each do | helper|
+      include helper
+    end
+
     attr_reader :scenario
 
     def initialize(template_file, scenario)
@@ -8,6 +19,7 @@ module Polytrix
     end
 
     def process(challenges)
+      @challenges = challenges
       if File.readable? @template_file
         # @template_file ||= find_file @search_path, scenario, ""
         erb = ERB.new File.read(@template_file)

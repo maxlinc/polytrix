@@ -20,7 +20,7 @@ module Polytrix
         polytrix_challenges = example_group.examples.map { |e| e.metadata[:polytrix_challenge] }
         target_file = target_file_for example_group
         template_file = template_for example_group
-        produce_doc template_file, target_file, example_group.description, polytrix_challenges
+        produce_doc template_file, target_file, example_group.description, polytrix_challenges if template_file
       end
 
       def dump_summary(duration, example_count, failure_count, pending_count)
@@ -29,8 +29,8 @@ module Polytrix
         @summary_files.each do |summary_file|
           template_file = template_for summary_file, :use_default => false
           next if template_file.nil?
-          target_file = target_file_for_summary(summary_file)
-          produce_doc template_file, summary_file, "Summary", grouped_challenges
+          target_file = target_file_for_summary(template_file)
+          produce_doc template_file, target_file, "Summary", grouped_challenges
         end
       end
 

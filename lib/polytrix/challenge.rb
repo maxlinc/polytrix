@@ -1,11 +1,15 @@
 require 'hashie/dash'
 require 'hashie/extensions/coercion'
 require 'hashie/extensions/indifferent_access'
+require 'polytrix/documentation/helpers/code_helper'
 
 module Polytrix
   class Challenge < Hashie::Dash
     include Hashie::Extensions::Coercion
-    include Hashie::Extensions::IndifferentAccess
+
+    # View heleprs
+    include Polytrix::Documentation::Helpers::CodeHelper
+
     property :name
     property :implementor
     property :vars, :default => {}
