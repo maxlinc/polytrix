@@ -2,48 +2,76 @@ module Polytrix
   module Documentation
     module Helpers
       describe CodeHelper do
-        subject(:generator) { DocumentationGenerator.new('spec/fixtures/src-doc/quine.md.erb', 'testing') }
-        describe '#snippet_after' do
-          let(:template) {
-            """
-            <%= @challenges.snippet_after 'Snippet: Hello, world!' %>
-            """.strip
-          }
-          let(:source) {
-            """
+        let(:challenge) { challenge = Challenge.new :name => 'test', :source_file => @source_file }
+        let(:source) {
+          %q[
             # This snippet should not be in the output.
-            puts \"Random: #{rand}\"
+            puts "Random: #{rand}"
 
             # Snippet: Hello, world!
             puts 'Hello, world!'
 
             # Nor should this snippet
             puts 'Done'
-            """.strip
-          }
-          let(:expected_snippet) {
-            """
+          ]
+        }
+        let(:expected_snippet) {
+          %q[
             puts 'Hello, world!'
-            """.strip
-          }
+          ]
+        }
 
-          it 'inserts the code block after the matching regex' do
-            with_files(:template => template, :source => source) do |template_file, source_file|
-              snippet = generate_doc_for(template_file, source_file)
-              expect(snippet.strip).to eq(expected_snippet)
-            end
+        around do | example |
+          with_files(:source => source) do | files |
+            @source_file = files.first
+            example.run
+          end
+        end
+
+        describe '#snippet_after' do
+          it 'returns the code block after the match (string)' do
+            snippet = challenge.snippet_after 'Snippet: Hello, world!'
+            expect(snippet.strip).to eq(expected_snippet.strip)
           end
 
-          it 'inserts nothing if no match is found' do
+          it 'returns the code block after the match (regex)' do
+            snippet = challenge.snippet_after /Snippet: .*/
+            expect(snippet.strip).to eq(expected_snippet.strip)
+          end
+
+          it 'returns nothing if no match is found' do
+            snippet = challenge.snippet_after 'Nothing matches'
+            expect(snippet).to be_empty
           end
         end
 
         describe '#snippet_between' do
+          # Yes, whitespace doesn't work very well w/ snippet_between
+          let(:expected_snippet) {
+            %q[
+           puts "Random: #{rand}"
+# Snippet: Hello, world!
+            puts 'Hello, world!'
+            ]
+          }
 
-          xit 'inserts all code blocks between the matching regexes' do
+          it 'inserts all code blocks between the matching regexes' do
+            snippet = challenge.snippet_between 'This snippet should not be in the output', 'Nor should this snippet'
+            expect(snippet.strip).to eq(expected_snippet.strip)
           end
 
-          xit 'inserts nothing unless both matches are found' do
+          it 'inserts nothing unless both matches are found' do
+            # Neither match
+            snippet = challenge.snippet_between 'foo', 'bar'
+            expect(snippet.strip).to be_empty
+
+            # First matches
+            snippet = challenge.snippet_between 'This snippet should not be in the output', 'foo'
+            expect(snippet.strip).to be_empty
+
+            # Last matches
+            snippet = challenge.snippet_between 'foo', 'Nor should this snippet'
+            expect(snippet.strip).to be_empty
           end
 
         end
