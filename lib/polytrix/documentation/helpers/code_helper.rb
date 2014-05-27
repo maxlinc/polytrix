@@ -1,3 +1,4 @@
+require 'rdiscount' # We don't really need a Markdown processor, but Rocco won't load without one
 require 'rocco'
 
 module Polytrix
