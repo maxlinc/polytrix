@@ -4,8 +4,19 @@ module Polytrix
   module Documentation
     module Helpers
       module CodeHelper
+        # This class will be unnecessary if https://github.com/rtomayko/rocco/issues/104 is resolved
+        class CodeSegmenter
+          def initialize
+            @rocco = Rocco.new( 'test' ) { "" }
+          end
+
+          def segment(source)
+            @rocco.parse(source)
+          end
+        end
+
         def initialize(*args)
-          @segmenter = Rocco::CodeSegmenter.new
+          @segmenter = CodeSegmenter.new
           super
         end
 
@@ -23,6 +34,7 @@ module Polytrix
         end
 
         def snippet_between(before_matcher, after_matcher)
+          raise NotImplementedError
         end
 
       end
