@@ -4,12 +4,13 @@ module Polytrix
   module Documentation
     # This class was extracted from the [Rocco](http://rtomayko.github.com/rocco/) project
     # which was in turn based on the [Docco](http://jashkenas.github.com/docco/).
-    class CodeSegmenter
+    class CodeSegmenter # rubocop:disable all
+                        # Cops are disabled because the code is from Rocco
       include CommentStyles
 
       DEFAULT_OPTIONS = {
-        :language      => 'rb',
-        :comment_chars => '#'
+        language: 'rb',
+        comment_chars: '#'
       }
 
       def initialize(options = {})
@@ -31,7 +32,7 @@ module Polytrix
         # 1.9 syntax.
         lines.shift if lines[0] =~ /^\#\!/
         lines.shift if lines[0] =~ /coding[:=]\s*[-\w.]+/ &&
-                       [ "python", "rb" ].include?(@options[:language])
+                       %w(python rb).include?(@options[:language])
 
         # To detect both block comments and single-line comments, we'll set
         # up a tiny state machine, and loop through each line of the file.
@@ -84,7 +85,7 @@ module Polytrix
           # In either case, if there's code, start a new section.
           else
             if heredoc_start && line.match(heredoc_start)
-              in_heredoc = $1
+              in_heredoc = Regexp.last_match[1]
               code << line
             elsif block_comment_one_liner && line.match(block_comment_one_liner)
               if code.any?
@@ -139,7 +140,7 @@ module Polytrix
             leading_space = section[0][0].match("^\s+")
             if leading_space
               section[0] =
-                section[0].map{ |line| line.sub(/^#{leading_space.to_s}/, '') }
+                section[0].map { |line| line.sub(/^#{leading_space.to_s}/, '') }
             end
           end
           section
@@ -159,9 +160,9 @@ module Polytrix
           if COMMENT_STYLES[@options[:language]]
             COMMENT_STYLES[@options[:language]]
           else
-            { :single => @options[:comment_chars], :multi => nil, :heredoc => nil }
+            { single: @options[:comment_chars], multi: nil, heredoc: nil }
           end
       end
-    end
+    end # rubocop:enable all
   end
 end
