@@ -18,7 +18,7 @@ module Polytrix
     include Polytrix::Core::FileSystemHelper
     include Polytrix::Executor
 
-    def self.createRunner
+    def self.create_runner
       case RbConfig::CONFIG['host_os']
       when /mswin(\d+)|mingw/i
         Runners::WindowsChallengeRunner.new

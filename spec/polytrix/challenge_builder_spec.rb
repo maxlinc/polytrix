@@ -1,8 +1,8 @@
 module Polytrix
   describe ChallengeBuilder do
-    let(:implementor) { Polytrix::Implementor.new :name => 'some_sdk', :basedir => 'spec/fixtures' }
+    let(:implementor) { Polytrix::Implementor.new name: 'some_sdk', basedir: 'spec/fixtures' }
     subject(:builder) { described_class.new implementor }
-    let(:challenge) { challenge = builder.build :name => 'factorial', :vars => {} }
+    let(:challenge) { builder.build name: 'factorial', vars: {} }
 
     it 'builds a Challenge' do
       expect(challenge).to be_an_instance_of Polytrix::Challenge

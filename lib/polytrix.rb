@@ -58,9 +58,9 @@ module Polytrix
     def merge_results(result_files)
       merged_results = Polytrix::Manifest.new
       result_files.each do |result_file|
-        merged_results.deep_merge! YAML::load(File.read(result_file))
+        merged_results.deep_merge! YAML.load(File.read(result_file))
       end
-      YAML::dump(merged_results.to_hash)
+      YAML.dump(merged_results.to_hash)
     end
   end
 end

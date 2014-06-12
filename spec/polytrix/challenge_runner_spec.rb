@@ -1,8 +1,8 @@
 module Polytrix
   describe ChallengeRunner do
-    subject(:runner) { ChallengeRunner.createRunner }
+    subject(:runner) { ChallengeRunner.create_runner }
     let(:challenge) do
-      Challenge.new :name => 'factorial', :source_file => 'spec/fixtures/factorial.py', :basedir => 'spec/fixtures'
+      Challenge.new name: 'factorial', source_file: 'spec/fixtures/factorial.py', basedir: 'spec/fixtures'
     end
 
     describe '#run_challenge' do

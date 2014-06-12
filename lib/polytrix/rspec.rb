@@ -11,11 +11,11 @@ module Polytrix
   module RSpec
     module Helper
       def challenge_runner
-        @challenge_runner ||= Polytrix::ChallengeRunner.createRunner
+        @challenge_runner ||= Polytrix::ChallengeRunner.create_runner
       end
 
       def execute_challenge(implementor, challenge_name, vars)
-        challenge = ChallengeBuilder.new(implementor).build :name => challenge_name, :basedir => implementor.basedir, :implementor => implementor.name, :vars => vars
+        challenge = ChallengeBuilder.new(implementor).build name: challenge_name, basedir: implementor.basedir, implementor: implementor.name, vars: vars
         example.metadata[:polytrix_challenge] = challenge
         result = challenge.run
         yield result
@@ -57,7 +57,7 @@ def code_sample(challenge, vars = {}, &block)
         rescue ThreadError => e
           puts "ThreadError detected: #{e.message}"
           puts "ThreadError backtrace: #{e.backtrace}"
-          raise e
+          fail e
         end
       end
     end

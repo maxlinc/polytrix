@@ -8,7 +8,7 @@ module Polytrix
         # This class will be unnecessary if https://github.com/rtomayko/rocco/issues/104 is resolved
         class CodeSegmenter
           def initialize
-            @rocco = Rocco.new( 'test' ) { "" }
+            @rocco = Rocco.new('test') { '' }
           end
 
           def segment(source)
@@ -59,6 +59,7 @@ module Polytrix
         end
 
         private
+
         def find_segment_index(segments, matcher)
           segments.find_index do |s|
             doc_segment_content = s.first.join

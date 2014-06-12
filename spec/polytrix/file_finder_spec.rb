@@ -16,6 +16,7 @@ module Polytrix
       end
 
       private
+
       def path(p)
         Pathname.new p
       end

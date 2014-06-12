@@ -9,16 +9,16 @@ module Polytrix
         potential_files.concat Dir.glob("#{search_path}/**/*#{scenario_name.gsub(' ', '')}.*", File::FNM_CASEFOLD)
 
         # Find the first file, not including generated files
-        file = potential_files.find { |file|
-          !ignored? ignored_patterns, search_path, file
-        }
+        file = potential_files.find do |f|
+          !ignored? ignored_patterns, search_path, f
+        end
 
         fail FileNotFound, "No file was found for #{scenario_name} within #{search_path}" if file.nil?
         Pathname.new file
       end
 
       def slugify(path)
-        path.downcase.gsub(' ','_')
+        path.downcase.gsub(' ', '_')
       end
 
       private
@@ -27,7 +27,7 @@ module Polytrix
         gitignore_file = "#{dir}/.gitignore"
         File.read(gitignore_file)
       rescue
-        ""
+        ''
       end
 
       def ignored?(ignored_patterns, base_path, target_file)

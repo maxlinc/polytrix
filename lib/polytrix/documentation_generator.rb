@@ -28,7 +28,7 @@ module Polytrix
     end
 
     def save(target_file)
-      raise 'No results to write, please call process before save' if @result.nil?
+      fail 'No results to write, please call process before save' if @result.nil?
       if @result.empty?
         # Warn: skip creating empty file
       else

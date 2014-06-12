@@ -20,7 +20,7 @@ module Polytrix
       it 'creates and registers Implementors' do
         # This'd be a bit nicer w/ rspec 3...
         expect do
-          configuration.implementor :name => 'test'
+          configuration.implementor name: 'test'
         end.to change {
           configuration.implementors
         }.from(be_empty).to be_an_instance_of(Array)

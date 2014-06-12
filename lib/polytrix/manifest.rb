@@ -7,7 +7,7 @@ require 'hashie/extensions/deep_merge'
 module Polytrix
   # Polytrix::Manifest acts as a test manifest. It defines the test scenarios that should be run,
   # and may be shared across multiple implementors when used for a compliance suite.
-  # 
+  #
   # A manifest is generally defined and loaded from YAML. Here's an example manifest:
   #   ---
   #   global_env:
@@ -31,14 +31,14 @@ module Polytrix
   # The *global_env* object and the *env* under each suite define (and standardize) the input for each test.
   # The *global_env* values will be made available to all tests as environment variables, along with the *env*
   # values for that specific test.
-  # 
+  #
   class Manifest < Hashie::Dash
     include Hashie::Extensions::DeepMerge
 
     class Environment < Hashie::Mash
       # Hashie Coercion - automatically treat all values as string
       def self.coerce(obj)
-        data = obj.inject({}) do |h, (key, value)|
+        data = obj.reduce({}) do |h, (key, value)|
           h[key] = value.to_s
           h
         end
@@ -47,15 +47,15 @@ module Polytrix
     end
 
     class Suite < Hashie::Dash
-      property :env, :default => {}
-      property :samples, :default => []
+      property :env, default: {}
+      property :samples, default: []
       property :results
     end
 
     class Suites < Hashie::Mash
       # Hashie Coercion - automatically treat all values as string
       def self.coerce(obj)
-        data = obj.inject({}) do |h, (key, value)|
+        data = obj.reduce({}) do |h, (key, value)|
           h[key] = Polytrix::Manifest::Suite.new(value)
           h
         end
@@ -73,7 +73,7 @@ module Polytrix
     def self.from_yaml(yaml_file)
       raw_content = File.read(yaml_file)
       processed_content = ERB.new(raw_content).result
-      data = YAML::load processed_content
+      data = YAML.load processed_content
       new data
     end
   end

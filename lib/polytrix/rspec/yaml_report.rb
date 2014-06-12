@@ -8,7 +8,7 @@ module Polytrix
     class YAMLReport < ::RSpec::Core::Formatters::BaseFormatter
       def dump_summary(duration, example_count, failure_count, pending_count)
         results = Hashie::Mash.new(Polytrix.manifest.dup.to_hash)
-        all_challenges = examples.map{|e| e.metadata[:polytrix_challenge]}
+        all_challenges = examples.map { |e| e.metadata[:polytrix_challenge] }
         grouped_challenges = all_challenges.compact.group_by(&:name)
         results.suites.each do |suite_name, suite|
           suite.samples.each do |sample|
@@ -21,7 +21,7 @@ module Polytrix
             end
           end
         end
-        @output.puts YAML::dump(results.to_hash)
+        @output.puts YAML.dump(results.to_hash)
       end
     end
   end

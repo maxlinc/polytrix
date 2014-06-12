@@ -2,8 +2,8 @@ module Polytrix
   module Documentation
     module Helpers
       describe CodeHelper do
-        let(:challenge) { challenge = Challenge.new :name => 'test', :source_file => @source_file }
-        let(:source) {
+        let(:challenge) { Challenge.new name: 'test', source_file: @source_file }
+        let(:source) do
           %q[
             # This snippet should not be in the output.
             puts "Random: #{rand}"
@@ -14,15 +14,15 @@ module Polytrix
             # Nor should this snippet
             puts 'Done'
           ]
-        }
-        let(:expected_snippet) {
+        end
+        let(:expected_snippet) do
           %q[
             puts 'Hello, world!'
           ]
-        }
+        end
 
         around do | example |
-          with_files(:source => source) do | files |
+          with_files(source: source) do | files |
             @source_file = files.first
             example.run
           end
@@ -35,7 +35,7 @@ module Polytrix
           end
 
           it 'returns the code block after the match (regex)' do
-            snippet = challenge.snippet_after /Snippet: .*/
+            snippet = challenge.snippet_after(/Snippet: .*/)
             expect(snippet.strip).to eq(expected_snippet.strip)
           end
 
@@ -47,13 +47,13 @@ module Polytrix
 
         describe '#snippet_between' do
           # Yes, whitespace doesn't work very well w/ snippet_between
-          let(:expected_snippet) {
+          let(:expected_snippet) do
             %q[
            puts "Random: #{rand}"
 # Snippet: Hello, world!
             puts 'Hello, world!'
             ]
-          }
+          end
 
           it 'inserts all code blocks between the matching regexes' do
             snippet = challenge.snippet_between 'This snippet should not be in the output', 'Nor should this snippet'
@@ -78,7 +78,7 @@ module Polytrix
 
         def generate_doc_for(template_file, source_file)
           doc_gen = DocumentationGenerator.new(template_file, 'testing')
-          challenge = Challenge.new :name => 'test', :source_file => source_file
+          challenge = Challenge.new name: 'test', source_file: source_file
           doc_gen.process(challenge)
         end
 
