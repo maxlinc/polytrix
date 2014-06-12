@@ -1,29 +1,11 @@
-require 'rdiscount' # We don't really need a Markdown processor, but Rocco won't load without one
-require 'rocco'
+require 'polytrix/documentation/code_segmenter'
 
 module Polytrix
   module Documentation
     module Helpers
       module CodeHelper
-        # This class will be unnecessary if https://github.com/rtomayko/rocco/issues/104 is resolved
-        class CodeSegmenter
-          def initialize
-            @rocco = Rocco.new('test') { '' }
-          end
-
-          def segment(source)
-            @rocco.parse(source)
-          end
-
-          def comment(lines)
-            lines.map do | line |
-              "#{@rocco.options[:comment_chars][:single]} #{line}"
-            end.join "\n"
-          end
-        end
-
         def initialize(*args)
-          @segmenter = CodeSegmenter.new
+          @segmenter = Polytrix::Documentation::CodeSegmenter.new
           super
         end
 

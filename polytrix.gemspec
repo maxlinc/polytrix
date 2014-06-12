@@ -23,11 +23,9 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rspec", "~> 2.14"
   spec.add_dependency "hashie", "~> 2.1"
   spec.add_dependency "padrino-helpers", "~> 0.12"
-  # We don't really need a Markdown processor, but Rocco won't load without one
-  spec.add_dependency "rdiscount", "~> 2.1"
-  spec.add_dependency "rocco", "~> 0.8"
   spec.add_development_dependency "bundler", "~> 1.5"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "aruba", "~> 0.5"
   spec.add_development_dependency 'rubocop', '~> 0.18.0'
+  spec.add_development_dependency 'fabrication', '~> 2.11'
 end
