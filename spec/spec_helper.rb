@@ -3,6 +3,7 @@ SimpleCov.start
 
 require 'polytrix'
 require 'polytrix/rspec'
+require 'fabrication'
 
 Polytrix.configure do |polytrix|
   Dir['sdks/*'].each do |sdk|

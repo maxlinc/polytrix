@@ -26,6 +26,7 @@ module Polytrix
       challenge_data[:source_file] ||= find_file basedir, challenge_data[:name]
       challenge_data[:basedir] ||= basedir
       challenge_data[:implementor] ||= self
+      challenge_data[:suite] ||= ''
       Challenge.new challenge_data
     end
   end

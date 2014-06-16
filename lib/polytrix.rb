@@ -1,13 +1,15 @@
 require 'polytrix/version'
-require 'polytrix/executor'
-require 'polytrix/manifest'
 require 'polytrix/core/file_system_helper'
+require 'polytrix/executor'
 require 'polytrix/core/implementor'
 require 'polytrix/challenge_runner'
 require 'polytrix/challenge'
+require 'polytrix/manifest'
 require 'polytrix/configuration'
 require 'polytrix/result'
 require 'polytrix/documentation_generator'
+require 'polytrix/validator'
+require 'polytrix/validator_registry'
 
 require 'polytrix/rspec'
 
@@ -29,6 +31,19 @@ module Polytrix
       implementors.each do |implementor|
         implementor.bootstrap
       end
+    end
+
+    # Registers a {Polytrix::Validator} that will be used during test
+    # execution on matching {Polytrix::Challenge}s.
+    def validate(scope, validator = nil, &block)
+      if block_given?
+        # validator = Polytrix::Validator.new(scope, &block)
+        validator = block
+      elsif validator.nil?
+        fail ArgumentError 'You must a block or a Validator as the second argument'
+      end
+
+      Polytrix::ValidatorRegistry.register validator
     end
 
     # Runs all of the tests described in the {manifest}

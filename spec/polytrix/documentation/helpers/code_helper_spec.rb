@@ -2,7 +2,7 @@ module Polytrix
   module Documentation
     module Helpers
       describe CodeHelper do
-        let(:challenge) { Challenge.new name: 'test', source_file: @source_file }
+        let(:challenge) { Fabricate(:challenge, name: 'test', source_file: @source_file) }
         let(:source) do
           %q[
             # This snippet should not be in the output.
@@ -78,7 +78,7 @@ module Polytrix
 
         def generate_doc_for(template_file, source_file)
           doc_gen = DocumentationGenerator.new(template_file, 'testing')
-          challenge = Challenge.new name: 'test', source_file: source_file
+          challenge = Fabricate(:challenge, name: 'test', source_file: source_file)
           doc_gen.process(challenge)
         end
 

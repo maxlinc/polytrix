@@ -12,6 +12,7 @@ module Polytrix
 
     property :name
     property :implementor
+    property :suite, required: true
     property :vars, default: {}
     property :source_file
     coerce_key :source_file, Pathname

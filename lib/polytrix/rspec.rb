@@ -14,8 +14,8 @@ module Polytrix
         @challenge_runner ||= Polytrix::ChallengeRunner.create_runner
       end
 
-      def execute_challenge(implementor, challenge_name, vars)
-        challenge = implementor.build_challenge name: challenge_name, vars: vars
+      def execute_challenge(implementor, suite, challenge_name, vars)
+        challenge = implementor.build_challenge suite: suite, name: challenge_name, vars: vars
         example.metadata[:polytrix_challenge] = challenge
         result = challenge.run
         yield result
@@ -29,7 +29,7 @@ module Polytrix
             samples = suite_config['samples'] || []
             samples.each do |scenario|
               vars = suite_config['env']
-              code_sample scenario, vars do |result|
+              code_sample scenario, vars, suite_name do |result|
                 instance_exec result, &Polytrix.configuration.default_validator_callback
               end
             end
@@ -40,7 +40,7 @@ module Polytrix
   end
 end
 
-def code_sample(challenge, vars = {}, &block)
+def code_sample(challenge, vars = {}, suite = //, &block)
   describe challenge do
     Polytrix.implementors.each do |sdk|
       sdk_name = sdk.name
@@ -49,7 +49,7 @@ def code_sample(challenge, vars = {}, &block)
         begin
           pending "#{sdk_name} is not setup" unless File.directory? sdk_dir
           challenge_runner.find_challenge! challenge, sdk_dir
-          execute_challenge sdk, challenge, vars do |result|
+          execute_challenge sdk, suite, challenge, vars do |result|
             instance_exec result, &block
           end
         rescue Polytrix::FeatureNotImplementedError => e
