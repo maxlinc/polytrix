@@ -47,13 +47,13 @@ def code_sample(challenge, vars = {}, suite = //, &block)
       sdk_dir = sdk.basedir
       it sdk_name, sdk_name.to_sym => true do
         begin
-          pending "#{sdk_name} is not setup" unless File.directory? sdk_dir
+          skip "#{sdk_name} is not setup" unless File.directory? sdk_dir
           challenge_runner.find_challenge! challenge, sdk_dir
           execute_challenge sdk, suite, challenge, vars do |result|
             instance_exec result, &block
           end
         rescue Polytrix::FeatureNotImplementedError => e
-          pending e.message
+          skip e.message
         rescue ThreadError => e
           puts "ThreadError detected: #{e.message}"
           puts "ThreadError backtrace: #{e.backtrace}"

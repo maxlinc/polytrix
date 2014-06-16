@@ -112,7 +112,9 @@ Polytrix basically does a case-insensitive search for a file whose name matches 
 
 ### Reports and documentation
 
-Polytrix can generate reports and documentation after running the tests. You can generate:
+You can use any RSpec formatter with Polytrix, since Polytrix is based on RSpec.
+
+There are also some Polytrix specific documentation and report generators. You can generate:
 - Scenario-level reports: Documentation or reports for a single scenario
 - Global reports: Documentation or reports summarizing all tested scenarios
 
