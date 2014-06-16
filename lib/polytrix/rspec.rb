@@ -15,7 +15,7 @@ module Polytrix
       end
 
       def execute_challenge(implementor, challenge_name, vars)
-        challenge = ChallengeBuilder.new(implementor).build name: challenge_name, basedir: implementor.basedir, implementor: implementor.name, vars: vars
+        challenge = implementor.build_challenge name: challenge_name, vars: vars
         example.metadata[:polytrix_challenge] = challenge
         result = challenge.run
         yield result

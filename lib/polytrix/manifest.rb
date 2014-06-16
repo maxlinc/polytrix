@@ -36,7 +36,7 @@ module Polytrix
     include Hashie::Extensions::DeepMerge
 
     class Environment < Hashie::Mash
-      # Hashie Coercion - automatically treat all values as string
+      # Hashie Coercion - automatically treat all values as String
       def self.coerce(obj)
         data = obj.reduce({}) do |h, (key, value)|
           h[key] = value.to_s
@@ -47,13 +47,14 @@ module Polytrix
     end
 
     class Suite < Hashie::Dash
+      include Hashie::Extensions::Coercion
       property :env, default: {}
       property :samples, default: []
       property :results
     end
 
     class Suites < Hashie::Mash
-      # Hashie Coercion - automatically treat all values as string
+      # Hashie Coercion - automatically treat all values as Suite
       def self.coerce(obj)
         data = obj.reduce({}) do |h, (key, value)|
           h[key] = Polytrix::Manifest::Suite.new(value)

@@ -1,5 +1,5 @@
-<% challenges.compact.each do |challenge| %> <% implementor = Polytrix.implementors.find{|i| i.name == challenge.implementor } %>
-``` <%= implementor.language %>
+<% challenges.compact.each do |challenge| %>
+``` <%= challenge.implementor.language %>
 <%= File.read(challenge.source_file) %>
 ```
 <% end %>

@@ -20,7 +20,7 @@ module Polytrix
     property :challenge_runner, default: ChallengeRunner.create_runner
     property :result
     property :env_file
-    coerce_key :vars, Polytrix::Manifest::Environment
+    # coerce_key :vars, Polytrix::Manifest::Environment
     property :plugin_data, default: {}
 
     def run

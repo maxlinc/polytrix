@@ -10,8 +10,8 @@ SAMPLE_NAMES = [
 
 Fabricator(:manifest, from: Polytrix::Manifest) do
   initialize_with { @_klass.new to_hash } # Hash based initialization
-  transient :suite_count => 3
-  transient :samples_per_suite => 3
+  transient suite_count: 3
+  transient samples_per_suite: 3
   global_env do
     {
       VAR1: 1,
@@ -35,8 +35,8 @@ end
 
 Fabricator(:suite, from: Hashie::Mash) do
   initialize_with { @_klass.new to_hash } # Hash based initialization
-  transient :name => LANGUAGES[0]
-  transient :sample_count => 3
+  transient name: LANGUAGES[0]
+  transient sample_count: 3
   samples do |attr|
     sample_count = attr[:sample_count]
     if sample_count

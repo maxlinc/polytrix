@@ -16,7 +16,7 @@ module Polytrix
               challenge_results = grouped_challenges[sample]
               challenge_results.each do |challenge|
                 suite[:results] ||= {}
-                suite[:results][challenge.implementor] = challenge.result
+                suite[:results][challenge.implementor.name] = challenge.result
               end
             end
           end
