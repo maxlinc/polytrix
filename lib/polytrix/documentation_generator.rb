@@ -6,7 +6,8 @@ module Polytrix
     [
       Padrino::Helpers::OutputHelpers,
       Padrino::Helpers::AssetTagHelpers,
-      Padrino::Helpers::TagHelpers
+      Padrino::Helpers::TagHelpers,
+      Polytrix::Documentation::Helpers::CodeHelper
     ].each do | helper|
       include helper
     end

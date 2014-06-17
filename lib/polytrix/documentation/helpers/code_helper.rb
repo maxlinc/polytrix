@@ -4,6 +4,26 @@ module Polytrix
   module Documentation
     module Helpers
       module CodeHelper
+        class ReStructuredTextHelper
+          def self.code_block(source, language)
+            buffer = StringIO.new
+            buffer.puts ".. code-block:: #{language}"
+            indented_source = source.lines.map{|line|
+              "  #{line}"
+            }.join("\n")
+            buffer.puts indented_source
+            buffer.string
+          end
+        end
+        class MarkdownHelper
+          def self.code_block(source, language)
+            buffer = StringIO.new
+            buffer.puts "```#{language}"
+            buffer.puts source
+            buffer.puts "```"
+            buffer.string
+          end
+        end
         def initialize(*args)
           @segmenter = Polytrix::Documentation::CodeSegmenter.new
           super
@@ -11,6 +31,17 @@ module Polytrix
 
         def source
           File.read source_file
+        end
+
+        def code_block(source_code, language, opts = {:format => :markdown})
+          case opts[:format]
+          when :rst
+            ReStructuredTextHelper.code_block source_code, language
+          when :markdown
+            MarkdownHelper.code_block source_code, language
+          else
+            raise IllegalArgumentError, "Unknown format: #{format}"
+          end
         end
 
         # Loses proper indentation on comments

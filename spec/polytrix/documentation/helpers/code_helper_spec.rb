@@ -76,6 +76,23 @@ module Polytrix
 
         end
 
+        describe '#code_block' do
+          it 'generates markdown code blocks by default' do
+            expected = "```ruby\n" + source + "\n```\n"
+            code_block = challenge.code_block(challenge.source, 'ruby')
+            expect(code_block).to eq(expected)
+          end
+
+          it 'generates rst for format :rst' do
+            indented_source = source.lines.map{|line|
+              "  #{line}"
+            }.join("\n")
+            expected = ".. code-block:: ruby\n" + indented_source + "\n"
+            code_block = challenge.code_block(challenge.source, 'ruby', :format => :rst)
+            expect(code_block).to eq(expected)
+          end
+        end
+
         def generate_doc_for(template_file, source_file)
           doc_gen = DocumentationGenerator.new(template_file, 'testing')
           challenge = Fabricate(:challenge, name: 'test', source_file: source_file)
