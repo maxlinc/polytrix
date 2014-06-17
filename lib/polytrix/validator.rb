@@ -1,7 +1,7 @@
 module Polytrix
   class Validator
     UNIVERSAL_MATCHER = //
-    attr_reader :suite, :sample
+    attr_reader :suite, :sample, :callback
 
     def initialize(scope = {}, &validator)
       @suite = scope[:suite] ||= UNIVERSAL_MATCHER
@@ -10,11 +10,11 @@ module Polytrix
     end
 
     def should_validate?(challenge)
-      !!(challenge.suite.match(@suite) && challenge.name.match(@sample))
+      !!(@suite.match(challenge.suite) && @sample.match(challenge.name))
     end
 
-    def validate(challenge)
-      @callback.call(challenge) if should_validate?(challenge)
-    end
+    # def validate(challenge)
+    #   instance_exec challenge, @callback if should_validate?(challenge)
+    # end
   end
 end

@@ -8,12 +8,26 @@ module Polytrix
       @validator ||= []
     end
 
-    def self.validators
-      instance.validators
-    end
+    class << self
+      def validators
+        instance.validators
+      end
 
-    def self.register(match_rules, &validator)
-      validators << validator
+      def register(validator, &callback)
+        if block_given?
+          match_rules = validator
+          validator = Validator.new(match_rules, &callback)
+        end
+        validators << validator
+      end
+
+      def validators_for(challenge)
+        validators.select { |v| v.should_validate? challenge }
+      end
+
+      def clear
+        validators.clear
+      end
     end
   end
 end

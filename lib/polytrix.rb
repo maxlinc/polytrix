@@ -37,13 +37,13 @@ module Polytrix
     # execution on matching {Polytrix::Challenge}s.
     def validate(scope, validator = nil, &block)
       if block_given?
-        # validator = Polytrix::Validator.new(scope, &block)
-        validator = block
+        validator = Polytrix::Validator.new(scope, &block)
       elsif validator.nil?
         fail ArgumentError 'You must a block or a Validator as the second argument'
       end
 
       Polytrix::ValidatorRegistry.register validator
+      validator
     end
 
     # Runs all of the tests described in the {manifest}

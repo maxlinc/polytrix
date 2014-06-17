@@ -25,7 +25,15 @@ module Polytrix
     property :plugin_data, default: {}
 
     def run
-      challenge_runner.run_challenge self
+      @result = challenge_runner.run_challenge self
+    end
+
+    def validate
+      run unless @result
+      # validators = Polytrix::ValidatorRegistry.validators_for self
+      # validators.each do |validator|
+      #   validator.validate self
+      # end
     end
   end
 end

@@ -14,12 +14,12 @@ module Polytrix
         @challenge_runner ||= Polytrix::ChallengeRunner.create_runner
       end
 
-      def execute_challenge(implementor, suite, challenge_name, vars)
-        challenge = implementor.build_challenge suite: suite, name: challenge_name, vars: vars
-        example.metadata[:polytrix_challenge] = challenge
-        result = challenge.run
-        yield result
-      end
+      # def execute_challenge(implementor, suite, challenge_name, vars)
+      #   challenge = implementor.build_challenge suite: suite, name: challenge_name, vars: vars
+      #   example.metadata[:polytrix_challenge] = challenge
+      #   result = challenge.run
+      #   yield result
+      # end
     end
 
     class << self
@@ -40,17 +40,21 @@ module Polytrix
   end
 end
 
-def code_sample(challenge, vars = {}, suite = //, &block)
-  describe challenge do
+def code_sample(challenge_name, vars = {}, suite = '', &block) # rubocop:disable MethodLength
+  Polytrix.validate(suite: suite, sample: challenge_name, &block)
+
+  describe challenge_name do
     Polytrix.implementors.each do |sdk|
-      sdk_name = sdk.name
-      sdk_dir = sdk.basedir
-      it sdk_name, sdk_name.to_sym => true do
+      it sdk.name, sdk.name.to_sym => true do
         begin
-          skip "#{sdk_name} is not setup" unless File.directory? sdk_dir
-          challenge_runner.find_challenge! challenge, sdk_dir
-          execute_challenge sdk, suite, challenge, vars do |result|
-            instance_exec result, &block
+          skip "#{sdk.name} is not setup" unless File.directory? sdk.basedir
+          challenge_runner.find_challenge! challenge_name, sdk.basedir
+          challenge = sdk.build_challenge suite: suite, name: challenge_name, vars: vars
+          example.metadata[:polytrix_challenge] = challenge
+          challenge.run
+          validators = Polytrix::ValidatorRegistry.validators_for challenge
+          validators.each do |validator|
+            instance_exec challenge, &validator.callback
           end
         rescue Polytrix::FeatureNotImplementedError => e
           skip e.message

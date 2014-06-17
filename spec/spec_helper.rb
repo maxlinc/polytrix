@@ -10,3 +10,9 @@ Polytrix.configure do |polytrix|
     polytrix.implementor(File.basename sdk)
   end
 end
+
+RSpec.configure do |c|
+  c.before(:each) do
+    Polytrix::ValidatorRegistry.clear
+  end
+end
