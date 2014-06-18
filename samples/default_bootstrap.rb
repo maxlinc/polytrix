@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+# This example shows the default behavior of {Polytrix#bootstrap}
 require 'polytrix'
 
 Polytrix.configure do |polytrix|
@@ -8,4 +9,6 @@ Polytrix.configure do |polytrix|
     polytrix.implementor name: name, basedir: sdk
   end
 end
+
+# Snippet: bootstrap
 Polytrix.bootstrap

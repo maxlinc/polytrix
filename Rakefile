@@ -24,7 +24,9 @@ end
 
 desc 'Self-test and self-document'
 task :self do
-  sh 'bundle exec rspec polytrix.rb -f documentation -f Polytrix::RSpec::YAMLReport -o reports/test_report.yaml -f Polytrix::RSpec::DocumentationFormatter'
+  sh 'bundle exec polytrix bootstrap'
+  sh 'bundle exec polytrix test'
+  sh 'bundle exec polytrix code2doc samples/*.rb'
 end
 
 Rubocop::RakeTask.new(:rubocop) do |task|

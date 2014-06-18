@@ -8,9 +8,9 @@ module Polytrix
           def self.code_block(source, language)
             buffer = StringIO.new
             buffer.puts ".. code-block:: #{language}"
-            indented_source = source.lines.map{|line|
+            indented_source = source.lines.map do|line|
               "  #{line}"
-            }.join("\n")
+            end.join("\n")
             buffer.puts indented_source
             buffer.string
           end
@@ -20,7 +20,7 @@ module Polytrix
             buffer = StringIO.new
             buffer.puts "```#{language}"
             buffer.puts source
-            buffer.puts "```"
+            buffer.puts '```'
             buffer.string
           end
         end
@@ -33,14 +33,14 @@ module Polytrix
           File.read source_file
         end
 
-        def code_block(source_code, language, opts = {:format => :markdown})
+        def code_block(source_code, language, opts = { format: :markdown })
           case opts[:format]
           when :rst
             ReStructuredTextHelper.code_block source_code, language
           when :markdown
             MarkdownHelper.code_block source_code, language
           else
-            raise IllegalArgumentError, "Unknown format: #{format}"
+            fail IllegalArgumentError, "Unknown format: #{format}"
           end
         end
 

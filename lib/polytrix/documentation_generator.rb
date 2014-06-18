@@ -14,7 +14,7 @@ module Polytrix
 
     attr_reader :scenario
 
-    def initialize(template_file, scenario)
+    def initialize(template_file = nil, scenario = nil)
       @scenario = scenario
       @template_file = template_file
     end
@@ -38,6 +38,22 @@ module Polytrix
           f.write @result
         end
       end
+    end
+
+    def code2doc(source_code, language)
+      buffer = StringIO.new
+      segmenter_options = {
+        language: language
+      }
+      segmenter = Polytrix::Documentation::CodeSegmenter.new(segmenter_options)
+      segments = segmenter.segment source_code
+      segments.each do |comment, code|
+        comment = comment.join("\n")
+        code = code.join("\n")
+        buffer.puts comment unless comment.empty?
+        buffer.puts code_block code, segmenter_options[:language] unless code.empty?
+      end
+      buffer.string
     end
   end
 end

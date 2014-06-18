@@ -84,11 +84,11 @@ module Polytrix
           end
 
           it 'generates rst for format :rst' do
-            indented_source = source.lines.map{|line|
+            indented_source = source.lines.map do|line|
               "  #{line}"
-            }.join("\n")
+            end.join("\n")
             expected = ".. code-block:: ruby\n" + indented_source + "\n"
-            code_block = challenge.code_block(challenge.source, 'ruby', :format => :rst)
+            code_block = challenge.code_block(challenge.source, 'ruby', format: :rst)
             expect(code_block).to eq(expected)
           end
         end

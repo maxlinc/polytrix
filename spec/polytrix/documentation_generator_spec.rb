@@ -23,5 +23,27 @@ module Polytrix
       end
     end
 
+    describe 'code2doc' do
+      subject(:generator) { DocumentationGenerator.new }
+
+      let(:source_code) do
+        <<-eos.gsub(/^( |\t)+/, '')
+        #!/usr/bin/env ruby
+
+        # Comments are documentation
+        puts 'And this is a code block'
+        eos
+      end
+      it 'converts source code to documentation' do
+        expect(generator.code2doc(source_code, 'ruby')).to eq(
+          <<-eos.gsub(/^( |\t)+/, '')
+          Comments are documentation
+          ```ruby
+          puts 'And this is a code block'
+          ```
+          eos
+        )
+      end
+    end
   end
 end
