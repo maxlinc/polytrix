@@ -45,7 +45,7 @@ def code_sample(challenge_name, vars = {}, suite = '', &block) # rubocop:disable
 
   describe challenge_name do
     Polytrix.implementors.each do |sdk|
-      it sdk.name, sdk.name.to_sym => true do
+      it sdk.name, sdk: sdk.name do
         begin
           skip "#{sdk.name} is not setup" unless File.directory? sdk.basedir
           challenge_runner.find_challenge! challenge_name, sdk.basedir

@@ -3,14 +3,47 @@ require 'polytrix'
 module Polytrix
   module CLI
     autoload :Add, 'polytrix/cli/add'
+    autoload :Report, 'polytrix/cli/report'
 
-    class Main < Thor
+    class Base < Thor
+
+      def self.common_options
+        # I had trouble with class_option and subclasses...
+        method_option :manifest, type: 'string', default: 'polytrix.yml', desc: 'The Polytrix test manifest file'
+        method_option :config, type: 'string', default: 'polytrix.rb', desc: 'The Polytrix config file'
+      end
+
+      protected
+
+      def debug(msg)
+        say("polytrix::debug: #{msg}", :cyan) if debugging?
+      end
+
+      def debugging?
+        ENV['POLYTRIX_DEBUG']
+      end
+
+      def setup
+        Polytrix.configuration.test_manifest = options[:manifest]
+        manifest_file = File.expand_path options[:manifest]
+        config_file = File.expand_path options[:config]
+        debug "Loading manifest file: #{manifest_file}"
+        Polytrix.configuration.test_manifest = manifest_file
+        debug "Loading Polytrix config: #{config_file}"
+        require_relative config_file
+      end
+    end
+
+    class Main < Base
       include Polytrix::Documentation::Helpers::CodeHelper
 
-      register Add, :add, 'add', 'add implementors or tests'
-
-      class_option :manifest, type: 'string', default: 'polytrix.yml', desc: 'The Polytrix test manifest file'
-      class_option :config, type: 'string', default: 'polytrix.rb', desc: 'The Polytrix config file'
+      # register Add, :add, 'add', 'Add implementors or code samples'
+      # register Report, :report, 'report', 'Generate test reports'
+      desc 'add', 'Add implementors or code samples'
+      subcommand 'add', Add
+      
+      desc 'report', 'Generate test reports'
+      subcommand 'report', Report
 
       desc 'code2doc FILES', 'Converts annotated code to Markdown or reStructuredText'
       method_option :target_dir, type: :string, default: 'docs'
@@ -25,13 +58,14 @@ module Polytrix
         files.each do |file|
           target_file_name = File.basename(file, File.extname(file)) + ".#{options[:format]}"
           target_file = File.join(options[:target_dir], target_file_name)
-          puts "Segmented #{file}, saving as #{target_file}"
+          say "Segmented #{file}, saving as #{target_file}"
           doc = Polytrix::DocumentationGenerator.new.code2doc(File.read(file), options[:lang])
           File.write(target_file, doc)
         end
       end
 
       desc 'bootstrap [SDKs]', 'Bootstraps the SDK by installing dependencies'
+      common_options
       def bootstrap(*sdks)
         setup
         if sdks.empty?
@@ -43,15 +77,16 @@ module Polytrix
         end
       end
 
-      desc 'test', 'Runs and tests the code samples'
-      def test
+      desc 'test [SDKs]', 'Runs and tests the code samples'
+      common_options
+      def test(*sdks)
+        test_env = ENV['TEST_ENV_NUMBER'].to_i
+        rspec_options = %W[--color -f Polytrix::RSpec::YAMLReport -o reports/test_report#{test_env}.yaml spec]
         setup
-        if options[:sdk]
-        else
-          rspec_options = %w[--color]
-          Polytrix.run_tests
-          ::RSpec::Core::Runner.run rspec_options
-        end
+        rspec_options << "-t #{sdks.join(',')}" unless sdks.empty?
+
+        Polytrix.run_tests
+        ::RSpec::Core::Runner.run rspec_options
       end
 
       protected
@@ -63,16 +98,6 @@ module Polytrix
           abort "SDK #{sdk} not found" if implementor.nil?
           implementor
         end
-      end
-
-      def setup
-        Polytrix.configuration.test_manifest = options[:manifest]
-        manifest_file = File.expand_path options[:manifest]
-        config_file = File.expand_path options[:config]
-        puts "Loading manifest file: #{manifest_file}"
-        Polytrix.configuration.test_manifest = manifest_file
-        puts "Loading Polytrix config: #{config_file}"
-        require_relative config_file
       end
     end
   end

@@ -27,7 +27,7 @@ Scenario: Running all SDKs
     And the python SDK
     And the hello_world polytrix config
     And the standard rspec setup
-    When I run `bundle exec rspec -t ruby`
+    When I run `bundle exec rspec -t sdk:ruby`
     Then the output should contain "Hello, world!"
     And the output should contain "1 example, 0 failures"
 

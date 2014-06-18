@@ -18,15 +18,15 @@ Scenario: A report for a single SDK
         env:
           NAME: Max
         samples:
-        - hello world
-        results:
-          ruby:
-            execution_result:
-              exitstatus: 0
-              stdout: |
-                Hello, world!
-              stderr: ''
-            source_file: sdks/ruby/challenges/hello_world.rb
+          hello world:
+            ruby:
+              execution_result:
+                exitstatus: 0
+                stdout: |
+                  Hello, world!
+                stderr: ''
+              source_file: sdks/ruby/challenges/hello_world.rb
+              test_result: :passed
 
     """
 
@@ -48,29 +48,31 @@ Scenario: A report for several SDKS
         env:
           NAME: Max
         samples:
-        - hello world
-        results:
-          java:
-            execution_result:
-              exitstatus: 0
-              stdout: |
-                Hello, world!
-              stderr: ''
-            source_file: sdks/java/challenges/HelloWorld.java
-          python:
-            execution_result:
-              exitstatus: 0
-              stdout: |
-                Hello, world!
-              stderr: ''
-            source_file: sdks/python/challenges/hello_world.py
-          ruby:
-            execution_result:
-              exitstatus: 0
-              stdout: |
-                Hello, world!
-              stderr: ''
-            source_file: sdks/ruby/challenges/hello_world.rb
+          hello world:
+            java:
+              execution_result:
+                exitstatus: 0
+                stdout: |
+                  Hello, world!
+                stderr: ''
+              source_file: sdks/java/challenges/HelloWorld.java
+              test_result: :passed
+            python:
+              execution_result:
+                exitstatus: 0
+                stdout: |
+                  Hello, world!
+                stderr: ''
+              source_file: sdks/python/challenges/hello_world.py
+              test_result: :passed
+            ruby:
+              execution_result:
+                exitstatus: 0
+                stdout: |
+                  Hello, world!
+                stderr: ''
+              source_file: sdks/ruby/challenges/hello_world.rb
+              test_result: :passed
 
     """
 
@@ -80,9 +82,9 @@ Scenario: Merging separate reports
     And the python SDK
     And the hello_world polytrix config
     And the standard rspec setup
-    When I run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -t ruby -o reports/polytrix-ruby.yaml`
-    When I run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -t java -o reports/polytrix-java.yaml`
-    When I run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -t python -o reports/polytrix-python.yaml`
+    When I run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -t sdk:ruby -o reports/polytrix-ruby.yaml`
+    When I run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -t sdk:java -o reports/polytrix-java.yaml`
+    When I run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -t sdk:python -o reports/polytrix-python.yaml`
     And I successfully run `bundle exec ruby spec/polytrix_merge.rb reports/polytrix-java.yaml reports/polytrix-python.yaml reports/polytrix-ruby.yaml`
     Then the file "reports/polytrix.yaml" should contain exactly:
     """
@@ -95,28 +97,30 @@ Scenario: Merging separate reports
         env:
           NAME: Max
         samples:
-        - hello world
-        results:
-          java:
-            execution_result:
-              exitstatus: 0
-              stdout: |
-                Hello, world!
-              stderr: ''
-            source_file: sdks/java/challenges/HelloWorld.java
-          python:
-            execution_result:
-              exitstatus: 0
-              stdout: |
-                Hello, world!
-              stderr: ''
-            source_file: sdks/python/challenges/hello_world.py
-          ruby:
-            execution_result:
-              exitstatus: 0
-              stdout: |
-                Hello, world!
-              stderr: ''
-            source_file: sdks/ruby/challenges/hello_world.rb
+          hello world:
+            java:
+              execution_result:
+                exitstatus: 0
+                stdout: |
+                  Hello, world!
+                stderr: ''
+              source_file: sdks/java/challenges/HelloWorld.java
+              test_result: :passed
+            python:
+              execution_result:
+                exitstatus: 0
+                stdout: |
+                  Hello, world!
+                stderr: ''
+              source_file: sdks/python/challenges/hello_world.py
+              test_result: :passed
+            ruby:
+              execution_result:
+                exitstatus: 0
+                stdout: |
+                  Hello, world!
+                stderr: ''
+              source_file: sdks/ruby/challenges/hello_world.rb
+              test_result: :passed
 
     """
