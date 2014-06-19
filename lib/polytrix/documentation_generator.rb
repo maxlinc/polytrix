@@ -40,7 +40,10 @@ module Polytrix
       end
     end
 
-    def code2doc(source_code, language)
+    def code2doc(source_file, language)
+      source_code = File.read(source_file)
+      language ||= Documentation::CommentStyles.infer File.extname(source_file)
+
       buffer = StringIO.new
       segmenter_options = {
         language: language

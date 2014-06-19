@@ -25,7 +25,7 @@ module Polytrix
               samples.each do |scenario|
                 describe scenario do
                   Polytrix.implementors.each do |sdk|
-                    it sdk.name, sdk: sdk.name do
+                    it sdk.name, sdk.name.to_sym => true do
                       begin
                         skip "#{sdk.name} is not setup" unless File.directory? sdk.basedir
                         challenge_runner.find_challenge! scenario, sdk.basedir

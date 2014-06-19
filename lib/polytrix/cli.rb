@@ -57,10 +57,12 @@ module Polytrix
         files.each do |file|
           target_file_name = File.basename(file, File.extname(file)) + ".#{options[:format]}"
           target_file = File.join(options[:target_dir], target_file_name)
-          say "Segmented #{file}, saving as #{target_file}"
-          doc = Polytrix::DocumentationGenerator.new.code2doc(File.read(file), options[:lang])
+          say_status 'code2doc', "Converting #{file} to #{target_file}"
+          doc = Polytrix::DocumentationGenerator.new.code2doc(file, options[:lang])
           File.write(target_file, doc)
         end
+      rescue Polytrix::Documentation::CommentStyles::UnknownStyleError => e
+        abort "Unknown file extension: #{e.extension}, please use --lang to set the language manually"
       end
 
       desc 'bootstrap [SDKs]', 'Bootstraps the SDK by installing dependencies'
@@ -87,7 +89,7 @@ module Polytrix
         unless sdks.empty?
           Polytrix.implementors.map(&:name).each do |sdk|
             # We don't have an "or" for tags, so it's easier to exclude than include multiple tags
-            rspec_options.concat %W[-t ~sdk:#{sdk}] unless sdks.include? sdk
+            rspec_options.concat %W[-t ~#{sdk.to_sym}] unless sdks.include? sdk
           end
         end
 
