@@ -34,8 +34,16 @@ module Polytrix
         puts 'And this is a code block'
         eos
       end
+
+      let(:source_file) do
+        file = Tempfile.new(['source', '.rb'])
+        file.write source_code
+        file.close
+        file.path
+      end
+
       it 'converts source code to documentation' do
-        expect(generator.code2doc(source_code, 'ruby')).to eq(
+        expect(generator.code2doc(source_file, 'ruby')).to eq(
           <<-eos.gsub(/^( |\t)+/, '')
           Comments are documentation
           ```ruby

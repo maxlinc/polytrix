@@ -3,7 +3,6 @@ module Polytrix
     # This class was extracted from the [Rocco](http://rtomayko.github.com/rocco/) project
     # which was in turn based on the [Docco](http://jashkenas.github.com/docco/).
     module CommentStyles
-
       class UnknownStyleError < StandardError
         attr_accessor :extension
 
@@ -20,7 +19,7 @@ module Polytrix
           return style if style[:extensions].include? extension
         end
 
-        raise UnknownStyleError, extension
+        fail UnknownStyleError, extension
       end
 
       C_STYLE_COMMENTS = {

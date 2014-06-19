@@ -55,7 +55,7 @@ module Polytrix
         shell = Mixlib::ShellOut.new(command, opts)
         shell.live_stream = OutputDecorator.new($stdout, prefix) unless Polytrix.configuration.suppress_output
         shell.run_command
-        shell.error!
+        # shell.error!
         ExecutionResult.new exitstatus: shell.exitstatus, stdout: shell.stdout, stderr: shell.stderr
       end
     end

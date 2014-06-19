@@ -12,6 +12,12 @@ module Polytrix
         method_option :config, type: 'string', default: 'polytrix.rb', desc: 'The Polytrix config file'
       end
 
+      def self.doc_options
+        method_option :target_dir, type: :string, default: 'docs'
+        method_option :lang, enum: Polytrix::Documentation::CommentStyles::COMMENT_STYLES.keys, desc: 'Source language (auto-detected if not specified)'
+        method_option :format, enum: %w(md rst), default: 'md'
+      end
+
       protected
 
       def debug(msg)
@@ -45,9 +51,7 @@ module Polytrix
       subcommand 'report', Report
 
       desc 'code2doc FILES', 'Converts annotated code to Markdown or reStructuredText'
-      method_option :target_dir, type: :string, default: 'docs'
-      method_option :lang, enum: Polytrix::Documentation::CommentStyles::COMMENT_STYLES.keys, desc: 'Source language (auto-detected if not specified)'
-      method_option :format, enum: %w(md rst), default: 'md'
+      doc_options
       def code2doc(*files)
         if files.empty?
           help('code2doc')
@@ -57,12 +61,44 @@ module Polytrix
         files.each do |file|
           target_file_name = File.basename(file, File.extname(file)) + ".#{options[:format]}"
           target_file = File.join(options[:target_dir], target_file_name)
-          say_status 'code2doc', "Converting #{file} to #{target_file}"
+          say_status 'polytrix:code2doc', "Converting #{file} to #{target_file}"
           doc = Polytrix::DocumentationGenerator.new.code2doc(file, options[:lang])
           File.write(target_file, doc)
         end
       rescue Polytrix::Documentation::CommentStyles::UnknownStyleError => e
         abort "Unknown file extension: #{e.extension}, please use --lang to set the language manually"
+      end
+
+      desc 'exec', 'Executes code sample(s), using the SDK settings if provided'
+      method_option :code2doc, type: :boolean, desc: 'Convert successfully executed code samples to documentation using the code2doc command'
+      doc_options
+      def exec(*files)
+        if files.empty?
+          help('exec')
+          abort 'No FILES were specified, check usage above'
+        end
+
+        implementor =  if options[:sdk]
+          Polytrix.implementors.find { |i| i.name == options[:sdk] }
+        elsif Polytrix.implementors.empty?
+          Polytrix.configuration.implementor name: File.basename(Dir.pwd), basedir: Dir.pwd
+        else
+          Polytrix.implementors.first
+        end
+
+        files.each do | file |
+          short_name = File.basename(file)
+          challenge_data = {
+            source_file: File.expand_path(file, Dir.pwd)
+          }
+          challenge = implementor.build_challenge challenge_data
+          say_status "polytrix:exec[#{short_name}]", "Executing #{file}..."
+          results = challenge.run
+          exit_code = results.result.execution_result.exitstatus
+          color = exit_code == 0 ? :green : :red
+          say_status "polytrix:exec[#{short_name}]", "Finished with exec code: #{results.result.execution_result.exitstatus}", color
+          code2doc(file) if options[:code2doc]
+        end
       end
 
       desc 'bootstrap [SDKs]', 'Bootstraps the SDK by installing dependencies'
@@ -79,7 +115,7 @@ module Polytrix
       end
 
       desc 'test [SDKs]', 'Runs and tests the code samples'
-      method_option :rspec_options, format: 'string', desc: "Extra options to pass to rspec"
+      method_option :rspec_options, format: 'string', desc: 'Extra options to pass to rspec'
       common_options
       def test(*sdks)
         setup
@@ -94,8 +130,9 @@ module Polytrix
         end
 
         Polytrix.run_tests
-        debug "Running rspec with: #{rspec_options}"
+        say_status 'polytrix:test', "Testing with rspec options: #{rspec_options.join ' '}"
         ::RSpec::Core::Runner.run rspec_options
+        say_status 'polytrix:test', "Test execution completed"
       end
 
       protected

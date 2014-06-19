@@ -1,3 +1,4 @@
+require 'pathname'
 require 'polytrix/version'
 require 'polytrix/core/file_system_helper'
 require 'polytrix/executor'

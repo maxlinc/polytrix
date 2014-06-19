@@ -39,7 +39,9 @@ module Polytrix
     end
 
     def implementor(metadata)
-      implementors << Implementor.new(metadata)
+      Implementor.new(metadata).tap do |implementor|
+        implementors << implementor
+      end
     end
 
     # The callback used to validate code samples that
