@@ -13,61 +13,52 @@ module Polytrix
       def challenge_runner
         @challenge_runner ||= Polytrix::ChallengeRunner.create_runner
       end
-
-      # def execute_challenge(implementor, suite, challenge_name, vars)
-      #   challenge = implementor.build_challenge suite: suite, name: challenge_name, vars: vars
-      #   example.metadata[:polytrix_challenge] = challenge
-      #   result = challenge.run
-      #   yield result
-      # end
     end
 
     class << self
-      def run_manifest(manifest)
-        Polytrix.manifest['suites'].each do |suite_name, suite_config|
-          describe suite_name do
-            samples = suite_config['samples'] || []
-            samples.each do |scenario|
-              vars = suite_config['env']
-              code_sample scenario, vars, suite_name do |result|
-                instance_exec result, &Polytrix.configuration.default_validator_callback
+      def shared_examples(caller) # rubocop:disable MethodLength
+        # FIXME: Long method because it's hard to eval in the right context
+        caller.instance_eval do
+          Polytrix.manifest['suites'].each do |suite_name, suite_config|
+            describe suite_name do
+              samples = suite_config['samples'] || []
+              samples.each do |scenario|
+                describe scenario do
+                  Polytrix.implementors.each do |sdk|
+                    it sdk.name, sdk: sdk.name do
+                      begin
+                        skip "#{sdk.name} is not setup" unless File.directory? sdk.basedir
+                        challenge_runner.find_challenge! scenario, sdk.basedir
+                        challenge = sdk.build_challenge suite: suite_name, name: scenario, vars: suite_config['env']
+                        example.metadata[:polytrix_challenge] = challenge
+                        challenge.run
+                        validators = Polytrix::ValidatorRegistry.validators_for challenge
+                        validators.each do |validator|
+                          instance_exec challenge, &validator.callback
+                        end
+                      rescue Polytrix::FeatureNotImplementedError => e
+                        skip e.message
+                      rescue ThreadError => e
+                        puts "ThreadError detected: #{e.message}"
+                        puts "ThreadError backtrace: #{e.backtrace}"
+                        fail e
+                      end
+                    end
+                  end
+                end
               end
             end
           end
         end
       end
-    end
-  end
-end
 
-def code_sample(challenge_name, vars = {}, suite = '', &block) # rubocop:disable MethodLength
-  Polytrix.validate(suite: suite, sample: challenge_name, &block)
-
-  describe challenge_name do
-    Polytrix.implementors.each do |sdk|
-      it sdk.name, sdk: sdk.name do
-        begin
-          skip "#{sdk.name} is not setup" unless File.directory? sdk.basedir
-          challenge_runner.find_challenge! challenge_name, sdk.basedir
-          challenge = sdk.build_challenge suite: suite, name: challenge_name, vars: vars
-          example.metadata[:polytrix_challenge] = challenge
-          challenge.run
-          validators = Polytrix::ValidatorRegistry.validators_for challenge
-          validators.each do |validator|
-            instance_exec challenge, &validator.callback
-          end
-        rescue Polytrix::FeatureNotImplementedError => e
-          skip e.message
-        rescue ThreadError => e
-          puts "ThreadError detected: #{e.message}"
-          puts "ThreadError backtrace: #{e.backtrace}"
-          fail e
-        end
+      def run_manifest(manifest)
+        shared_examples(self)
       end
     end
   end
 end
 
-RSpec.configure do |c|
+::RSpec.configure do |c|
   c.include Polytrix::RSpec::Helper
 end

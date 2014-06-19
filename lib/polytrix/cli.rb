@@ -82,8 +82,12 @@ module Polytrix
         test_env = ENV['TEST_ENV_NUMBER'].to_i
         rspec_options = %W[--color -f documentation -f Polytrix::RSpec::YAMLReport -o reports/test_report#{test_env}.yaml spec]
         setup
-        sdks = sdks.map { |sdk| "sdk:#{sdk}" }
-        rspec_options << "-t #{sdks.join(',')}" unless sdks.empty?
+        unless sdks.empty?
+          Polytrix.implementors.map(&:name).each do |sdk|
+            # We don't have an "or" for tags, so it's easier to exclude than include multiple tags
+            rspec_options.concat %W[-t ~sdk:#{sdk}] unless sdks.include? sdk
+          end
+        end
 
         Polytrix.run_tests
         debug "Running rspec with: #{rspec_options}"

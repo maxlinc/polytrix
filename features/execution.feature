@@ -52,18 +52,17 @@ Scenario: Running all SDKs
     # This is more of an integration test, but makes sure the rspec API is working.
     # Expect results to all be pending, because there's no implementors in this proj.
 
-    describe 'Katas' do
-      code_sample 'Hello World' do |challenge|
-        # You can make assertions about the process using the Mixlib::ShellOut API
-        expect(challenge[:result].execution_result.stdout).to include 'Hello, world!'
-        expect(challenge[:result].execution_result.stderr).to be_empty
-        expect(challenge[:result].execution_result.exitstatus).to eq(1) # normally this would be 0
-      end
-
-      code_sample 'Quine' do |challenge|
-        expect(challenge[:result].execution_result.stdout).to eq File.read(challenge[:result].source)
-      end
+    Polytrix.validate(suite: 'Katas', sample: 'hello world') do |challenge|
+      # You can make assertions about the process using the Mixlib::ShellOut API
+      expect(challenge[:result].execution_result.stdout).to include 'Hello, world!'
+      expect(challenge[:result].execution_result.stderr).to be_empty
+      expect(challenge[:result].execution_result.exitstatus).to eq(1) # normally this would be 0
     end
+
+    Polytrix.validate(suite: 'Katas', sample: 'quine') do |challenge|
+      expect(challenge[:result].execution_result.stdout).to eq File.read(challenge[:result].source)
+    end
+    Polytrix.run_tests
     """
     When I run `bundle exec rspec spec/custom_spec.rb`
     And the output should match /expected: 1\s+got: 0/

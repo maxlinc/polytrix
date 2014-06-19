@@ -48,7 +48,7 @@ module Polytrix
 
     # Runs all of the tests described in the {manifest}
     def run_tests
-      Polytrix::RSpec.run_manifest(@manifest)
+      Polytrix::RSpec.run_manifest(manifest)
     end
 
     def reset

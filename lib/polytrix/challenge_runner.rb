@@ -36,7 +36,11 @@ module Polytrix
     end
 
     def run_command(command)
-      execute command
+      if Polytrix.configuration.dry_run
+        puts "Would have run #{command}"
+      else
+        execute command
+      end
     end
 
     def run_challenge(challenge)

@@ -21,14 +21,18 @@ module Polytrix
 
   class Configuration < Hashie::Dash
     include Hashie::Extensions::Coercion
-    attr_reader :test_manifest
 
+    property :dry_run,      default: false
     property :logger,       default: Logger.new($stdout)
     property :middleware,   default: Polytrix::Runners::Middleware::STANDARD_MIDDLEWARE
     property :implementors, default: []
     # coerce_key :implementors, Polytrix::Implementor
     property :suppress_output, default: false
     property :default_doc_template
+
+    def test_manifest
+      @test_manifest ||= Manifest.from_yaml 'polytrix.yml'
+    end
 
     def test_manifest=(yaml_file)
       @test_manifest = Manifest.from_yaml yaml_file
