@@ -13,21 +13,21 @@ module Polytrix
         COLORS[@next_color % COLORS.size]
       end
 
-      def initialize(real_io, prefix)
+      def initialize(real_io, prefix = nil)
         @real_io = real_io
         # @prefix = set_color(prefix, :cyan)
-        @prefix = "#{prefix}: "
+        @prefix = "#{prefix}: " if prefix
         @color = self.class.next_color
         @thor_shell = Thor::Shell::Color.new
       end
 
       def puts(line)
-        line = line.gsub(/^/, @prefix)
+        line = line.gsub(/^/, @prefix) if @prefix
         @real_io.puts @thor_shell.set_color(line, @color)
       end
 
       def <<(line)
-        line = line.gsub(/^/, @prefix)
+        line = line.gsub(/^/, @prefix) if @prefix
         @real_io << @thor_shell.set_color(line, @color)
       end
 
