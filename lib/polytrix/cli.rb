@@ -77,11 +77,13 @@ module Polytrix
       end
 
       desc 'test [SDKs]', 'Runs and tests the code samples'
+      method_option :rspec_options, format: 'string', desc: "Extra options to pass to rspec"
       common_options
       def test(*sdks)
-        test_env = ENV['TEST_ENV_NUMBER'].to_i
-        rspec_options = %W[--color -f documentation -f Polytrix::RSpec::YAMLReport -o reports/test_report#{test_env}.yaml spec]
         setup
+        test_env = ENV['TEST_ENV_NUMBER'].to_i
+        rspec_options = %W[--color -f documentation -f Polytrix::RSpec::YAMLReport -o reports/test_report#{test_env}.yaml]
+        rspec_options.concat options[:rspec_options].split if options[:rspec_options]
         unless sdks.empty?
           Polytrix.implementors.map(&:name).each do |sdk|
             # We don't have an "or" for tags, so it's easier to exclude than include multiple tags
