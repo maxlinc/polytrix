@@ -82,9 +82,9 @@ Scenario: Merging separate reports
     And the python SDK
     And the hello_world polytrix config
     And the standard rspec setup
-    When I run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -t sdk:ruby -o reports/polytrix-ruby.yaml`
-    When I run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -t sdk:java -o reports/polytrix-java.yaml`
-    When I run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -t sdk:python -o reports/polytrix-python.yaml`
+    When I run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -t ruby -o reports/polytrix-ruby.yaml`
+    When I run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -t java -o reports/polytrix-java.yaml`
+    When I run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -t python -o reports/polytrix-python.yaml`
     And I successfully run `bundle exec ruby spec/polytrix_merge.rb reports/polytrix-java.yaml reports/polytrix-python.yaml reports/polytrix-ruby.yaml`
     Then the file "reports/polytrix.yaml" should contain exactly:
     """
