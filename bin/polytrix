@@ -2,5 +2,5 @@
 require 'thor'
 require 'polytrix/cli'
 
-$: << 'spec'
+$LOAD_PATH << 'spec'
 Polytrix::CLI::Main.start

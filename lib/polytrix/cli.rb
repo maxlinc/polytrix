@@ -6,7 +6,6 @@ module Polytrix
     autoload :Report, 'polytrix/cli/report'
 
     class Base < Thor
-
       def self.common_options
         # I had trouble with class_option and subclasses...
         method_option :manifest, type: 'string', default: 'polytrix.yml', desc: 'The Polytrix test manifest file'
@@ -41,7 +40,7 @@ module Polytrix
       # register Report, :report, 'report', 'Generate test reports'
       desc 'add', 'Add implementors or code samples'
       subcommand 'add', Add
-      
+
       desc 'report', 'Generate test reports'
       subcommand 'report', Report
 
@@ -81,11 +80,13 @@ module Polytrix
       common_options
       def test(*sdks)
         test_env = ENV['TEST_ENV_NUMBER'].to_i
-        rspec_options = %W[--color -f Polytrix::RSpec::YAMLReport -o reports/test_report#{test_env}.yaml spec]
+        rspec_options = %W[--color -f documentation -f Polytrix::RSpec::YAMLReport -o reports/test_report#{test_env}.yaml spec]
         setup
+        sdks = sdks.map { |sdk| "sdk:#{sdk}" }
         rspec_options << "-t #{sdks.join(',')}" unless sdks.empty?
 
         Polytrix.run_tests
+        debug "Running rspec with: #{rspec_options}"
         ::RSpec::Core::Runner.run rspec_options
       end
 

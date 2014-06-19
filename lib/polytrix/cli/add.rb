@@ -5,7 +5,7 @@ module Polytrix
 
       desc 'implementor', 'Add an implementor to the project'
       def implementor
-        raise NotImplementedError
+        fail NotImplementedError
       end
     end
   end

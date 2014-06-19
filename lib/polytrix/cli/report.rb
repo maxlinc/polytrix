@@ -9,7 +9,7 @@ module Polytrix
       def summary
         setup
         results = load_results
-        table = [['sdk','passed','failed','pending','skipped']]
+        table =  [%w(sdk passed failed pending skipped)]
         results.each do |sdk, summary|
           table << [sdk, summary[:passed], summary[:failed], summary[:pending], summary[:skipped]]
         end
@@ -19,18 +19,21 @@ module Polytrix
       protected
 
       def matrix_data
-        @matrix ||= Hashie::Mash.new(YAML::load(Polytrix.merge_results(Dir['reports/test_report*.yaml'])))
+        @matrix ||= Hashie::Mash.new(YAML.load(Polytrix.merge_results(Dir['reports/test_report*.yaml'])))
       end
 
       def load_results
         result_stats = Hash.new do |hash, sdk|
-          hash[sdk] = {:passed => 0, :failed => 0, :pending => 0, :skipped => 0}
+          hash[sdk] = { passed: 0, failed: 0, pending: 0, skipped: 0 }
         end
-        matrix_data.suites.inject(result_stats) do |hash, (suite_name, suite)|
+        matrix_data.suites.reduce(result_stats) do |hash, (suite_name, suite)|
           suite.samples.each do |sample, suite_results|
-            suite_results.each do |sdk, result|
+            Polytrix.implementors.map(&:name).each do |sdk|
+              result = suite_results[sdk]
+              result ||= Result.new
+
               result.test_result ||= :skipped
-              hash[sdk][result.test_result.to_sym] += 1;
+              hash[sdk][result.test_result.to_sym] += 1
             end
           end
           hash

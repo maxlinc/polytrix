@@ -17,7 +17,7 @@ module Polytrix
     end
 
     def bootstrap
-      execute('./scripts/bootstrap', cwd: basedir)
+      execute('./scripts/bootstrap', cwd: basedir, prefix: name)
     rescue Errno::ENOENT
       puts "Skipping bootstrapping for #{name}, no script/bootstrap exists"
     end
