@@ -4,6 +4,7 @@ SimpleCov.start
 require 'polytrix'
 require 'polytrix/rspec'
 require 'fabrication'
+require 'thor_spy'
 
 Polytrix.configure do |polytrix|
   Dir['sdks/*'].each do |sdk|

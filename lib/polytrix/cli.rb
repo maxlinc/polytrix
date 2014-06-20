@@ -1,4 +1,5 @@
 require 'polytrix'
+require 'thor'
 
 module Polytrix
   module CLI
@@ -79,13 +80,7 @@ module Polytrix
           abort 'No FILES were specified, check usage above'
         end
 
-        implementor =  if options[:sdk]
-          Polytrix.implementors.find { |i| i.name == options[:sdk] }
-        elsif Polytrix.implementors.empty?
-          Polytrix.configuration.implementor name: File.basename(Dir.pwd), basedir: Dir.pwd
-        else
-          Polytrix.implementors.first
-        end
+        pick_implementor(options[:sdks].split(','))
 
         files.each do | file |
           short_name = File.basename(file)
@@ -94,12 +89,7 @@ module Polytrix
           }
           challenge = implementor.build_challenge challenge_data
           say_status "polytrix:exec[#{short_name}]", "Executing #{file}..."
-          results = challenge.run
-          exit_code = results.result.execution_result.exitstatus
-          color = exit_code == 0 ? :green : :red
-          stderr = results.result.execution_result.stderr
-          say_status "polytrix:exec[#{short_name}][stderr]", stderr unless stderr.empty?
-          say_status "polytrix:exec[#{short_name}]", "Finished with exec code: #{results.result.execution_result.exitstatus}", color
+          display_results challenge.run
           code2doc(file) if options[:code2doc]
         end
       end
@@ -108,11 +98,12 @@ module Polytrix
       common_options
       def bootstrap(*sdks)
         setup
-        if sdks.empty?
+        implementors = find_sdks(sdks)
+        if implementors.empty?
           Polytrix.bootstrap
         else
-          each_sdk do |sdk|
-            sdk.bootstrap
+          implementors.each do |implementor|
+            implementor.bootstrap
           end
         end
       end
@@ -125,10 +116,11 @@ module Polytrix
         test_env = ENV['TEST_ENV_NUMBER'].to_i
         rspec_options = %W[--color -f documentation -f Polytrix::RSpec::YAMLReport -o reports/test_report#{test_env}.yaml]
         rspec_options.concat options[:rspec_options].split if options[:rspec_options]
-        unless sdks.empty?
+        implementors = find_sdks(sdks)
+        unless implementors.empty?
           Polytrix.implementors.map(&:name).each do |sdk|
             # We don't have an "or" for tags, so it's easier to exclude than include multiple tags
-            rspec_options.concat %W[-t ~#{sdk.to_sym}] unless sdks.include? sdk
+            rspec_options.concat %W[-t ~#{sdk.to_sym}] unless implementors.include? sdk
           end
         end
 
@@ -140,12 +132,29 @@ module Polytrix
 
       protected
 
-      def sdks
-        return nil if options[:sdks].nil?
-        @sdks ||= options[:sdks].split(',').map do |sdk|
+      def find_sdks(sdks)
+        sdks.map do |sdk|
           implementor = Polytrix.implementors.find { |i| i.name == sdk }
           abort "SDK #{sdk} not found" if implementor.nil?
           implementor
+        end
+      end
+
+      def display_results(results)
+        exit_code = results.result.execution_result.exitstatus
+        color = exit_code == 0 ? :green : :red
+        stderr = results.result.execution_result.stderr
+        say_status "polytrix:exec[#{short_name}][stderr]", stderr unless stderr.empty?
+        say_status "polytrix:exec[#{short_name}]", "Finished with exec code: #{results.result.execution_result.exitstatus}", color
+      end
+
+      def pick_implementor(sdks)
+        implementors = find_sdks(sdks)
+        if implementors.empty?
+          Polytrix.configuration.implementor name: File.basename(Dir.pwd), basedir: Dir.pwd
+          Polytrix.implementors.first
+        else
+          implementors.first
         end
       end
     end

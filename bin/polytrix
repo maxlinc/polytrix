@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-require 'thor'
 require 'polytrix/cli'
 
 $LOAD_PATH << 'spec'
