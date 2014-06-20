@@ -1,0 +1,8 @@
+---
+  global_env:
+    LOCALE: <%= ENV['LANG'] %>
+  suites:
+    Katas:
+      samples:
+        - hello world
+        - quine

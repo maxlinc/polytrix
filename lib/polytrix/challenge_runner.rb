@@ -14,7 +14,7 @@ module Polytrix
     end
   end
 
-  class ChallengeRunner
+  class ChallengeRunner < Thor::Shell::Color
     include Polytrix::Core::FileSystemHelper
     include Polytrix::Executor
 
@@ -39,6 +39,7 @@ module Polytrix
       if Polytrix.configuration.dry_run
         puts "Would have run #{command}"
       else
+        say_status 'polytrix:execute', command
         execute command
       end
     end

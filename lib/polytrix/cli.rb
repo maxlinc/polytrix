@@ -63,6 +63,7 @@ module Polytrix
           target_file = File.join(options[:target_dir], target_file_name)
           say_status 'polytrix:code2doc', "Converting #{file} to #{target_file}"
           doc = Polytrix::DocumentationGenerator.new.code2doc(file, options[:lang])
+          FileUtils.mkdir_p File.dirname(target_file)
           File.write(target_file, doc)
         end
       rescue Polytrix::Documentation::CommentStyles::UnknownStyleError => e
@@ -96,6 +97,8 @@ module Polytrix
           results = challenge.run
           exit_code = results.result.execution_result.exitstatus
           color = exit_code == 0 ? :green : :red
+          stderr = results.result.execution_result.stderr
+          say_status "polytrix:exec[#{short_name}][stderr]", stderr unless stderr.empty?
           say_status "polytrix:exec[#{short_name}]", "Finished with exec code: #{results.result.execution_result.exitstatus}", color
           code2doc(file) if options[:code2doc]
         end
@@ -132,7 +135,7 @@ module Polytrix
         Polytrix.run_tests
         say_status 'polytrix:test', "Testing with rspec options: #{rspec_options.join ' '}"
         ::RSpec::Core::Runner.run rspec_options
-        say_status 'polytrix:test', "Test execution completed"
+        say_status 'polytrix:test', 'Test execution completed'
       end
 
       protected

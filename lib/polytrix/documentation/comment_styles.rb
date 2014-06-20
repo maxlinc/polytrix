@@ -16,7 +16,7 @@ module Polytrix
         return extension if COMMENT_STYLES.key? extension
 
         COMMENT_STYLES.each do | style_name, style |
-          return style if style[:extensions].include? extension
+          return style_name if style[:extensions].include? extension
         end
 
         fail UnknownStyleError, extension
