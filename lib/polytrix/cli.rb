@@ -130,21 +130,9 @@ module Polytrix
       config_options
       def test(*sdks)
         setup
-        test_env = ENV['TEST_ENV_NUMBER'].to_i
-        rspec_options = %W[--color -f documentation -f Polytrix::RSpec::YAMLReport -o reports/test_report#{test_env}.yaml]
-        rspec_options.concat options[:rspec_options].split if options[:rspec_options]
         implementors = find_sdks(sdks)
-        unless implementors.empty?
-          Polytrix.implementors.map(&:name).each do |sdk|
-            # We don't have an "or" for tags, so it's easier to exclude than include multiple tags
-            rspec_options.concat %W[-t ~#{sdk.to_sym}] unless implementors.include? sdk
-          end
-        end
-
-        Polytrix.run_tests
-        say_status 'polytrix:test', "Testing with rspec options: #{rspec_options.join ' '}"
-        ::RSpec::Core::Runner.run rspec_options
-        say_status 'polytrix:test', 'Test execution completed'
+        Polytrix.configuration.rspec_options = options[:rspec_options]
+        Polytrix.run_tests(implementors)
       end
 
       protected

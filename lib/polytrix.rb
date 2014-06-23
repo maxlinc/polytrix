@@ -48,8 +48,21 @@ module Polytrix
     end
 
     # Runs all of the tests described in the {manifest}
-    def run_tests
+    def run_tests(implementors = nil)
+      test_env = ENV['TEST_ENV_NUMBER'].to_i
+      rspec_options = %W[--color -f documentation -f Polytrix::RSpec::YAMLReport -o reports/test_report#{test_env}.yaml]
+      rspec_options.concat Polytrix.configuration.rspec_options.split if Polytrix.configuration.rspec_options
+      unless implementors.empty?
+        Polytrix.implementors.map(&:name).each do |sdk|
+          # We don't have an "or" for tags, so it's easier to exclude than include multiple tags
+          rspec_options.concat %W[-t ~#{sdk.to_sym}] unless implementors.include? sdk
+        end
+      end
+
       Polytrix::RSpec.run_manifest(manifest)
+      puts "polytrix:test\tTesting with rspec options: #{rspec_options.join ' '}"
+      ::RSpec::Core::Runner.run rspec_options
+      puts "polytrix:test\tTest execution completed"
     end
 
     def reset

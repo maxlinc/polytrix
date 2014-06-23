@@ -31,6 +31,8 @@ module Polytrix
     property :suppress_output, default: false
     property :default_doc_template
     property :template_dir, default: "#{RESOURCES_DIR}"
+    # Extra options for rspec
+    property :rspec_options, default: ""
 
     def test_manifest
       @test_manifest ||= Manifest.from_yaml 'polytrix_tests.yml'

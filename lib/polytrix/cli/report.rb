@@ -1,19 +1,33 @@
 module Polytrix
   module CLI
+    module Reports
+      # autoload :TextReporter, 'polytrix/cli/reports/text_reporter'
+      autoload :MarkdownReporter, 'polytrix/cli/reports/markdown_reporter'
+      # autoload :HTMLReporter, 'polytrix/cli/reports/html_reporter'
+      autoload :YAMLReporter, 'polytrix/cli/reports/yaml_reporter'
+    end
     class Report < Polytrix::CLI::Base
+
+      REPORTERS = {
+        'text'     => self,
+        'markdown' => Polytrix::CLI::Reports::MarkdownReporter.new,
+        'yaml' => Polytrix::CLI::Reports::YAMLReporter.new,
+      }
+
       # class_options = super.class_options
-      class_option :format, desc: 'Output format for the report', default: 'text', enum: %w(text) # soon... json yaml markdown html)
+      class_option :format, desc: 'Output format for the report', default: 'text', enum: REPORTERS.keys
 
       desc 'report summary', 'Generate a summary report by SDK'
       config_options
       def summary
         setup
+        reporter = REPORTERS[options[:format]]
         results = load_results
         table =  [%w(sdk passed failed pending skipped)]
         results.each do |sdk, summary|
           table << [sdk, summary[:passed], summary[:failed], summary[:pending], summary[:skipped]]
         end
-        print_table table
+        reporter.print_table table
       end
 
       protected
