@@ -39,7 +39,9 @@ module Polytrix
       end
 
       def relativize(file, base_path)
-        Pathname.new(file).relative_path_from Pathname.new(base_path)
+        absolute_file = File.absolute_path(file)
+        absolute_base_path = File.absolute_path(base_path)
+        Pathname.new(absolute_file).relative_path_from Pathname.new(absolute_base_path)
       end
     end
   end

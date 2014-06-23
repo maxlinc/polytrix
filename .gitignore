@@ -1,7 +1,7 @@
 Gemfile.lock
 pacto.log
 **/.bundle/*.log
-reports/
+/reports/
 .rbenv-vars
 .packer-creds.json
 **/tmp/

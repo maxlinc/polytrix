@@ -33,6 +33,7 @@ module Polytrix
   # values for that specific test.
   #
   class Manifest < Hashie::Dash
+    include Logger
     include Hashie::Extensions::DeepMerge
 
     class Environment < Hashie::Mash
@@ -72,7 +73,7 @@ module Polytrix
 
     # Parses a YAML file to create a {Manifest} object.
     def self.from_yaml(yaml_file)
-      puts "Loading #{yaml_file}"
+      logger.debug "Loading #{yaml_file}"
       raw_content = File.read(yaml_file)
       processed_content = ERB.new(raw_content).result
       data = YAML.load processed_content

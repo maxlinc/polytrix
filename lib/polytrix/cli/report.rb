@@ -7,21 +7,14 @@ module Polytrix
       autoload :YAMLReporter, 'polytrix/cli/reports/yaml_reporter'
     end
     class Report < Polytrix::CLI::Base
-
-      REPORTERS = {
-        'text'     => self,
-        'markdown' => Polytrix::CLI::Reports::MarkdownReporter.new,
-        'yaml' => Polytrix::CLI::Reports::YAMLReporter.new,
-      }
-
       # class_options = super.class_options
-      class_option :format, desc: 'Output format for the report', default: 'text', enum: REPORTERS.keys
+      class_option :format, desc: 'Output format for the report', default: 'text', enum: %w(text markdown yaml)
 
       desc 'report summary', 'Generate a summary report by SDK'
       config_options
+      log_options
       def summary
         setup
-        reporter = REPORTERS[options[:format]]
         results = load_results
         table =  [%w(sdk passed failed pending skipped)]
         results.each do |sdk, summary|
@@ -53,6 +46,19 @@ module Polytrix
           hash
         end
         result_stats
+      end
+
+      def reporter
+        @reporter ||= case options[:format]
+                      when 'text'
+                        self
+                      when 'markdown'
+                        Polytrix::CLI::Reports::MarkdownReporter.new
+                      when 'yaml'
+                        Polytrix::CLI::Reports::YAMLReporter.new
+                      else
+                        fail "Unknown report format #{options[:format]}"
+                      end
       end
     end
   end

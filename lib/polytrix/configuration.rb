@@ -24,7 +24,7 @@ module Polytrix
     include Hashie::Extensions::Coercion
 
     property :dry_run,      default: false
-    property :logger,       default: Logger.new($stdout)
+    property :logger,       default: ::Logger.new($stdout)
     property :middleware,   default: Polytrix::Runners::Middleware::STANDARD_MIDDLEWARE
     property :implementors, default: []
     # coerce_key :implementors, Polytrix::Implementor
@@ -32,7 +32,7 @@ module Polytrix
     property :default_doc_template
     property :template_dir, default: "#{RESOURCES_DIR}"
     # Extra options for rspec
-    property :rspec_options, default: ""
+    property :rspec_options, default: ''
 
     def test_manifest
       @test_manifest ||= Manifest.from_yaml 'polytrix_tests.yml'

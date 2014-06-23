@@ -8,4 +8,4 @@ Polytrix.configure do |polytrix|
   polytrix.test_manifest = 'polytrix_tests.yml'
 end
 Polytrix.bootstrap
-Polytrix.run_tests
+Polytrix.load_tests

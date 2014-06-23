@@ -62,7 +62,7 @@ Scenario: Running all SDKs
     Polytrix.validate(suite: 'Katas', sample: 'quine') do |challenge|
       expect(challenge[:result].execution_result.stdout).to eq File.read(challenge[:result].source)
     end
-    Polytrix.run_tests
+    Polytrix.load_tests
     """
     When I run `bundle exec rspec spec/custom_spec.rb`
     And the output should match /expected: 1\s+got: 0/

@@ -39,8 +39,9 @@ module Polytrix
                       rescue Polytrix::FeatureNotImplementedError => e
                         skip e.message
                       rescue ThreadError => e
-                        puts "ThreadError detected: #{e.message}"
-                        puts "ThreadError backtrace: #{e.backtrace}"
+                        # Extra debug info for ThreadError
+                        $stderr.puts "ThreadError detected: #{e.message}"
+                        $stderr.puts "ThreadError backtrace: #{e.backtrace}"
                         fail e
                       end
                     end

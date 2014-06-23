@@ -3,6 +3,7 @@ require 'hashie/extensions/coercion'
 
 module Polytrix
   class Implementor < Hashie::Dash
+    include Polytrix::Logger
     include Polytrix::Core::FileSystemHelper
     include Hashie::Extensions::Coercion
     include Polytrix::Executor
@@ -19,7 +20,7 @@ module Polytrix
     def bootstrap
       execute('./scripts/bootstrap', cwd: basedir, prefix: name)
     rescue Errno::ENOENT
-      puts "Skipping bootstrapping for #{name}, no script/bootstrap exists"
+      logger.warn "Skipping bootstrapping for #{name}, no script/bootstrap exists"
     end
 
     def build_challenge(challenge_data)

@@ -1,5 +1,6 @@
 require 'pathname'
 require 'polytrix/version'
+require 'polytrix/logger'
 require 'polytrix/core/file_system_helper'
 require 'polytrix/executor'
 require 'polytrix/core/implementor'
@@ -15,6 +16,8 @@ require 'polytrix/validator_registry'
 require 'polytrix/rspec'
 
 module Polytrix
+  include Polytrix::Logger
+
   class << self
     # The {Polytrix::Manifest} that describes the test scenarios known to Polytrix.
     def manifest
@@ -47,8 +50,12 @@ module Polytrix
       validator
     end
 
+    def load_tests
+      Polytrix::RSpec.run_manifest(manifest)
+    end
+
     # Runs all of the tests described in the {manifest}
-    def run_tests(implementors = nil)
+    def run_tests(implementors = [])
       test_env = ENV['TEST_ENV_NUMBER'].to_i
       rspec_options = %W[--color -f documentation -f Polytrix::RSpec::YAMLReport -o reports/test_report#{test_env}.yaml]
       rspec_options.concat Polytrix.configuration.rspec_options.split if Polytrix.configuration.rspec_options
@@ -59,10 +66,10 @@ module Polytrix
         end
       end
 
-      Polytrix::RSpec.run_manifest(manifest)
-      puts "polytrix:test\tTesting with rspec options: #{rspec_options.join ' '}"
+      load_tests
+      logger.info "polytrix:test\tTesting with rspec options: #{rspec_options.join ' '}"
       ::RSpec::Core::Runner.run rspec_options
-      puts "polytrix:test\tTest execution completed"
+      logger.info "polytrix:test\tTest execution completed"
     end
 
     def reset

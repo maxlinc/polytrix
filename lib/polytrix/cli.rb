@@ -13,6 +13,10 @@ module Polytrix
         method_option :config, type: 'string', default: 'polytrix.rb', desc: 'The Polytrix config file'
       end
 
+      def self.log_options
+        method_option :quiet, type: :boolean, default: false, desc: 'Do not print log messages'
+      end
+
       def self.doc_options
         method_option :target_dir, type: :string, default: 'docs'
         method_option :lang, enum: Polytrix::Documentation::CommentStyles::COMMENT_STYLES.keys, desc: 'Source language (auto-detected if not specified)'
@@ -42,7 +46,7 @@ module Polytrix
       end
 
       def debugging?
-        ENV['POLYTRIX_DEBUG']
+        !ENV['POLYTRIX_DEBUG'].nil?
       end
 
       def setup
@@ -78,7 +82,7 @@ module Polytrix
         files.each do |file|
           target_file_name = File.basename(file, File.extname(file)) + ".#{options[:format]}"
           target_file = File.join(options[:target_dir], target_file_name)
-          say_status 'polytrix:code2doc', "Converting #{file} to #{target_file}"
+          say_status 'polytrix:code2doc', "Converting #{file} to #{target_file}", quiet?
           doc = Polytrix::DocumentationGenerator.new.code2doc(file, options[:lang])
           FileUtils.mkdir_p File.dirname(target_file)
           File.write(target_file, doc)
@@ -97,15 +101,15 @@ module Polytrix
           abort 'No FILES were specified, check usage above'
         end
 
-        pick_implementor options[:sdk]
+        implementor = pick_implementor options[:sdk]
 
         files.each do | file |
-          short_name = File.basename(file)
           challenge_data = {
+            name: File.basename(file),
             source_file: File.expand_path(file, Dir.pwd)
           }
           challenge = implementor.build_challenge challenge_data
-          say_status "polytrix:exec[#{short_name}]", "Executing #{file}..."
+          say_status "polytrix:exec[#{challenge.name}]", "Executing #{file}..."
           display_results challenge.run
           code2doc(file) if options[:code2doc]
         end
@@ -137,12 +141,17 @@ module Polytrix
 
       protected
 
-      def display_results(results)
-        exit_code = results.result.execution_result.exitstatus
+      def quiet?
+        options[:quiet] || false
+      end
+
+      def display_results(challenge)
+        short_name = challenge.name
+        exit_code = challenge.result.execution_result.exitstatus
         color = exit_code == 0 ? :green : :red
-        stderr = results.result.execution_result.stderr
-        say_status "polytrix:exec[#{short_name}][stderr]", stderr unless stderr.empty?
-        say_status "polytrix:exec[#{short_name}]", "Finished with exec code: #{results.result.execution_result.exitstatus}", color
+        stderr = challenge.result.execution_result.stderr
+        say_status "polytrix:exec[#{short_name}][stderr]", stderr, quiet? unless stderr.empty?
+        say_status "polytrix:exec[#{short_name}]", "Finished with exec code: #{challenge.result.execution_result.exitstatus}", color unless quiet?
       end
     end
   end
