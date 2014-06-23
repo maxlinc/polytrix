@@ -15,7 +15,6 @@ require 'polytrix/validator_registry'
 require 'polytrix/rspec'
 
 module Polytrix
-
   class << self
     # The {Polytrix::Manifest} that describes the test scenarios known to Polytrix.
     def manifest
@@ -77,6 +76,11 @@ module Polytrix
         merged_results.deep_merge! YAML.load(File.read(result_file))
       end
       YAML.dump(merged_results.to_hash)
+    end
+
+    def build_implementor(folder)
+      fail ArgumentError, "#{folder} is not a directory" unless File.directory? folder
+      Polytrix.configuration.implementor name: File.basename(sdk), basedir: sdk
     end
   end
 end

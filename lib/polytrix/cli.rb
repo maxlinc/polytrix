@@ -34,11 +34,7 @@ module Polytrix
       end
 
       def pick_implementor(sdk)
-        implementor = Polytrix.implementors.find {|i| i.name == sdk}
-        if implementor.nil? && File.directory?(sdk)
-          implementor = Polytrix.configuration.implementor name: File.basename(sdk), basedir: sdk
-        end
-        implementor
+        Polytrix.implementors.find { |i| i.name == sdk } || Polytrix.build_implementor(sdk)
       end
 
       def debug(msg)

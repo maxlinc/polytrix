@@ -20,9 +20,9 @@ module Polytrix
       def generate_source(implementor, scenario, language)
         source_paths.prepend File.expand_path(implementor.basedir)
         @implementor = implementor
-        @scenario = implementor.build_challenge({
+        @scenario = implementor.build_challenge(
           name: scenario
-        })
+        )
         @language = language
 
         output_file = File.join(implementor.basedir, "#{scenario.gsub(' ', '_')}.#{language}")
@@ -49,9 +49,9 @@ module Polytrix
       end
 
       def comment_line(line, comment_string)
-        comment_string ||= ""
+        comment_string ||= ''
         if line.strip.empty?
-          whitespace, line = line.gsub("\n", ''), ""
+          whitespace, line = line.gsub("\n", ''), ''
         else
           whitespace, line = line.rstrip.match(/([\s]*)(.*)/).captures
         end
@@ -60,7 +60,7 @@ module Polytrix
       end
 
       def use_multiline?(comment, comment_style)
-        return comment.lines.size > 1 && !comment_style[:multi].nil? && (comment_style[:multi][:idiomatic] != false)
+        comment.lines.size > 1 && !comment_style[:multi].nil? && (comment_style[:multi][:idiomatic] != false)
       end
     end
   end
