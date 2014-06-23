@@ -5,7 +5,7 @@ Polytrix.configure do |polytrix|
     name = File.basename(sdk)
     polytrix.implementor name: name
   end
-  polytrix.test_manifest = 'polytrix.yml'
+  polytrix.test_manifest = 'polytrix_tests.yml'
 end
 Polytrix.bootstrap
 Polytrix.run_tests

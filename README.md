@@ -24,7 +24,7 @@ Polytrix.implementors = Dir['sdks/*'].map{ |sdk|
   Polytrix::Implementor.new :name => name
 }
 
-Polytrix.load_manifest 'polytrix.yml'
+Polytrix.load_manifest 'polytrix_tests.yml'
 Polytrix.bootstrap
 Polytrix.run_tests
 ```

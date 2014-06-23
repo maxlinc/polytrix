@@ -1,6 +1,6 @@
 require 'hashie/mash'
 
-# Fabricates test manifests (.polytrix.yml files)
+# Fabricates test manifests (.polytrix_tests.yml files)
 LANGUAGES = %w(java ruby python nodejs c# golang php)
 SAMPLE_NAMES = [
   'hello world',

@@ -9,7 +9,7 @@ module Polytrix
     class Base < Thor
       def self.config_options
         # I had trouble with class_option and subclasses...
-        method_option :manifest, type: 'string', default: 'polytrix.yml', desc: 'The Polytrix test manifest file'
+        method_option :manifest, type: 'string', default: 'polytrix_tests.yml', desc: 'The Polytrix test manifest file'
         method_option :config, type: 'string', default: 'polytrix.rb', desc: 'The Polytrix config file'
       end
 

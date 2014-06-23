@@ -46,7 +46,7 @@ Scenario: Running all SDKs
         name = File.basename(sdk)
         polytrix.implementor :name => name
       end
-      polytrix.test_manifest = 'polytrix.yml'
+      polytrix.test_manifest = 'polytrix_tests.yml'
     end
 
     # This is more of an integration test, but makes sure the rspec API is working.

@@ -33,7 +33,7 @@ module Polytrix
     property :template_dir, default: "#{RESOURCES_DIR}"
 
     def test_manifest
-      @test_manifest ||= Manifest.from_yaml 'polytrix.yml'
+      @test_manifest ||= Manifest.from_yaml 'polytrix_tests.yml'
     end
 
     def test_manifest=(yaml_file)
