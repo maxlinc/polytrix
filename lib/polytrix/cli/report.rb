@@ -5,7 +5,7 @@ module Polytrix
       class_option :format, desc: 'Output format for the report', default: 'text', enum: %w(text) # soon... json yaml markdown html)
 
       desc 'report summary', 'Generate a summary report by SDK'
-      common_options
+      config_options
       def summary
         setup
         results = load_results

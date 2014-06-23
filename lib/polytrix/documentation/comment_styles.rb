@@ -13,10 +13,10 @@ module Polytrix
 
       def self.infer(extension)
         extension.tr! '.', ''
-        return extension if COMMENT_STYLES.key? extension
+        return extension, COMMENT_STYLES[extension] if COMMENT_STYLES.key? extension
 
         COMMENT_STYLES.each do | style_name, style |
-          return style_name if style[:extensions].include? extension
+          return style_name, style if style[:extensions].include? extension
         end
 
         fail UnknownStyleError, extension
@@ -69,7 +69,7 @@ module Polytrix
         },
         'rb'            =>  {
           single: '#',
-          multi: { start: '=begin', middle: nil, end: '=end' },
+          multi: { start: '=begin', middle: nil, end: '=end', idiomatic: false },
           heredoc: '<<-',
           extensions: %w(rb)
         },

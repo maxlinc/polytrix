@@ -1,0 +1,11 @@
+public class <%= @scenario.name %> {
+  public static void main(String[] args) {
+    <%= commented @scenario.name %>
+    <%= commented """
+    This is
+    a multi line
+    test
+    """ %>
+    <%= commented "This is\nanother multi line\ntest\n" %>
+  }
+}

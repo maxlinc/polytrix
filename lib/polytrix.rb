@@ -15,6 +15,7 @@ require 'polytrix/validator_registry'
 require 'polytrix/rspec'
 
 module Polytrix
+
   class << self
     # The {Polytrix::Manifest} that describes the test scenarios known to Polytrix.
     def manifest

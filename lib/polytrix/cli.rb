@@ -7,7 +7,7 @@ module Polytrix
     autoload :Report, 'polytrix/cli/report'
 
     class Base < Thor
-      def self.common_options
+      def self.config_options
         # I had trouble with class_option and subclasses...
         method_option :manifest, type: 'string', default: 'polytrix.yml', desc: 'The Polytrix test manifest file'
         method_option :config, type: 'string', default: 'polytrix.rb', desc: 'The Polytrix config file'
@@ -19,7 +19,27 @@ module Polytrix
         method_option :format, enum: %w(md rst), default: 'md'
       end
 
+      def self.sdk_options
+        method_option :sdk, type: 'string', desc: 'An implementor name or directory', default: '.'
+      end
+
       protected
+
+      def find_sdks(sdks)
+        sdks.map do |sdk|
+          implementor = Polytrix.implementors.find { |i| i.name == sdk }
+          abort "SDK #{sdk} not found" if implementor.nil?
+          implementor
+        end
+      end
+
+      def pick_implementor(sdk)
+        implementor = Polytrix.implementors.find {|i| i.name == sdk}
+        if implementor.nil? && File.directory?(sdk)
+          implementor = Polytrix.configuration.implementor name: File.basename(sdk), basedir: sdk
+        end
+        implementor
+      end
 
       def debug(msg)
         say("polytrix::debug: #{msg}", :cyan) if debugging?
@@ -74,13 +94,14 @@ module Polytrix
       desc 'exec', 'Executes code sample(s), using the SDK settings if provided'
       method_option :code2doc, type: :boolean, desc: 'Convert successfully executed code samples to documentation using the code2doc command'
       doc_options
+      sdk_options
       def exec(*files)
         if files.empty?
           help('exec')
           abort 'No FILES were specified, check usage above'
         end
 
-        pick_implementor(options[:sdks].split(','))
+        pick_implementor options[:sdk]
 
         files.each do | file |
           short_name = File.basename(file)
@@ -95,7 +116,7 @@ module Polytrix
       end
 
       desc 'bootstrap [SDKs]', 'Bootstraps the SDK by installing dependencies'
-      common_options
+      config_options
       def bootstrap(*sdks)
         setup
         implementors = find_sdks(sdks)
@@ -110,7 +131,7 @@ module Polytrix
 
       desc 'test [SDKs]', 'Runs and tests the code samples'
       method_option :rspec_options, format: 'string', desc: 'Extra options to pass to rspec'
-      common_options
+      config_options
       def test(*sdks)
         setup
         test_env = ENV['TEST_ENV_NUMBER'].to_i
@@ -132,30 +153,12 @@ module Polytrix
 
       protected
 
-      def find_sdks(sdks)
-        sdks.map do |sdk|
-          implementor = Polytrix.implementors.find { |i| i.name == sdk }
-          abort "SDK #{sdk} not found" if implementor.nil?
-          implementor
-        end
-      end
-
       def display_results(results)
         exit_code = results.result.execution_result.exitstatus
         color = exit_code == 0 ? :green : :red
         stderr = results.result.execution_result.stderr
         say_status "polytrix:exec[#{short_name}][stderr]", stderr unless stderr.empty?
         say_status "polytrix:exec[#{short_name}]", "Finished with exec code: #{results.result.execution_result.exitstatus}", color
-      end
-
-      def pick_implementor(sdks)
-        implementors = find_sdks(sdks)
-        if implementors.empty?
-          Polytrix.configuration.implementor name: File.basename(Dir.pwd), basedir: Dir.pwd
-          Polytrix.implementors.first
-        else
-          implementors.first
-        end
       end
     end
   end

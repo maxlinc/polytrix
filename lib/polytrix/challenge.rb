@@ -11,6 +11,7 @@ module Polytrix
     include Polytrix::Documentation::Helpers::CodeHelper
 
     property :name
+    property :description
     property :implementor
     property :suite, required: true
     property :vars, default: {}

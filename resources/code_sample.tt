@@ -1,0 +1,2 @@
+<%= commented "Sample for #{@scenario.name}" %>
+<%= commented @scenario.description if @scenario.description %>

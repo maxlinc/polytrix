@@ -4,6 +4,7 @@ require 'hashie/dash'
 require 'hashie/extensions/coercion'
 
 module Polytrix
+  RESOURCES_DIR = File.expand_path '../../../resources', __FILE__
   # Autoload pool
   module Runners
     module Middleware
@@ -29,6 +30,7 @@ module Polytrix
     # coerce_key :implementors, Polytrix::Implementor
     property :suppress_output, default: false
     property :default_doc_template
+    property :template_dir, default: "#{RESOURCES_DIR}"
 
     def test_manifest
       @test_manifest ||= Manifest.from_yaml 'polytrix.yml'
