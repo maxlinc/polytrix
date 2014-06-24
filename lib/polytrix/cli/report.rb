@@ -26,7 +26,7 @@ module Polytrix
       protected
 
       def matrix_data
-        @matrix ||= Hashie::Mash.new(YAML.load(Polytrix.merge_results(Dir['reports/test_report*.yaml'])))
+        @matrix ||= Polytrix::Manifest.new(YAML.load(Polytrix.merge_results(Dir['reports/test_report*.yaml'])))
       end
 
       def load_results
@@ -36,11 +36,9 @@ module Polytrix
         matrix_data.suites.reduce(result_stats) do |hash, (suite_name, suite)|
           suite.samples.each do |sample, suite_results|
             Polytrix.implementors.map(&:name).each do |sdk|
-              result = suite_results[sdk]
-              result ||= Result.new
-
-              result.test_result ||= :skipped
-              hash[sdk][result.test_result.to_sym] += 1
+              result = Result.new(suite_results[sdk])
+              result.validations << Validation.new(validated_by: 'polytrix', result: 'skipped')
+              hash[sdk][result.status.to_sym] += 1
             end
           end
           hash

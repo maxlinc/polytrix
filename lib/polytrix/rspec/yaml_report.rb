@@ -39,8 +39,12 @@ module Polytrix
       private
 
       def add_implementation_result(example, state)
+        validation = Validation.new(
+          validated_by: 'polytrix',
+          result: state.to_s
+        )
         challenge = example.metadata[:polytrix_challenge]
-        challenge.result.test_result = state unless challenge.nil? || challenge.result.nil?
+        challenge.result.validations << validation unless challenge.nil? || challenge.result.nil?
       end
     end
   end
