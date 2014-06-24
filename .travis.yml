@@ -1,1 +1,8 @@
+rvm:
+  - 1.9.3
+  - 2.0.0
+  - 2.1.0
 lang: java # We're really testing Ruby, Java and Python
+allow_failures:
+  rvm:
+    - 1.9.3 # YAML formatting differs
