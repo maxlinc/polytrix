@@ -17,7 +17,7 @@ module Polytrix
 
         context 'with an existing SDK' do
           before do
-            @implementor = Polytrix.configuration.implementor name: 'test'
+            @implementor = Polytrix.configuration.implementor name: 'test', basedir: '.'
           end
 
           it 'calls bootstrap on the SDK' do

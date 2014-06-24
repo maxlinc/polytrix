@@ -43,8 +43,20 @@ module Polytrix
     end
 
     def implementor(metadata)
-      Implementor.new(metadata).tap do |implementor|
-        implementors << implementor
+      if metadata.is_a? Hash # load from data
+        Implementor.new(metadata).tap do |implementor|
+          implementors << implementor
+        end
+      else # load from filesystem
+        folder = metadata
+        fail ArgumentError, "#{folder} is not a directory" unless File.directory? folder
+        settings_file = File.expand_path('polytrix.yml', folder)
+        if File.exist? settings_file
+          settings = YAML.load(File.read(settings_file))
+          Polytrix.configuration.implementor(settings.merge(basedir: folder))
+        else
+          Polytrix.configuration.implementor name: File.basename(folder), basedir: folder
+        end
       end
     end
 

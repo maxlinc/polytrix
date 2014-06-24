@@ -97,16 +97,5 @@ module Polytrix
       end
       YAML.dump(merged_results.to_hash)
     end
-
-    def build_implementor(folder)
-      fail ArgumentError, "#{folder} is not a directory" unless File.directory? folder
-      settings_file = File.expand_path('polytrix.yml', folder)
-      if File.exist? settings_file
-        settings = YAML.load(File.read(settings_file))
-        Polytrix.configuration.implementor(settings.merge(basedir: folder))
-      else
-        Polytrix.configuration.implementor name: File.basename(folder), basedir: folder
-      end
-    end
   end
 end

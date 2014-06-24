@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module Polytrix
   describe Implementor do
-    subject(:implementor) { described_class.new(name: 'test', language: 'ruby') }
+    subject(:implementor) { described_class.new(name: 'test', language: 'ruby', basedir: 'sdks/test') }
     let(:executor) { double('executor') }
 
     before do
