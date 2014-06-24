@@ -55,19 +55,6 @@ module Polytrix
       raise FeatureNotImplementedError, challenge
     end
 
-    def edit_challenge(challenge)
-      suffix = infer_suffix File.dirname(challenge)
-      challenge_file = "#{challenge}#{suffix}"
-      puts "Would you like to create #{challenge_file} (y/n)? "
-      system "#{challenge_editor} #{challenge_file}" if $stdin.gets.strip == 'y'
-      File.absolute_path challenge_file
-    end
-
-    def infer_suffix(source_dir)
-      # FIXME: Should be configurable or have a better way to infer
-      Dir["#{source_dir}/**/*.*"].map { |f| File.extname f }.first
-    end
-
     private
 
     def middleware

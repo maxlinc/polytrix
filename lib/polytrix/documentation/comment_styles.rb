@@ -16,7 +16,7 @@ module Polytrix
         return extension, COMMENT_STYLES[extension] if COMMENT_STYLES.key? extension
 
         COMMENT_STYLES.each do | style_name, style |
-          return style_name, style if style[:extensions].include? extension
+          return extension, style if style[:extensions].include? extension
         end
 
         fail UnknownStyleError, extension
@@ -26,7 +26,7 @@ module Polytrix
         single: '//',
         multi: { start: '/**', middle: '*', end: '*/' },
         heredoc: nil,
-        extensions: %w(c cpp cs java js php scala)
+        extensions: %w(c cpp cs java js php scala go)
       }
 
       COMMENT_STYLES  = {

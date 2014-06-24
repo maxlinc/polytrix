@@ -42,11 +42,16 @@ module Polytrix
 
     def code2doc(source_file, language)
       source_code = File.read(source_file)
-      language ||= Documentation::CommentStyles.infer File.extname(source_file)
+      if language.nil?
+        language, comment_style = Documentation::CommentStyles.infer File.extname(source_file)
+        segmenter_language = comment_style[:language]
+      else
+        segmenter_language = language
+      end
 
       buffer = StringIO.new
       segmenter_options = {
-        language: language
+        language: segmenter_language
       }
       segmenter = Polytrix::Documentation::CodeSegmenter.new(segmenter_options)
       segments = segmenter.segment source_code
@@ -54,7 +59,7 @@ module Polytrix
         comment = comment.join("\n")
         code = code.join("\n")
         buffer.puts comment unless comment.empty?
-        buffer.puts code_block code, segmenter_options[:language] unless code.empty?
+        buffer.puts code_block code, language unless code.empty?
       end
       buffer.string
     end
