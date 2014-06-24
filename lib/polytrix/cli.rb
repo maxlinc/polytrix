@@ -38,7 +38,7 @@ module Polytrix
       end
 
       def pick_implementor(sdk)
-        Polytrix.implementors.find { |i| i.name == sdk } || Polytrix.build_implementor(sdk)
+        Polytrix.implementors.find { |i| i.name == sdk } || Polytrix.configuration.implementor(sdk)
       end
 
       def debug(msg)

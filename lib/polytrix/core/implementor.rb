@@ -8,12 +8,13 @@ module Polytrix
     include Hashie::Extensions::Coercion
     include Polytrix::Executor
     property :name
-    property :basedir
+    property :basedir, required: true
     property :language
     coerce_key :basedir, Pathname
 
     def initialize(data)
-      data[:basedir] ||= "sdks/#{data[:name]}"
+      data = Hashie::Mash.new data
+      data[:name] ||= File.basename data[:basedir]
       super(data)
     end
 

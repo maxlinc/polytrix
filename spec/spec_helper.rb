@@ -8,7 +8,7 @@ require 'thor_spy'
 
 Polytrix.configure do |polytrix|
   Dir['sdks/*'].each do |sdk|
-    polytrix.implementor(File.basename sdk)
+    polytrix.build_implementor sdk
   end
 end
 
