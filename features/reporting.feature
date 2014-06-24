@@ -6,7 +6,7 @@ Scenario: A report for a single SDK
     Given the ruby SDK
     And the hello_world polytrix config
     And the standard rspec setup
-    When I run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -o reports/polytrix.yaml`
+    When I successfully run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -o reports/polytrix.yaml`
     Then the file "reports/polytrix.yaml" should contain exactly:
     """
     ---
@@ -20,13 +20,15 @@ Scenario: A report for a single SDK
         samples:
           hello world:
             ruby:
+              validations:
+              - validated_by: polytrix
+                result: passed
               execution_result:
                 exitstatus: 0
                 stdout: |
                   Hello, world!
                 stderr: ''
               source_file: sdks/ruby/challenges/hello_world.rb
-              test_result: :passed
 
     """
 
@@ -36,7 +38,7 @@ Scenario: A report for several SDKS
     And the python SDK
     And the hello_world polytrix config
     And the standard rspec setup
-    When I run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -o reports/polytrix.yaml`
+    When I successfully run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -o reports/polytrix.yaml`
     Then the file "reports/polytrix.yaml" should contain exactly:
     """
     ---
@@ -50,29 +52,35 @@ Scenario: A report for several SDKS
         samples:
           hello world:
             java:
+              validations:
+              - validated_by: polytrix
+                result: passed
               execution_result:
                 exitstatus: 0
                 stdout: |
                   Hello, world!
                 stderr: ''
               source_file: sdks/java/challenges/HelloWorld.java
-              test_result: :passed
             python:
+              validations:
+              - validated_by: polytrix
+                result: passed
               execution_result:
                 exitstatus: 0
                 stdout: |
                   Hello, world!
                 stderr: ''
               source_file: sdks/python/challenges/hello_world.py
-              test_result: :passed
             ruby:
+              validations:
+              - validated_by: polytrix
+                result: passed
               execution_result:
                 exitstatus: 0
                 stdout: |
                   Hello, world!
                 stderr: ''
               source_file: sdks/ruby/challenges/hello_world.rb
-              test_result: :passed
 
     """
 
@@ -82,9 +90,9 @@ Scenario: Merging separate reports
     And the python SDK
     And the hello_world polytrix config
     And the standard rspec setup
-    When I run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -t ruby -o reports/polytrix-ruby.yaml`
-    When I run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -t java -o reports/polytrix-java.yaml`
-    When I run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -t python -o reports/polytrix-python.yaml`
+    When I successfully run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -t ruby -o reports/polytrix-ruby.yaml`
+    When I successfully run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -t java -o reports/polytrix-java.yaml`
+    When I successfully run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -t python -o reports/polytrix-python.yaml`
     And I successfully run `bundle exec ruby spec/polytrix_merge.rb reports/polytrix-java.yaml reports/polytrix-python.yaml reports/polytrix-ruby.yaml`
     Then the file "reports/polytrix.yaml" should contain exactly:
     """
@@ -99,28 +107,34 @@ Scenario: Merging separate reports
         samples:
           hello world:
             java:
+              validations:
+              - validated_by: polytrix
+                result: passed
               execution_result:
                 exitstatus: 0
                 stdout: |
                   Hello, world!
                 stderr: ''
               source_file: sdks/java/challenges/HelloWorld.java
-              test_result: :passed
             python:
+              validations:
+              - validated_by: polytrix
+                result: passed
               execution_result:
                 exitstatus: 0
                 stdout: |
                   Hello, world!
                 stderr: ''
               source_file: sdks/python/challenges/hello_world.py
-              test_result: :passed
             ruby:
+              validations:
+              - validated_by: polytrix
+                result: passed
               execution_result:
                 exitstatus: 0
                 stdout: |
                   Hello, world!
                 stderr: ''
               source_file: sdks/ruby/challenges/hello_world.rb
-              test_result: :passed
 
     """
