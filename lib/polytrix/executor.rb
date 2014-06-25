@@ -36,6 +36,10 @@ module Polytrix
       end
     end
 
+    class ExecutionError < StandardError
+      attr_accessor :execution_result
+    end
+
     class ExecutionResult < Hashie::Dash
       property :exitstatus, require: true
       property :stdout, required: true
@@ -55,8 +59,16 @@ module Polytrix
         shell = Mixlib::ShellOut.new(command, opts)
         shell.live_stream = OutputDecorator.new($stdout, prefix) unless Polytrix.configuration.suppress_output
         shell.run_command
-        # shell.error!
-        ExecutionResult.new exitstatus: shell.exitstatus, stdout: shell.stdout, stderr: shell.stderr
+        execution_result = ExecutionResult.new exitstatus: shell.exitstatus, stdout: shell.stdout, stderr: shell.stderr
+        begin
+          shell.error!
+        rescue Mixlib::ShellOut::ShellCommandFailed => e
+          execution_error = ExecutionError.new(e)
+          execution_error.execution_result = execution_result
+          raise execution_error
+        end
+
+        execution_result
       end
     end
 
