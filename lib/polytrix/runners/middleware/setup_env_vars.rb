@@ -4,12 +4,13 @@ module Polytrix
   module Runners
     module Middleware
       class SetupEnvVars
+        include Polytrix::Core::FileSystemHelper
+
         def initialize(app)
           @app   = app
         end
 
         def call(env)
-          challenge_runner = env[:challenge_runner]
           vars = begin
             Polytrix.manifest[:global_env].dup
           rescue
@@ -17,15 +18,17 @@ module Polytrix
           end
           vars = vars.merge env[:vars].dup
 
-          env[:env_file] = setup_env_vars(vars, challenge_runner)
+          challenge_name = env[:name]
+          env[:env_file] = setup_env_vars(env[:name], vars, env[:challenge_runner])
           @app.call env
         end
 
         private
 
-        def setup_env_vars(vars, challenge_runner)
+        def setup_env_vars(challenge_name, vars, challenge_runner)
           FileUtils.mkdir_p 'tmp'
-          file = File.open("tmp/vars.#{challenge_runner.script_extension}", 'w')
+          extension = challenge_runner.script_extension
+          file = File.open(slugify("tmp/#{challenge_name}_vars.#{extension}"), 'w')
           vars.each do |key, value|
             file.puts challenge_runner.save_environment_variable(key, value)
           end
