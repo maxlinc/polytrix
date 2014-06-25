@@ -79,5 +79,24 @@ module Polytrix
       data = YAML.load processed_content
       new data
     end
+
+    def find_suite(suite_name)
+      _, suite = suites.find { |name, _| name.downcase == suite_name.downcase }
+      suite
+    end
+
+    def find_challenge(suite_name, scenario_name)
+      suite = find_suite suite_name
+      return nil if suite.nil?
+
+      if suite.samples.is_a? Array
+        # No results yet
+        suite.samples.find { |name, _| name.downcase == scenario_name.downcase }
+        Challenge.new suite: suite_name, name: scenario_name
+      else
+        _, challenge_data = find_suite('identity').samples.find { |name, challenge| name.downcase == scenario_name.downcase }
+        Challenge.new(suite: suite_name, name: scenario_name, result: challenge_data)
+      end
+    end
   end
 end
