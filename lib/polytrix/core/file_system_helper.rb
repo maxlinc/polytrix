@@ -33,10 +33,16 @@ module Polytrix
       end
 
       def ignored?(ignored_patterns, base_path, target_file)
+        # Trying to match the git ignore rules but there's some discrepencies.
         ignored_patterns.split.find do |pattern|
           # if git ignores a folder, we should ignore all files it contains
           pattern = "#{pattern}**" if pattern[-1] == '/'
-          relativize(target_file, base_path).fnmatch? pattern
+          started_with_slash = pattern.start_with? '/'
+
+          pattern.gsub!(/\A\//, '') # remove leading slashes since we're searching from root
+          file = relativize(target_file, base_path)
+          ignored = file.fnmatch? pattern
+          ignored || (file.fnmatch? "**/#{pattern}" unless started_with_slash)
         end
       end
 
