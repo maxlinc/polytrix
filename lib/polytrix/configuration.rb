@@ -69,6 +69,10 @@ module Polytrix
       end
     end
 
+    def default_validator
+      @default_validator ||= Validator.new(suite: //, scenario: //, &default_validator_callback)
+    end
+
     attr_writer :default_validator_callback
   end
 end
