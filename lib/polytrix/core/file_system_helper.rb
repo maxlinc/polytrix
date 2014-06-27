@@ -33,7 +33,7 @@ module Polytrix
           logger.debug "Checking for #{file}"
           found = File.exists? file
         else
-          raise ArgumentError, 'Provide either a file_name to search for, or a block to check directories'
+          fail ArgumentError, 'Provide either a file_name to search for, or a block to check directories'
         end
 
         parent_dir = File.dirname(path)

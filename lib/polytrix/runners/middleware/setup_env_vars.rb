@@ -18,7 +18,6 @@ module Polytrix
           end
           vars = vars.merge env[:vars].dup
 
-          challenge_name = env[:name]
           env[:env_file] = setup_env_vars(env[:name], vars, env[:challenge_runner])
           @app.call env
         end

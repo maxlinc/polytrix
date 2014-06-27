@@ -15,10 +15,10 @@ describe Polytrix do
     end
 
     it 'finds implementors from by matching basedir to an already loaded implementor' do
-      Polytrix.configuration.implementor({
+      Polytrix.configuration.implementor(
         name: 'java',
         basedir: 'samples/sdks/java'
-      })
+      )
 
       sample_file = 'samples/sdks/java/challenges/HelloWorld.java'
       implementor = described_class.find_implementor sample_file

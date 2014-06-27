@@ -113,7 +113,7 @@ module Polytrix
         }
 
         files.each do | file |
-          say_status "polytrix:exec", "Running #{file}..."
+          say_status 'polytrix:exec', "Running #{file}..."
           results = Polytrix.exec(file, exec_options)
           display_results results
           code2doc(file) if options[:code2doc]

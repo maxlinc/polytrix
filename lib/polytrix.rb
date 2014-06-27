@@ -29,7 +29,7 @@ module Polytrix
     include Polytrix::Core::FileSystemHelper
 
     def reset
-      configuration = nil
+      @configuration = nil
       Polytrix::ValidatorRegistry.clear
     end
 
@@ -44,13 +44,12 @@ module Polytrix
     end
 
     def find_implementor(file)
-      implementor = recursive_parent_search(File.dirname(file)) do |path|
-        puts "Searching #{path}"
+      existing_implementor = recursive_parent_search(File.dirname(file)) do |path|
         implementors.find do |implementor|
           File.absolute_path(implementor.basedir) == File.absolute_path(path)
         end
       end
-      return implementor if implementor
+      return existing_implementor if existing_implementor
 
       implementor_basedir = recursive_parent_search(File.dirname(file), 'polytrix.yml')
       return Polytrix.configuration.implementor implementor_basedir if implementor_basedir

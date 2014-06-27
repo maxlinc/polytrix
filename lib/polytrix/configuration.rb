@@ -37,7 +37,7 @@ module Polytrix
     def logger
       @logger ||= ::Logger.new($stdout).tap do |logger|
         level = Object.const_get "::Logger::#{log_level.upcase}"
-        raise "Unknown log level: #{level}" unless level
+        fail "Unknown log level: #{level}" unless level
         logger.level = level
       end
     end
