@@ -82,7 +82,7 @@ module Polytrix
         files.each do |file|
           target_file_name = File.basename(file, File.extname(file)) + ".#{options[:format]}"
           target_file = File.join(options[:target_dir], target_file_name)
-          say_status 'polytrix:code2doc', "Converting #{file} to #{target_file}", quiet?
+          say_status 'polytrix:code2doc', "Converting #{file} to #{target_file}", !quiet?
           doc = Polytrix::DocumentationGenerator.new.code2doc(file, options[:lang])
           FileUtils.mkdir_p File.dirname(target_file)
           File.write(target_file, doc)
@@ -104,8 +104,11 @@ module Polytrix
         implementor = pick_implementor options[:sdk]
 
         files.each do | file |
+          extension = File.extname(file)
+          name = File.basename(file, extension)
           challenge_data = {
-            name: File.basename(file),
+            name: name,
+            # language: extension,
             source_file: File.expand_path(file, Dir.pwd)
           }
           challenge = implementor.build_challenge challenge_data
@@ -150,7 +153,7 @@ module Polytrix
         exit_code = challenge.result.execution_result.exitstatus
         color = exit_code == 0 ? :green : :red
         stderr = challenge.result.execution_result.stderr
-        say_status "polytrix:exec[#{short_name}][stderr]", stderr, quiet? unless stderr.empty?
+        say_status "polytrix:exec[#{short_name}][stderr]", stderr, !quiet? unless stderr.empty?
         say_status "polytrix:exec[#{short_name}]", "Finished with exec code: #{challenge.result.execution_result.exitstatus}", color unless quiet?
       end
     end

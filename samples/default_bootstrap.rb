@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# This example shows the default behavior of {Polytrix#bootstrap}
+# This example shows the default behavior of `Polytrix#bootstrap`
 require 'polytrix'
 
 Polytrix.configure do |polytrix|

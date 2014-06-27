@@ -44,7 +44,7 @@ module Polytrix
       source_code = File.read(source_file)
       if language.nil?
         language, comment_style = Documentation::CommentStyles.infer File.extname(source_file)
-        segmenter_language = comment_style[:language]
+        segmenter_language = comment_style[:language] || language
       else
         segmenter_language = language
       end
