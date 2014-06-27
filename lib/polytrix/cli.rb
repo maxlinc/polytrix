@@ -124,14 +124,7 @@ module Polytrix
       config_options
       def bootstrap(*sdks)
         setup
-        implementors = find_sdks(sdks)
-        if implementors.empty?
-          Polytrix.bootstrap
-        else
-          implementors.each do |implementor|
-            implementor.bootstrap
-          end
-        end
+        Polytrix.bootstrap(*sdks)
       end
 
       desc 'test [SDKs]', 'Runs and tests the code samples'

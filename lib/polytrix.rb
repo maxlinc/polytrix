@@ -59,8 +59,8 @@ module Polytrix
 
     # Invokes the bootstrap  action for each SDK.
     # @see Polytrix::Implementor#bootstrap
-    def bootstrap
-      implementors.each do |implementor|
+    def bootstrap(*sdks)
+      select_implementors(sdks).each do |implementor|
         implementor.bootstrap
       end
     end
@@ -139,6 +139,21 @@ module Polytrix
         merged_results.deep_merge! YAML.load(File.read(result_file))
       end
       YAML.dump(merged_results.to_hash)
+    end
+
+    protected
+
+    def select_implementors(sdks)
+      return implementors if sdks.empty?
+
+      sdks.map do |sdk|
+        if File.directory? sdk
+          sdk_dir = File.absolute_path(sdk)
+          implementors.find { |i| File.absolute_path(i.basedir) == sdk_dir } || configuration.implementor(sdk_dir)
+        else
+          implementors.find { |i| i.name == sdk }
+        end
+      end
     end
   end
 end
