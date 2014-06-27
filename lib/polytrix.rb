@@ -26,6 +26,13 @@ module Polytrix
   include Polytrix::Logger
 
   class << self
+    include Polytrix::Core::FileSystemHelper
+
+    def reset
+      configuration = nil
+      Polytrix::ValidatorRegistry.clear
+    end
+
     # The {Polytrix::Manifest} that describes the test scenarios known to Polytrix.
     def manifest
       configuration.test_manifest
@@ -36,12 +43,41 @@ module Polytrix
       configuration.implementors
     end
 
+    def find_implementor(file)
+      implementor = recursive_parent_search(File.dirname(file)) do |path|
+        puts "Searching #{path}"
+        implementors.find do |implementor|
+          File.absolute_path(implementor.basedir) == File.absolute_path(path)
+        end
+      end
+      return implementor if implementor
+
+      implementor_basedir = recursive_parent_search(File.dirname(file), 'polytrix.yml')
+      return Polytrix.configuration.implementor implementor_basedir if implementor_basedir
+
+      nil
+    end
+
     # Invokes the bootstrap  action for each SDK.
     # @see Polytrix::Implementor#bootstrap
     def bootstrap
       implementors.each do |implementor|
         implementor.bootstrap
       end
+    end
+
+    def exec(file, exec_options)
+      implementor = find_implementor(file) || exec_options[:default_implementor]
+
+      extension = File.extname(file)
+      name = File.basename(file, extension)
+      challenge_data = {
+        name: name,
+        # language: extension,
+        source_file: File.expand_path(file, Dir.pwd)
+      }
+      challenge = implementor.build_challenge challenge_data
+      challenge.run
     end
 
     # Registers a {Polytrix::Validator} that will be used during test

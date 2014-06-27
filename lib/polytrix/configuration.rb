@@ -24,7 +24,7 @@ module Polytrix
     include Hashie::Extensions::Coercion
 
     property :dry_run,      default: false
-    property :logger,       default: ::Logger.new($stdout)
+    property :log_level,       default: 'info'
     property :middleware,   default: Polytrix::Runners::Middleware::STANDARD_MIDDLEWARE
     property :implementors, default: []
     # coerce_key :implementors, Polytrix::Implementor
@@ -33,6 +33,14 @@ module Polytrix
     property :template_dir, default: "#{RESOURCES_DIR}"
     # Extra options for rspec
     property :rspec_options, default: ''
+
+    def logger
+      @logger ||= ::Logger.new($stdout).tap do |logger|
+        level = Object.const_get "::Logger::#{log_level.upcase}"
+        raise "Unknown log level: #{level}" unless level
+        logger.level = level
+      end
+    end
 
     def test_manifest
       @test_manifest ||= Manifest.from_yaml 'polytrix_tests.yml'

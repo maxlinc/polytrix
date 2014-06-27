@@ -14,6 +14,6 @@ end
 
 RSpec.configure do |c|
   c.before(:each) do
-    Polytrix::ValidatorRegistry.clear
+    Polytrix.reset
   end
 end

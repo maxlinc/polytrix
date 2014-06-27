@@ -1,6 +1,7 @@
 module Polytrix
   module Core
     module FileSystemHelper
+      include Polytrix::Logger
       class FileNotFound < StandardError; end
 
       # Finds a file by loosely matching the file name to a scenario name
@@ -21,6 +22,24 @@ module Polytrix
 
       def slugify(path)
         path.downcase.gsub(' ', '_')
+      end
+
+      def recursive_parent_search(path, file_name = nil, &block)
+        if block_given?
+          obj = yield path
+          return obj if obj
+        elsif file_name
+          file = File.expand_path(file_name, path)
+          logger.debug "Checking for #{file}"
+          found = File.exists? file
+        else
+          raise ArgumentError, 'Provide either a file_name to search for, or a block to check directories'
+        end
+
+        parent_dir = File.dirname(path)
+        return path if found
+        return nil if parent_dir == path # we've reached the top
+        recursive_parent_search(parent_dir, file_name, &block)
       end
 
       private

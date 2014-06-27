@@ -7,6 +7,8 @@ module Polytrix
     autoload :Report, 'polytrix/cli/report'
 
     class Base < Thor
+      include Polytrix::Core::FileSystemHelper
+
       def self.config_options
         # I had trouble with class_option and subclasses...
         method_option :manifest, type: 'string', default: 'polytrix_tests.yml', desc: 'The Polytrix test manifest file'
@@ -50,13 +52,16 @@ module Polytrix
       end
 
       def setup
-        Polytrix.configuration.test_manifest = options[:manifest]
         manifest_file = File.expand_path options[:manifest]
         config_file = File.expand_path options[:config]
-        debug "Loading manifest file: #{manifest_file}"
-        Polytrix.configuration.test_manifest = manifest_file
-        debug "Loading Polytrix config: #{config_file}"
-        require_relative config_file
+        if File.exists? manifest_file
+          debug "Loading manifest file: #{manifest_file}"
+          Polytrix.configuration.test_manifest = manifest_file if File.exists? manifest_file
+        end
+        if File.exists? config_file
+          debug "Loading Polytrix config: #{config_file}"
+          require_relative config_file
+        end
       end
     end
 
@@ -95,25 +100,22 @@ module Polytrix
       method_option :code2doc, type: :boolean, desc: 'Convert successfully executed code samples to documentation using the code2doc command'
       doc_options
       sdk_options
+      config_options
       def exec(*files)
+        setup
         if files.empty?
           help('exec')
           abort 'No FILES were specified, check usage above'
         end
 
-        implementor = pick_implementor options[:sdk]
+        exec_options = {
+          # default_implementor: pick_implementor(options[:sdk])
+        }
 
         files.each do | file |
-          extension = File.extname(file)
-          name = File.basename(file, extension)
-          challenge_data = {
-            name: name,
-            # language: extension,
-            source_file: File.expand_path(file, Dir.pwd)
-          }
-          challenge = implementor.build_challenge challenge_data
-          say_status "polytrix:exec[#{challenge.name}]", "Executing #{file}..."
-          display_results challenge.run
+          say_status "polytrix:exec", "Running #{file}..."
+          results = Polytrix.exec(file, exec_options)
+          display_results results
           code2doc(file) if options[:code2doc]
         end
       end
