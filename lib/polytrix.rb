@@ -151,7 +151,9 @@ module Polytrix
           sdk_dir = File.absolute_path(sdk)
           implementors.find { |i| File.absolute_path(i.basedir) == sdk_dir } || configuration.implementor(sdk_dir)
         else
-          implementors.find { |i| i.name == sdk }
+          implementor = implementors.find { |i| i.name == sdk }
+          fail ArgumentError, "SDK #{sdk} not found" if implementor.nil?
+          implementor
         end
       end
     end

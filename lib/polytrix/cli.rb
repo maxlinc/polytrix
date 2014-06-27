@@ -125,6 +125,8 @@ module Polytrix
       def bootstrap(*sdks)
         setup
         Polytrix.bootstrap(*sdks)
+      rescue ArgumentError => e
+        abort e.message
       end
 
       desc 'test [SDKs]', 'Runs and tests the code samples'
