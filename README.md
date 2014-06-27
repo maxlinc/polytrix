@@ -1,14 +1,127 @@
 # Polytrix - the Polyglot Testing Matrix
 
-Polytrix is a polyglot test runner and documentation generator. It aims to let you run sample code written in any language. It's especially useful if you want to run similar code samples in multiple languages. Simply put, if a project like [Slate](https://github.com/tripit/slate) looks like an interesting documentation option, then you might be interested in Polytrix for testing.
+Polytrix is a tool for testing and generating documentation from sample code. It's a polyglot tool, so you can use it for samples written in any language. It's especially targeted for compliance testing, where you have similar code samples written in multiple languages and you want to generate a feature matrix or verify that each implementation has similar behavior.
+
+If you find projects like [Slate](https://github.com/tripit/slate) interesting but want ways to test the code or integrate with other documentation toolsets, then Polytrix might be a good fit.
+
+# Installation
+
+
+Polytrix is distributed as a Ruby Gem. The best way to install is with [Bundler](http://bundler.io/) by adding this to your Gemfile and running `bundle install`:
+```
+gem 'polytrix'
+```
+
+You may also be able to install it as a system-wide gem:
+```bash
+gem install polytrix
+```
+
+The commands below all assume you used bundler. If you installed the gem directly, don't use `bundle exec` on the commands.
 
 # Features
 
-Polytrix samples defined in a "test manifest" written in YAML. The test manifest is meant to be portable so you can use you can create a "lightweight sample runner" in your preferred build/test tool of choice for your language, and then integrate the samples with Polytrix later to get the extra features. Polytrix can:
-- Run sample code in any language and several platforms
-- Perform compatibility testing checking multiple implementations (in different langauges) against the same set of assertions
-- Generate documentation from sample code and test results
-- Generate compatibility or feature matrix reports
+## Documentation-only
+
+### code2doc
+
+The simplest thing you can do with Polytrix is have it convert code samples into documentation written in Markdown or reStructuredText. These files can easily be dropped into a static site generator like [Middleman](http://middlemanapp.com/), [Jekyll](http://jekyllrb.com/), or [DocPad](http://docpad.org/), documentation tools like [SphinxDoc](http://sphinx-doc.org/), or simply commit them to git to serve with services [GitHub Pages](https://pages.github.com/) or [viewdocs.io](http://progrium.viewdocs.io/viewdocs). All of those tools support syntax highlighting and custom layouts.
+
+The result of using these tools is similar to using [Docco](https://github.com/jashkenas/docco)with the linear layout, except that it instead of trying to generate the final HTML like docco it leaves that for one of the tools above that supports Markdown or reStructuredText. There isn't any support for something like Docco's parallel layout, but [Slate](https://github.com/tripit/slate) has shown that you creating parallel layouts from Markdown using JavaScript and CSS is possible.
+
+In order to turn code into documentation you just run the `polytrix code2doc` command.
+
+```bash
+$ bundle exec polytrix help code2doc
+Usage:
+  polytrix code2doc FILES
+
+Options:
+  [--target-dir=TARGET_DIR]
+                             # Default: docs
+  [--lang=LANG]              # Source language (auto-detected if not specified)
+                             # Possible values: bash, c, coffee-script, cpp, csharp, css, html, java, js, lua, php, python, rb, scala, scheme, xml
+  [--format=FORMAT]
+                             # Default: md
+                             # Possible values: md, rst
+
+$ bundle exec polytrix code2doc samples/sdks/java/challenges/*.java --target-dir=docs/samples/code2doc/java
+polytrix:code2doc  Converting samples/sdks/java/challenges/HelloWorld.java to docs/samples/code2doc/java/HelloWorld.md
+polytrix:code2doc  Converting samples/sdks/java/challenges/Quine.java to docs/samples/code2doc/java/Quine.md
+```
+
+That converts [HelloWorld.java](https://github.com/rackerlabs/polytrix/blob/master/samples/sdks/java/challenges/HelloWorld.java) to [HelloWorld.md](https://github.com/rackerlabs/polytrix/blob/master/docs/samples/code2doc/java/HelloWorld.md).
+
+### snippetize
+
+Coming soon! Generate a Markdown or reStructuredText file containing several short snippets extracted from a files containing the full source.
+
+## Execution-only
+
+### bootstrap
+
+If your sample code has third-party dependencies, you'll need to make sure they are installed before running any samples. Polytrix provides a bootstrap action that installs third party dependencies.
+
+You can run it by pointing to the directories that hold the samples:
+```bash
+$ bundle exec polytrix bootstrap samples/sdks/java samples/sdks/ruby samples/sdks/python
+```
+
+If you've already [defined implementors][#defining-an-implementor] you can run without options to bootstrap all of them, or by passing a name instead of a directory:
+```bash
+$ bundle exec polytrix bootstrap
+$ bundle exec polytrix bootstrap java ruby python
+```
+
+Polytrix currently follows the [scripts/bootstrap convention](http://wynnnetherland.com/linked/2013012801/bootstrapping-consistency) by looking for a script/bootstrap (Linux) or script/bootstrap.ps1 (Windows) within the base directory of the implementor. In the future, Polytrix may provide default behavior similar to [Travis-CI](https://travis-ci.org/), automatically detecting popular dependency management tools like Bundler or npm.
+
+### exec
+
+If you're going to convert code samples to documentation, you probably want to make sure they're *working* samples. At a minimum, you should be able to execute them.
+
+Polytrix provides you with a simple interface for runner code samples in any language. You just run `polytrix exec [FILEs]`, where the files are the sample code you want to run. Polytrix will figure out how to run each sample. You can also tell it to run it through code2doc if the execution is successful.
+
+```bash
+$ bundle exec polytrix exec --config samples/polytrix.rb samples/sdks/java/challenges/HelloWorld.java samples/sdks/python/challenges/hello_world.py samples/sdks/ruby/challenges/hello_world.rb
+polytrix:exec  Running samples/sdks/java/challenges/HelloWorld.java...
+polytrix:execute  . tmp/helloworld_vars.sh && scripts/wrapper ./challenges/HelloWorld.java
+:compileJava
+:processResources UP-TO-DATE
+:classes
+:jar
+:assemble
+
+BUILD SUCCESSFUL
+
+Total time: 4.942 secs
+Hello, world!
+polytrix:exec[HelloWorld]  Finished with exec code: 0
+polytrix:exec  Running samples/sdks/python/challenges/hello_world.py...
+polytrix:execute  . tmp/hello_world_vars.sh && scripts/wrapper ./challenges/hello_world.py
+Hello, world!
+polytrix:exec[hello_world]  Finished with exec code: 0
+polytrix:exec  Running samples/sdks/ruby/challenges/hello_world.rb...
+polytrix:execute  . tmp/hello_world_vars.sh && ./challenges/hello_world.rb
+Hello, world!
+polytrix:exec[hello_world]  Finished with exec code: 0
+```
+
+Polytrix provides an polyglot runner so you can just point at a sample source and it will run it.
+
+Notice that polytrix ran the ruby script directly:
+```shell
+./challenges/hello_world.rb
+```
+
+but it decided to use a wrapper script to run the python and Java code:
+```shell
+scripts/wrapper ./challenges/HelloWorld.java
+scripts/wrapper ./challenges/hello_world.py
+```
+
+Polytrix will detect and use wrapper scripts that let you handle everything from compiling java code to using bundler with Ruby or virtualenv with Python.
+
+See [defining an implementor][#defining-an-implementor] to see how to configure wrapper scripts.
 
 Polytrix provides a few built-in assertions, but also has a plugin system that you can use to do more advanced validation, like using [Pacto](https://github.com/thoughtworks/pacto) to intercept and validate the usage of RESTful services.
 
