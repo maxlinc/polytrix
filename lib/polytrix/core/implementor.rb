@@ -20,6 +20,7 @@ module Polytrix
     def initialize(data)
       data = Hashie::Mash.new data
       data[:name] ||= File.basename data[:basedir]
+      data[:basedir] = File.absolute_path(data[:basedir])
       super(data)
     end
 
@@ -32,6 +33,7 @@ module Polytrix
     def build_challenge(challenge_data)
       challenge_data[:source_file] ||= find_file basedir, challenge_data[:name]
       challenge_data[:basedir] ||= basedir
+      challenge_data[:source_file] = relativize(challenge_data[:source_file], challenge_data[:basedir])
       challenge_data[:implementor] ||= self
       challenge_data[:suite] ||= ''
       fail FeatureNotImplementedError, "#{name} is not setup" unless File.directory? challenge_data[:basedir]

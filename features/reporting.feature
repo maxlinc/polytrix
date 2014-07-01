@@ -28,7 +28,7 @@ Scenario: A report for a single SDK
                 stdout: |
                   Hello, world!
                 stderr: ''
-              source_file: sdks/ruby/challenges/hello_world.rb
+              source_file: challenges/hello_world.rb
 
     """
 
@@ -60,7 +60,7 @@ Scenario: A report for several SDKS
                 stdout: |
                   Hello, world!
                 stderr: ''
-              source_file: sdks/java/challenges/HelloWorld.java
+              source_file: challenges/HelloWorld.java
             python:
               validations:
               - validated_by: polytrix
@@ -70,7 +70,7 @@ Scenario: A report for several SDKS
                 stdout: |
                   Hello, world!
                 stderr: ''
-              source_file: sdks/python/challenges/hello_world.py
+              source_file: challenges/hello_world.py
             ruby:
               validations:
               - validated_by: polytrix
@@ -80,7 +80,7 @@ Scenario: A report for several SDKS
                 stdout: |
                   Hello, world!
                 stderr: ''
-              source_file: sdks/ruby/challenges/hello_world.rb
+              source_file: challenges/hello_world.rb
 
     """
 
@@ -115,7 +115,7 @@ Scenario: Merging separate reports
                 stdout: |
                   Hello, world!
                 stderr: ''
-              source_file: sdks/java/challenges/HelloWorld.java
+              source_file: challenges/HelloWorld.java
             python:
               validations:
               - validated_by: polytrix
@@ -125,7 +125,7 @@ Scenario: Merging separate reports
                 stdout: |
                   Hello, world!
                 stderr: ''
-              source_file: sdks/python/challenges/hello_world.py
+              source_file: challenges/hello_world.py
             ruby:
               validations:
               - validated_by: polytrix
@@ -135,6 +135,6 @@ Scenario: Merging separate reports
                 stdout: |
                   Hello, world!
                 stderr: ''
-              source_file: sdks/ruby/challenges/hello_world.rb
+              source_file: challenges/hello_world.rb
 
     """

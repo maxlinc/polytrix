@@ -11,13 +11,13 @@ module Polytrix
 
     describe '#bootstrap' do
       it 'executes script/bootstrap' do
-        expect(executor).to receive(:execute).with('./scripts/bootstrap',  cwd: Pathname.new('sdks/test'), prefix: 'test')
+        expect(executor).to receive(:execute).with('./scripts/bootstrap',  cwd: Pathname.new(File.absolute_path('sdks/test')), prefix: 'test')
         implementor.bootstrap
       end
     end
 
     describe '#build_challenge' do
-      subject(:implementor) { Polytrix::Implementor.new name: 'some_sdk', basedir: 'spec/fixtures' }
+      subject(:implementor) { Polytrix::Implementor.new name: 'some_sdk', basedir: File.absolute_path('spec/fixtures') }
       let(:challenge) { Fabricate(:challenge, name: 'factorial', vars: {}) }
 
       it 'builds a Challenge' do
