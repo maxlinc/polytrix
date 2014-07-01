@@ -4,11 +4,12 @@ module Polytrix
       # autoload :TextReporter, 'polytrix/cli/reports/text_reporter'
       autoload :MarkdownReporter, 'polytrix/cli/reports/markdown_reporter'
       # autoload :HTMLReporter, 'polytrix/cli/reports/html_reporter'
+      autoload :JSONReporter, 'polytrix/cli/reports/json_reporter'
       autoload :YAMLReporter, 'polytrix/cli/reports/yaml_reporter'
     end
     class Report < Polytrix::CLI::Base
       # class_options = super.class_options
-      class_option :format, desc: 'Output format for the report', default: 'text', enum: %w(text markdown yaml)
+      class_option :format, desc: 'Output format for the report', default: 'text', enum: %w(text markdown json yaml)
 
       desc 'report summary', 'Generate a summary report by SDK'
       config_options
@@ -19,6 +20,28 @@ module Polytrix
         table =  [%w(sdk passed failed pending skipped)]
         results.each do |sdk, summary|
           table << [sdk, summary[:passed], summary[:failed], summary[:pending], summary[:skipped]]
+        end
+        reporter.print_table table
+      end
+
+      desc 'report matrix', 'Generate a feature matrix report'
+      config_options
+      log_options
+      def matrix
+        setup
+        sdk_names = Polytrix.implementors.map(&:name)
+        table = [['Product', 'Feature'].concat(sdk_names)]
+
+        matrix_data.suites.each do |suite_name, suite_data|
+          suite_data.samples.each do |scenario_name, scenario_results|
+
+            statuses = sdk_names.map do |sdk|
+              result = Result.new(scenario_results[sdk])
+              result.status
+            end
+
+            table << [suite_name, scenario_name].concat(statuses)
+          end
         end
         reporter.print_table table
       end
@@ -52,6 +75,8 @@ module Polytrix
                         self
                       when 'markdown'
                         Polytrix::CLI::Reports::MarkdownReporter.new
+                      when 'json'
+                        Polytrix::CLI::Reports::JSONReporter.new
                       when 'yaml'
                         Polytrix::CLI::Reports::YAMLReporter.new
                       else

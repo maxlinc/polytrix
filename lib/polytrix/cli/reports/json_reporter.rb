@@ -1,12 +1,12 @@
-require 'yaml'
+require 'json'
 require 'polytrix/cli/reports/hash_reporter'
 
 module Polytrix
   module CLI
     module Reports
-      class YAMLReporter < HashReporter
+      class JSONReporter < HashReporter
         def convert(data)
-          YAML.dump data
+          JSON.pretty_generate data
         end
       end
     end
