@@ -123,7 +123,155 @@ Polytrix will detect and use wrapper scripts that let you handle everything from
 
 See [defining an implementor][#defining-an-implementor] to see how to configure wrapper scripts.
 
-Polytrix provides a few built-in assertions, but also has a plugin system that you can use to do more advanced validation, like using [Pacto](https://github.com/thoughtworks/pacto) to intercept and validate the usage of RESTful services.
+## Compatibility testing
+
+It's nice to know you can run the sample code successfully, but Polytrix also let's you check it does that the code has the expected result.
+
+For example, we may want to test that the "Hello World" code samples print "Hello, world!", while the [Quine](http://en.wikipedia.org/wiki/Quine_(computing)) code samples produce a copy of their own source code.
+
+### Polytrix configuration
+
+Polytrix will look for a configuration file named `polytrix.rb`. You can use this to tell Polytrix which implementors it needs to test, and to override the location of the test manifest (see below) or any other default settings via a `Polytrix.configure` block:
+
+```ruby
+require 'polytrix'
+
+basedir = File.expand_path('..', __FILE__)
+
+Polytrix.configure do |polytrix|
+  Dir["#{basedir}/sdks/*"].each do |sdk|
+    name = File.basename(sdk)
+    polytrix.implementor name: name, basedir: sdk
+  end
+end
+```
+
+If you only pass a single parameter to `polytrix.implementor`, Polytrix will assume that is the basedir, and will look for a `polytrix.yml` file in that directory with the rest of the settings for the implementor.
+
+### Test Manifest
+
+Polytrix will look for a file named `polytrix_tests.yml` that define the test scenarios you want to run and any environment variables Polytrix should setup before running them. Here's a sample:
+
+```yaml
+---
+  global_env:                          # global_env defines input available for all scenarios
+    LOCALE: <%= ENV['LANG'] %>         # templating is allowed
+  suites:
+    Katas:                             # "Katas" is the name of the first test suite
+      env:                             # Unlike global_env, these variables are only for the Katas suite
+        COLOR: green
+      samples:                         # Test scenarios within Katas
+        - hello world
+        - quine
+```
+
+### test
+
+Now that Polytrix is configured and the test manifest is defined, you can run tests and Polytrix will find the examples in each SDK. Polytrix does this by looking for code samples with file names that loosly match the sceanrio name. See [finding samples](#finding-samples) for more info about how Polytrix searches.
+
+Polytrix does echo program output to stdout by default:
+```
+$ bundle exec polytrix test
+I, [2014-06-30T19:05:14.054828 #65692]  INFO -- : polytrix:test Testing with rspec options: --color -f documentation -f Polytrix::RSpec::YAMLReport -o reports/test_report0.yaml
+
+Katas
+  hello world
+    custom (PENDING: Feature hello world is not implemented)
+polytrix:execute  . tmp/hello_world_vars.sh && scripts/wrapper ./challenges/HelloWorld.java
+Hello, world!
+    java
+polytrix:execute  . tmp/hello_world_vars.sh && scripts/wrapper ./challenges/hello_world.py
+Hello, world!
+    python
+polytrix:execute  . tmp/hello_world_vars.sh && ./challenges/hello_world.rb
+Hello, world!
+    ruby
+  quine
+    custom (PENDING: Feature quine is not implemented)
+polytrix:execute  . tmp/quine_vars.sh && scripts/wrapper ./challenges/Quine.java
+public class Quine
+{
+  public static void main(String[] args)
+  {
+    char q = 34;      // Quotation mark character
+    String[] l = {    // Array of source code
+    "public class Quine",
+    "{",
+    "  public static void main(String[] args)",
+    "  {",
+    "    char q = 34;      // Quotation mark character",
+    "    String[] l = {    // Array of source code",
+    "    ",
+    "    };",
+    "    for(int i = 0; i < 6; i++ )          // Print opening code",
+    "        System.out.println(l[i]);",
+    "    for(int i = 0; i < l.length; i++)    // Print string array",
+    "        System.out.println( l[6] + q + l[i] + q + ',' );",
+    "    for(int i = 7; i < l.length; i++)    // Print this code",
+    "        System.out.println( l[i] );",
+    "  }",
+    "}",
+    };
+    for(int i = 0; i < 6; i++ )          // Print opening code
+        System.out.println(l[i]);
+    for(int i = 0; i < l.length; i++)    // Print string array
+        System.out.println( l[6] + q + l[i] + q + ',' );
+    for(int i = 7; i < l.length; i++)    // Print this code
+        System.out.println( l[i] );
+  }
+}
+    java
+polytrix:execute  . tmp/quine_vars.sh && scripts/wrapper ./challenges/quine.py
+s = 's = %r\nprint(s%%s)'
+print(s%s)
+    python
+    ruby (PENDING: Feature quine is not implemented)
+
+Pending:
+  Katas hello world custom
+    # Feature hello world is not implemented
+    # /Users/Thoughtworker/repos/rackspace/polytrix/lib/polytrix/rspec.rb:22
+  Katas quine custom
+    # Feature quine is not implemented
+    # /Users/Thoughtworker/repos/rackspace/polytrix/lib/polytrix/rspec.rb:22
+  Katas quine ruby
+    # Feature quine is not implemented
+    # /Users/Thoughtworker/repos/rackspace/polytrix/lib/polytrix/rspec.rb:22
+
+Finished in 0.40397 seconds
+8 examples, 0 failures, 3 pending
+I, [2014-06-30T19:05:14.467904 #65692]  INFO -- : polytrix:test Test execution completed
+```
+
+### Validating test samples
+
+You can define validation callbacks that make sure each sample matches their expectations. This checks that the hello world and quine samples have the expected output:
+
+```ruby
+Polytrix.validate suite: 'Katas', sample: 'hello world' do |challenge|
+  expect(challenge.result.stdout).to eq "Hello, world!\n"
+end
+
+Polytrix.validate suite: 'Katas', sample: 'quine' do |challenge|
+  expect(challenge.result.stdout).to eq(challenge.source)
+end
+```
+
+The block does the actual validation, while the arguments define the scope where the validation applies. If you omit the scope the validation will apply to all scenarios:
+
+```
+Polytrix.validate do |challenge|
+  expect(challenge.result.exitstatus).to eq(0)
+  expect(challenge.result.stderr).to be_empty
+  expect(challenge.result.stdout).to end_with "\n"
+end
+```
+
+### Plugins
+
+Polytrix provides a built-in support for verifying the `stdout`, `stderr` and `exitstatus` after running a code sample, but it would be pretty limited if that was all you can do. Polytrix has a plugin system for more advanced validation, like using [Pacto](https://github.com/thoughtworks/pacto) to intercept and validate the usage of RESTful services.
+
+
 
 # Usage preview
 
