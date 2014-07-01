@@ -36,9 +36,15 @@ module Polytrix
 
     def logger
       @logger ||= ::Logger.new($stdout).tap do |logger|
-        level = Object.const_get "::Logger::#{log_level.upcase}"
-        fail "Unknown log level: #{level}" unless level
-        logger.level = level
+        levels = {
+          'fatal' => ::Logger::FATAL,
+          'error' => ::Logger::ERROR,
+          'warn'  => ::Logger::WARN,
+          'info'  => ::Logger::INFO,
+          'debug' => ::Logger::DEBUG
+        }
+        fail "Unknown log level: #{log_level}" unless levels.keys.include? log_level
+        logger.level = levels[log_level]
       end
     end
 
