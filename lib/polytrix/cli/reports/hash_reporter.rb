@@ -22,7 +22,7 @@ module Polytrix
         end
 
         def convert(data)
-          raise 'Subclass HashReporter and convert the data to the target format'
+          fail 'Subclass HashReporter and convert the data to the target format'
         end
       end
     end

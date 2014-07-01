@@ -79,7 +79,7 @@ module Polytrix
 
     # Registers a {Polytrix::Validator} that will be used during test
     # execution on matching {Polytrix::Challenge}s.
-    def validate(scope = {suite: //, sample: //}, validator = nil, &block)
+    def validate(scope = { suite: //, sample: // }, validator = nil, &block)
       if block_given?
         validator = Polytrix::Validator.new(scope, &block)
       elsif validator.nil?

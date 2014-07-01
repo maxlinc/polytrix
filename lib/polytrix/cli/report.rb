@@ -30,7 +30,7 @@ module Polytrix
       def matrix
         setup
         sdk_names = Polytrix.implementors.map(&:name)
-        table = [['Product', 'Feature'].concat(sdk_names)]
+        table = [%w(Product Feature).concat(sdk_names)]
 
         matrix_data.suites.each do |suite_name, suite_data|
           suite_data.samples.each do |scenario_name, scenario_results|
