@@ -11,7 +11,7 @@ module Polytrix
     include Polytrix::Logger
     include Polytrix::Core::FileSystemHelper
     include Hashie::Extensions::Coercion
-    include Polytrix::Executor
+    include Polytrix::Runners::Executor
     property :name
     property :basedir, required: true
     property :language

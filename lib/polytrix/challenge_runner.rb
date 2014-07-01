@@ -1,5 +1,4 @@
 require 'polytrix'
-require 'mixlib/shellout'
 require 'rbconfig'
 
 module Polytrix
@@ -10,7 +9,7 @@ module Polytrix
 
   class ChallengeRunner < Thor::Shell::Color
     include Polytrix::Core::FileSystemHelper
-    include Polytrix::Executor
+    include Polytrix::Runners::Executor
 
     def self.create_runner
       case RbConfig::CONFIG['host_os']
