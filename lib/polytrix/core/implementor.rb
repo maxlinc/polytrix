@@ -2,6 +2,11 @@ require 'hashie/dash'
 require 'hashie/extensions/coercion'
 
 module Polytrix
+  class FeatureNotImplementedError < StandardError
+    def initialize(feature)
+      super "Feature #{feature} is not implemented"
+    end
+  end
   class Implementor < Hashie::Dash
     include Polytrix::Logger
     include Polytrix::Core::FileSystemHelper
@@ -29,7 +34,10 @@ module Polytrix
       challenge_data[:basedir] ||= basedir
       challenge_data[:implementor] ||= self
       challenge_data[:suite] ||= ''
+      fail FeatureNotImplementedError, "#{name} is not setup" unless File.directory? challenge_data[:basedir]
       Challenge.new challenge_data
+    rescue Polytrix::Core::FileSystemHelper::FileNotFound
+      raise FeatureNotImplementedError, challenge_data[:name]
     end
   end
 end

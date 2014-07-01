@@ -8,12 +8,6 @@ module Polytrix
     autoload :WindowsChallengeRunner, 'polytrix/runners/windows_challenge_runner'
   end
 
-  class FeatureNotImplementedError < StandardError
-    def initialize(feature)
-      super "Feature #{feature} is not implemented"
-    end
-  end
-
   class ChallengeRunner < Thor::Shell::Color
     include Polytrix::Core::FileSystemHelper
     include Polytrix::Executor
@@ -47,12 +41,6 @@ module Polytrix
     def run_challenge(challenge)
       middleware.call(challenge)
       challenge
-    end
-
-    def find_challenge!(challenge, basedir = Dir.pwd)
-      find_file basedir, challenge
-    rescue Polytrix::Core::FileSystemHelper::FileNotFound
-      raise FeatureNotImplementedError, challenge
     end
 
     private

@@ -20,8 +20,6 @@ require 'polytrix/validator_registry'
 
 require 'polytrix/rspec'
 
-ENV['POLYTRIX_SEED'] ||= $PROCESS_ID.to_s
-
 module Polytrix
   include Polytrix::Logger
 
@@ -81,7 +79,7 @@ module Polytrix
 
     # Registers a {Polytrix::Validator} that will be used during test
     # execution on matching {Polytrix::Challenge}s.
-    def validate(scope, validator = nil, &block)
+    def validate(scope = {suite: //, sample: //}, validator = nil, &block)
       if block_given?
         validator = Polytrix::Validator.new(scope, &block)
       elsif validator.nil?

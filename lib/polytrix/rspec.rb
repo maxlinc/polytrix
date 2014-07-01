@@ -9,12 +9,6 @@ end
 
 module Polytrix
   module RSpec
-    module Helper
-      def challenge_runner
-        @challenge_runner ||= Polytrix::ChallengeRunner.create_runner
-      end
-    end
-
     class << self
       def shared_examples(caller) # rubocop:disable MethodLength
         # FIXME: Long method because it's hard to eval in the right context
@@ -28,7 +22,6 @@ module Polytrix
                     it sdk.name, sdk.name.to_sym => true do
                       begin
                         skip "#{sdk.name} is not setup" unless File.directory? sdk.basedir
-                        challenge_runner.find_challenge! scenario, sdk.basedir
                         challenge = sdk.build_challenge suite: suite_name, name: scenario, vars: suite_config['env']
                         example.metadata[:polytrix_challenge] = challenge
                         challenge.run
@@ -58,8 +51,4 @@ module Polytrix
       end
     end
   end
-end
-
-::RSpec.configure do |c|
-  c.include Polytrix::RSpec::Helper
 end

@@ -73,6 +73,7 @@ module Polytrix
 
     # Parses a YAML file to create a {Manifest} object.
     def self.from_yaml(yaml_file)
+      ENV['POLYTRIX_SEED'] ||= $PROCESS_ID.to_s
       logger.debug "Loading #{yaml_file}"
       raw_content = File.read(yaml_file)
       processed_content = ERB.new(raw_content).result
