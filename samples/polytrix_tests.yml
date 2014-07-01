@@ -1,8 +1,10 @@
 ---
-  global_env:
-    LOCALE: <%= ENV['LANG'] %>
+  global_env:                          # global_env defines input available for all scenarios
+    LOCALE: <%= ENV['LANG'] %>         # templating is allowed
   suites:
-    Katas:
-      samples:
+    Katas:                             # "Katas" is the name of the first test suite
+      env:                             # Unlike global_env, these variables are only for the Katas suite
+        COLOR: red
+      samples:                         # Test scenarios within Katas
         - hello world
         - quine

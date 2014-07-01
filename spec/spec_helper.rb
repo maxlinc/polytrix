@@ -16,4 +16,5 @@ RSpec.configure do |c|
   c.before(:each) do
     Polytrix.reset
   end
+  c.expose_current_running_example_as :example
 end

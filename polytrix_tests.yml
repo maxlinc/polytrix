@@ -7,13 +7,13 @@ suites:
     samples:
       - default bootstrap
       - custom bootstrap
-  Testing:                             # "Katas" is the name of the first suite
+  Testing:                           # "Katas" is the name of the first suite
     env:                             # These "env" values are only available within the "Katas" suite
       NAME: 'Max'
     samples:                         # samples defines the individual tests in a suite
       - default validation
       - custom validation
-  Plugins:                         # "Tutorials" is the name of the second suite
+  Plugins:                           # "Tutorials" is the name of the second suite
         env:
         samples:
           - validating
