@@ -7,7 +7,7 @@ Scenario: A report for a single SDK
     And the hello_world polytrix config
     And the standard rspec setup
     When I successfully run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -o reports/polytrix.yaml`
-    Then the file "reports/polytrix.yaml" should contain exactly:
+    Then the file "reports/polytrix.yaml" should contain yaml matching:
     """
     ---
     global_env:
@@ -39,7 +39,7 @@ Scenario: A report for several SDKS
     And the hello_world polytrix config
     And the standard rspec setup
     When I successfully run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -o reports/polytrix.yaml`
-    Then the file "reports/polytrix.yaml" should contain exactly:
+    Then the file "reports/polytrix.yaml" should contain yaml matching:
     """
     ---
     global_env:
@@ -94,7 +94,7 @@ Scenario: Merging separate reports
     When I successfully run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -t java -o reports/polytrix-java.yaml`
     When I successfully run `bundle exec rspec -f Polytrix::RSpec::YAMLReport -t python -o reports/polytrix-python.yaml`
     And I successfully run `bundle exec ruby spec/polytrix_merge.rb reports/polytrix-java.yaml reports/polytrix-python.yaml reports/polytrix-ruby.yaml`
-    Then the file "reports/polytrix.yaml" should contain exactly:
+    Then the file "reports/polytrix.yaml" should contain yaml matching:
     """
     ---
     global_env:
