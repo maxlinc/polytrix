@@ -29,6 +29,10 @@ module Polytrix
       @result = challenge_runner.run_challenge self
     end
 
+    def absolute_source_file
+      File.expand_path source_file, basedir
+    end
+
     def validate
       run unless @result
       # validators = Polytrix::ValidatorRegistry.validators_for self

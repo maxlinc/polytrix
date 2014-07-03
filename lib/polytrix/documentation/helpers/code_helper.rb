@@ -30,7 +30,7 @@ module Polytrix
         end
 
         def source
-          File.read source_file
+          File.read absolute_source_file
         end
 
         def code_block(source_code, language, opts = { format: :markdown })
