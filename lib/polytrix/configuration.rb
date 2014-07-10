@@ -1,5 +1,4 @@
 require 'middleware'
-require 'logger'
 require 'hashie/dash'
 require 'hashie/extensions/coercion'
 
@@ -24,7 +23,7 @@ module Polytrix
     include Hashie::Extensions::Coercion
 
     property :dry_run,      default: false
-    property :log_level,       default: 'info'
+    property :log_level,    default: 'info'
     property :middleware,   default: Polytrix::Runners::Middleware::STANDARD_MIDDLEWARE
     property :implementors, default: []
     # coerce_key :implementors, Polytrix::Implementor
@@ -35,17 +34,7 @@ module Polytrix
     property :rspec_options, default: ''
 
     def logger
-      @logger ||= ::Logger.new($stdout).tap do |logger|
-        levels = {
-          'fatal' => ::Logger::FATAL,
-          'error' => ::Logger::ERROR,
-          'warn'  => ::Logger::WARN,
-          'info'  => ::Logger::INFO,
-          'debug' => ::Logger::DEBUG
-        }
-        fail "Unknown log level: #{log_level}" unless levels.keys.include? log_level
-        logger.level = levels[log_level]
-      end
+      @logger ||= Polytrix::Logger.default_logger(log_level)
     end
 
     def test_manifest

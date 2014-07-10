@@ -79,6 +79,7 @@ module Polytrix
       desc 'code2doc FILES', 'Converts annotated code to Markdown or reStructuredText'
       doc_options
       def code2doc(*files)
+        Logging.mdc['command'] = 'code2doc'
         if files.empty?
           help('code2doc')
           abort 'No FILES were specified, check usage above'
@@ -102,6 +103,7 @@ module Polytrix
       sdk_options
       config_options
       def exec(*files)
+        Logging.mdc['command'] = 'exec'
         setup
         if files.empty?
           help('exec')
@@ -123,6 +125,7 @@ module Polytrix
       desc 'bootstrap [SDKs]', 'Bootstraps the SDK by installing dependencies'
       config_options
       def bootstrap(*sdks)
+        Logging.mdc['command'] = 'bootstrap'
         setup
         Polytrix.bootstrap(*sdks)
       rescue ArgumentError => e

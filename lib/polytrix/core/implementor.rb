@@ -25,6 +25,7 @@ module Polytrix
     end
 
     def bootstrap
+      Logging.mdc['implementor'] = name
       execute('./scripts/bootstrap', cwd: basedir, prefix: name)
     rescue Errno::ENOENT
       logger.warn "Skipping bootstrapping for #{name}, no script/bootstrap exists"

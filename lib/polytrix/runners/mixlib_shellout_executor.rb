@@ -3,10 +3,18 @@ require 'mixlib/shellout'
 module Polytrix
   module Runners
     class MixlibShellOutExecutor
+      include Logger
+
+      def log_decorator(io, prefix)
+        # OutputDecorator.new(io, prefix) unless Polytrix.configuration.suppress_output
+        logger = Logging.logger['polytrix::exec']
+        IOToLog.new(logger)
+      end
+
       def execute(command, opts)
         prefix = opts.delete :prefix
         shell = Mixlib::ShellOut.new(command, opts)
-        shell.live_stream = OutputDecorator.new($stdout, prefix) unless Polytrix.configuration.suppress_output
+        shell.live_stream = log_decorator $stdout, prefix
         shell.run_command
         execution_result = ExecutionResult.new exitstatus: shell.exitstatus, stdout: shell.stdout, stderr: shell.stderr
         begin

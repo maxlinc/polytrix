@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "thor", "~> 0.19"
+  spec.add_dependency "logging", "~> 1.8"
   spec.add_dependency "mixlib-shellout", "~> 1.3" # Used for MRI
   spec.add_dependency "buff-shell_out", "~> 0.1"  # Used for JRuby
   spec.add_dependency "middleware", "~> 0.1"
