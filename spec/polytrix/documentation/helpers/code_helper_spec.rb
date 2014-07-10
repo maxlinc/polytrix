@@ -78,7 +78,7 @@ module Polytrix
 
         describe '#code_block' do
           it 'generates markdown code blocks by default' do
-            expected = "```ruby\n" + source + "\n```\n"
+            expected = "\n```ruby\n" + source + "\n```\n\n"
             code_block = challenge.code_block(challenge.source, 'ruby')
             expect(code_block).to eq(expected)
           end

@@ -18,9 +18,11 @@ module Polytrix
         class MarkdownHelper
           def self.code_block(source, language)
             buffer = StringIO.new
+            buffer.puts # I've seen lots of rendering issues without a dividing newline
             buffer.puts "```#{language}"
             buffer.puts source
             buffer.puts '```'
+            buffer.puts # Put a dividing newline after as well, to be safe...
             buffer.string
           end
         end

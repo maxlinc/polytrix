@@ -46,9 +46,11 @@ module Polytrix
         expect(generator.code2doc(source_file, 'ruby')).to eq(
           <<-eos.gsub(/^( |\t)+/, '')
           Comments are documentation
+
           ```ruby
           puts 'And this is a code block'
           ```
+
           eos
         )
       end
