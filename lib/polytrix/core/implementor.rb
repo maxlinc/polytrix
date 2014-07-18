@@ -8,6 +8,17 @@ module Polytrix
     end
   end
   class Implementor < Hashie::Dash
+    class GitOptions < Hashie::Dash
+      property :repo, required: true
+      property :branch
+      property :to
+
+      def initialize(data)
+        data = { repo: data } if data.is_a? String
+        super
+      end
+    end
+
     include Polytrix::Logger
     include Polytrix::Core::FileSystemHelper
     include Hashie::Extensions::Coercion
@@ -16,12 +27,28 @@ module Polytrix
     property :basedir, required: true
     property :language
     coerce_key :basedir, Pathname
+    property :git
+    coerce_key :git, GitOptions
 
     def initialize(data)
       data = Hashie::Mash.new data
       data[:name] ||= File.basename data[:basedir]
       data[:basedir] = File.absolute_path(data[:basedir])
       super(data)
+    end
+
+    def clone
+      Logging.mdc['implementor'] = name
+      return if git.nil? || git.repo.nil?
+      branch = git.branch ||= 'master'
+      target_dir = git.to ||= basedir
+      if File.exists? target_dir
+        logger.info "Skipping clone because #{target_dir} already exists"
+      else
+        clone_cmd = "git clone #{git.repo} -b #{branch} #{target_dir}"
+        logger.info "Cloning: #{clone_cmd}"
+        execute clone_cmd
+      end
     end
 
     def bootstrap

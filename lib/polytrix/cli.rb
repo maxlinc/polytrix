@@ -122,6 +122,14 @@ module Polytrix
         end
       end
 
+      desc 'clone [SDKs]', 'Clones the SDK from git (if git options are present)'
+      config_options
+      def clone(*sdks)
+        Logging.mdc['command'] = 'clone'
+        setup
+        Polytrix.clone(*sdks)
+      end
+
       desc 'bootstrap [SDKs]', 'Bootstraps the SDK by installing dependencies'
       config_options
       def bootstrap(*sdks)

@@ -1,22 +1,22 @@
 require 'logging'
 
-Logging.color_scheme( 'bright',
-  :levels => {
-    :info  => :green,
-    :warn  => :yellow,
-    :error => :red,
-    :fatal => [:white, :on_red]
-  },
-  :date => :blue,
-  :logger => :cyan
+Logging.color_scheme('bright',
+                     levels: {
+                       info: :green,
+                       warn: :yellow,
+                       error: :red,
+                       fatal: [:white, :on_red]
+                     },
+                     date: :blue,
+                     logger: :cyan
 )
 
 Logging.logger['polytrix::exec'].tap do | logger |
   Logging.appenders.stdout(
     'exec_stdout',
-    :layout => Logging.layouts.pattern(
-      :pattern => '[%d] %X{implementor} %X{scenario} STDOUT: %m',
-      :color_scheme => 'bright'
+    layout: Logging.layouts.pattern(
+      pattern: '[%d] %X{implementor} %X{scenario} STDOUT: %m',
+      color_scheme: 'bright'
     )
   )
   logger.add_appenders('exec_stdout', Logging.appenders.file('polytrix_exec.log')
