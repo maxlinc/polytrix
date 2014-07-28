@@ -71,18 +71,24 @@ module Polytrix
       end
     end
 
-    def exec(file, exec_options)
-      implementor = find_implementor(file) || exec_options[:default_implementor]
+    def exec(*files)
+      # files.map do | file |
+      #   Dir.glob file
+      # end.flatten
 
-      extension = File.extname(file)
-      name = File.basename(file, extension)
-      challenge_data = {
-        name: name,
-        # language: extension,
-        source_file: File.expand_path(file, Dir.pwd)
-      }
-      challenge = implementor.build_challenge challenge_data
-      challenge.run
+      files.each do | file |
+        implementor = find_implementor(file) # || exec_options[:default_implementor]
+
+        extension = File.extname(file)
+        name = File.basename(file, extension)
+        challenge_data = {
+          name: name,
+          # language: extension,
+          source_file: File.expand_path(file, Dir.pwd)
+        }
+        challenge = implementor.build_challenge challenge_data
+        challenge.run
+      end
     end
 
     # Registers a {Polytrix::Validator} that will be used during test
@@ -103,7 +109,7 @@ module Polytrix
     end
 
     # Runs all of the tests described in the {manifest}
-    def run_tests(implementors = [])
+    def verify(implementors = [])
       test_env = ENV['TEST_ENV_NUMBER'].to_i
       rspec_options = %W[--color -f documentation -f Polytrix::RSpec::YAMLReport -o reports/test_report#{test_env}.yaml]
       rspec_options.concat Polytrix.configuration.rspec_options.split if Polytrix.configuration.rspec_options

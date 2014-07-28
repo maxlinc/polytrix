@@ -2,4 +2,4 @@
 require 'polytrix/cli'
 
 $LOAD_PATH << 'spec'
-Polytrix::CLI::Main.start
+Polytrix::CLI.start

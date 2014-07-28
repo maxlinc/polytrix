@@ -1,4 +1,8 @@
 require 'logging'
+require 'fileutils'
+
+POLYTRIX_LOG_DIR = '.polytrix/logs/'
+FileUtils.mkdir_p POLYTRIX_LOG_DIR
 
 Logging.color_scheme('bright',
                      levels: {
@@ -19,7 +23,7 @@ Logging.logger['polytrix::exec'].tap do | logger |
       color_scheme: 'bright'
     )
   )
-  logger.add_appenders('exec_stdout', Logging.appenders.file('polytrix_exec.log')
+  logger.add_appenders('exec_stdout', Logging.appenders.file("#{POLYTRIX_LOG_DIR}/polytrix.log")
   )
   logger.level = :info
 end
