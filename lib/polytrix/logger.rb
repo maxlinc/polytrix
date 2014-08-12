@@ -1,4 +1,7 @@
 require 'logging'
+require 'fileutils'
+
+FileUtils.mkdir_p '.polytrix/logs'
 
 Logging.color_scheme('bright',
                      levels: {
@@ -13,13 +16,13 @@ Logging.color_scheme('bright',
 
 Logging.logger['polytrix::exec'].tap do | logger |
   Logging.appenders.stdout(
-    'exec_stdout',
+    'stdout',
     layout: Logging.layouts.pattern(
       pattern: '[%d] %X{implementor} %X{scenario} STDOUT: %m',
       color_scheme: 'bright'
     )
   )
-  logger.add_appenders('exec_stdout', Logging.appenders.file('polytrix_exec.log')
+  logger.add_appenders('stdout', Logging.appenders.file('.polytrix/logs/polytrix.log')
   )
   logger.level = :info
 end
