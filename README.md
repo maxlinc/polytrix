@@ -170,7 +170,7 @@ for testing the same code sample with a variety of different input values.
 Field Name | Type | Description
 ---|:---:|---
 <a name="code_sample_name"/>name | `string` | The name of the suite. (*If omitted, this attribute’s value defaults to hash key associated with this object.*)
-<a name="scenarios"/>language | List of [Scenario Objects](#scenario_object) | Defines the scenarios to test for the code sample. **Default**: An scenario named default with no input.
+<a name="scenarios"/>scenarios | List of [Scenario Objects](#scenario_object) | Defines the scenarios to test for the code sample. **Default**: An scenario named default with no input.
 
 
 #### Scenario Object
