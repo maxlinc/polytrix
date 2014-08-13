@@ -6,7 +6,7 @@ require 'polytrix/command'
 require 'polytrix/command/code2doc'
 
 module Polytrix
-  class CLI < Thor
+  class CLI < Thor # rubocop:disable ClassLength
     # Common module to load and invoke a CLI-implementation agnostic command.
     module PerformCommand
       # Perform a scenario subcommand.
@@ -129,10 +129,10 @@ module Polytrix
                   aliases: '-m',
                   desc: 'The Polytrix test manifest file location',
                   default: 'polytrix.yml'
-      method_option :config,
-                    aliases: '-C',
-                    desc: 'The Polytrix config file file location',
-                    default: 'polytrix.rb'
+    method_option :config,
+                  aliases: '-C',
+                  desc: 'The Polytrix config file file location',
+                  default: 'polytrix.rb'
     def test(*args)
       abort "Test isn't implemented yet... need to implement an FSM"
       # update_config!

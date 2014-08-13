@@ -14,8 +14,7 @@ module Polytrix
         end
       end
 
-        context 'with an existing SDK' do
-
+      context 'with an existing SDK' do
         xit 'calls bootstrap on the SDK' do
           # expect(@implementor).to receive(:bootstrap)
           expect(kernel).to receive(:exit).with(0)

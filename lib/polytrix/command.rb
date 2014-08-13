@@ -1,4 +1,4 @@
-require "thread"
+require 'thread'
 
 module Polytrix
   module Command
@@ -21,7 +21,7 @@ module Polytrix
         @args = cmd_args
         @options = cmd_options
         @action = options.fetch(:action, nil)
-        @help = options.fetch(:help, -> { "No help provided" })
+        @help = options.fetch(:help, -> { 'No help provided' })
         @manifest = options.fetch('manifest', nil)
         @config = options.fetch('config', nil)
         @loader = options.fetch(:loader, nil)
@@ -87,7 +87,7 @@ module Polytrix
         result = @config.scenarios
 
         if result.empty?
-          die "No scenarios defined"
+          die 'No scenarios defined'
         else
           result
         end
@@ -126,7 +126,7 @@ module Polytrix
       # @return [Array<Instance>] an array of scenarios
       # @api private
       def parse_subcommand(arg = nil)
-        arg == "all" ? all_scenarios : filtered_scenarios(arg)
+        arg == 'all' ? all_scenarios : filtered_scenarios(arg)
       end
     end
 
@@ -134,7 +134,6 @@ module Polytrix
     #
     # @author Fletcher Nichol <fnichol@nichol.ca>
     module RunAction
-
       # Run an instance action (create, converge, setup, verify, destroy) on
       # a collection of scenarios. The instance actions will take place in a
       # seperate thread of execution which may or may not be running
@@ -156,7 +155,7 @@ module Polytrix
         threads = []
         concurrency.times do
           threads << Thread.new do
-            while instance = queue.pop
+            while (instance = queue.pop)
               instance.public_send(action, *args)
             end
           end

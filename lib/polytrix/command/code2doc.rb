@@ -1,17 +1,16 @@
 module Polytrix
   module Command
     class Code2Doc < Thor::Group
-
       class_option :format,
-        :aliases => "-f",
-        :enum => %w(markdown rst),
-        :default => "markdown",
-        :desc => "Target documentation format"
+                   aliases: '-f',
+                   enum: %w(markdown rst),
+                   default: 'markdown',
+                   desc: 'Target documentation format'
 
       class_option :target_dir,
-        :aliases => "-d",
-        :default => "docs/",
-        :desc => "The target directory where documentation for generated documentation."
+                   aliases: '-d',
+                   default: 'docs/',
+                   desc: 'The target directory where documentation for generated documentation.'
 
       def code2doc
         files = args

@@ -1,12 +1,11 @@
 module Polytrix
   module Command
     class RunDoc < Thor::Group
-
       class_option :format,
-        :aliases => "-f",
-        :enum => %w(markdown rst),
-        :default => "markdown",
-        :desc => "The documentation input format"
+                   aliases: '-f',
+                   enum: %w(markdown rst),
+                   default: 'markdown',
+                   desc: 'The documentation input format'
 
       def rundoc
         files = args
@@ -20,7 +19,7 @@ module Polytrix
           target_file_name = File.basename(file, File.extname(file)) + ".#{options[:format]}"
           target_file = File.join(options[:target_dir], target_file_name)
           say_status 'polytrix:code2doc', "Converting #{file} to #{target_file}"
-          doc = Polytrix::DocumentationExecutor.new.execute file
+          Polytrix::DocumentationExecutor.new.execute file
         end
       end
     end
