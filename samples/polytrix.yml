@@ -1,4 +1,15 @@
 ---
+  implementors:
+    ruby:
+      language: 'ruby'
+      basedir: 'sdks/ruby'
+    java:
+      language: 'java'
+      basedir: 'sdks/java'
+    python:
+      language: 'python'
+      basedir: 'sdks/python'
+
   global_env:                          # global_env defines input available for all scenarios
     LOCALE: <%= ENV['LANG'] %>         # templating is allowed
   suites:

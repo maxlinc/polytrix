@@ -32,23 +32,21 @@ module Polytrix
   # The *global_env* values will be made available to all tests as environment variables, along with the *env*
   # values for that specific test.
   #
-  class Manifest < Hashie::Dash
+  class Manifest < Polytrix::ManifestSection
     include Logger
     include Hashie::Extensions::DeepMerge
 
-    class Environment < Hashie::Mash
-      # Hashie Coercion - automatically treat all values as String
-      def self.coerce(obj)
-        data = obj.reduce({}) do |h, (key, value)|
-          h[key] = value.to_s
-          h
-        end
-        new data
+    def initialize(hash = {})
+      super
+      implementors.each do | name, implementor |
+        implementor.name = name
       end
     end
 
-    class Suite < Hashie::Dash
-      include Hashie::Extensions::Coercion
+    class Environment < Hashie::Mash
+    end
+
+    class Suite < Polytrix::ManifestSection
       property :env, default: {}
       property :samples, default: []
       property :results
@@ -65,9 +63,10 @@ module Polytrix
       end
     end
 
-    include Hashie::Extensions::Coercion
+    property :implementors, required: true
+    coerce_key :implementors, Hash[String => Polytrix::Implementor]
     property :global_env
-    coerce_key :global_env, Polytrix::Manifest::Environment
+    coerce_key :global_env, Environment
     property :suites
     coerce_key :suites, Polytrix::Manifest::Suites
 
@@ -82,7 +81,7 @@ module Polytrix
     end
 
     def find_suite(suite_name)
-      _, suite = suites.find { |name, _| name.downcase == suite_name.downcase }
+      _, suite = suites.find { |name, _| name.to_s.downcase == suite_name.to_s.downcase }
       suite
     end
 

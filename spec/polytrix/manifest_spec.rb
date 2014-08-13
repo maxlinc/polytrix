@@ -1,14 +1,14 @@
 module Polytrix
   describe Manifest do
     describe '#from_yaml' do
-      subject(:manifest) { described_class.from_yaml 'spec/fixtures/polytrix_tests.yml' }
+      subject(:manifest) { described_class.from_yaml 'spec/fixtures/polytrix.yml' }
 
       it 'initializes a manifest' do
         expect(manifest).to be_an_instance_of Polytrix::Manifest
       end
 
       it 'processes ERB' do
-        expect(manifest.global_env['LOCALE']).to eq(ENV['LANG'])
+        expect(manifest.global_env.LOCALE).to eq(ENV['LANG'])
       end
 
       it 'parses global_env' do
@@ -21,7 +21,7 @@ module Polytrix
 
       describe '#find_suite' do
         before(:each) do
-          Polytrix.configuration.test_manifest = 'samples/polytrix_tests.yml'
+          Polytrix.configuration.manifest = 'samples/polytrix.yml'
         end
         it 'returns nil if no suite matches' do
           suite = subject.find_suite('none')

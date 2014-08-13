@@ -4,15 +4,7 @@ Feature: Running SDKs
 
   Polytrix also sets up tags for the SDKs so you can use the normal rspec `-t` option to select which SDK to run.
 
-  Scenario: Bootstrap an SDK
-    Given the java SDK
-    And the empty polytrix config
-    And the standard rspec setup
-    When I run `bundle exec rspec`
-    Then the output should contain ":compileJava"
-    And the output should contain "BUILD SUCCESSFUL"
-
-Scenario: Running all SDKs
+  Scenario: Running all SDKs
     Given the ruby SDK
     And the java SDK
     And the python SDK
@@ -41,13 +33,6 @@ Scenario: Running all SDKs
     """
     require 'polytrix/rspec'
 
-    Polytrix.configure do |polytrix|
-      Dir['sdks/*'].each do |sdk|
-        polytrix.implementor sdk
-      end
-      polytrix.test_manifest = 'polytrix_tests.yml'
-    end
-
     # This is more of an integration test, but makes sure the rspec API is working.
     # Expect results to all be pending, because there's no implementors in this proj.
 
@@ -62,6 +47,7 @@ Scenario: Running all SDKs
       expect(challenge[:result].execution_result.stdout).to eq File.read(challenge[:result].source)
     end
     Polytrix.load_tests
+
     """
     When I run `bundle exec rspec spec/custom_spec.rb`
     And the output should match /expected: 1\s+got: 0/

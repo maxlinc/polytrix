@@ -1,4 +1,15 @@
 ---
+  implementors:
+    ruby:
+      language: 'ruby'
+      basedir: 'sdks/ruby'
+    java:
+      language: 'java'
+      basedir: 'sdks/java'
+    python:
+      language: 'python'
+      basedir: 'sdks/python'
+
   global_env:
     LOCALE: <%= ENV['LANG'] %>
     FAVORITE_NUMBER: 5

@@ -48,10 +48,6 @@ module Polytrix
 
       protected
 
-      def matrix_data
-        @matrix ||= Polytrix::Manifest.new(YAML.load(Polytrix.merge_results(Dir['reports/test_report*.yaml'])))
-      end
-
       def load_results
         result_stats = Hash.new do |hash, sdk|
           hash[sdk] = { passed: 0, failed: 0, pending: 0, skipped: 0 }

@@ -1,4 +1,9 @@
 ---
+implementors:
+  polytrix:
+    language: 'ruby'
+    basedir: 'samples/'
+
 global_env:                          # global_env defines input available for all scenarios
   LOCALE: <%= ENV['LANG'] %>         # templating is allowed
   FAVORITE_NUMBER: 5

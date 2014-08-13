@@ -1,7 +1,7 @@
 module Polytrix
   describe ChallengeRunner do
     subject(:runner) { ChallengeRunner.create_runner }
-    let(:implementor) { double(name: 'foo') }
+    let(:implementor) { Fabricate(:implementor) }
     let(:challenge) do
       Fabricate(:challenge, name: 'factorial', source_file: 'spec/fixtures/factorial.py', basedir: 'spec/fixtures', implementor: implementor)
     end

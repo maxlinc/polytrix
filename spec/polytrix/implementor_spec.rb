@@ -2,9 +2,9 @@ require 'spec_helper'
 
 module Polytrix
   describe Implementor do
-    subject(:implementor) { described_class.new(name: 'test', language: 'ruby', basedir: 'sdks/test') }
+    subject(:implementor) { described_class.new(name: 'test', language: 'ruby', basedir: expected_sdk_dir) }
+    let(:expected_sdk_dir) { 'samples/sdks/foo' }
     let(:executor) { double('executor') }
-    let(:expected_sdk_dir) { 'sdks/test' }
     let(:expected_sdk_path) { Pathname.new(File.absolute_path(expected_sdk_dir)) }
 
     before do
@@ -12,6 +12,9 @@ module Polytrix
     end
 
     describe '#bootstrap' do
+      # Need an implementor that's already cloned
+      let(:expected_sdk_dir) { 'samples/sdks/ruby' }
+
       it 'executes script/bootstrap' do
         expect(executor).to receive(:execute).with('./scripts/bootstrap',  cwd: expected_sdk_path, prefix: 'test')
         implementor.bootstrap

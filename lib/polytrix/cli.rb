@@ -11,7 +11,7 @@ module Polytrix
 
       def self.config_options
         # I had trouble with class_option and subclasses...
-        method_option :manifest, type: 'string', default: 'polytrix_tests.yml', desc: 'The Polytrix test manifest file'
+        method_option :manifest, type: 'string', default: 'polytrix.yml', desc: 'The Polytrix test manifest file'
         method_option :config, type: 'string', default: 'polytrix.rb', desc: 'The Polytrix config file'
       end
 
@@ -56,7 +56,7 @@ module Polytrix
         config_file = File.expand_path options[:config]
         if File.exists? manifest_file
           debug "Loading manifest file: #{manifest_file}"
-          Polytrix.configuration.test_manifest = manifest_file if File.exists? manifest_file
+          Polytrix.configuration.manifest = manifest_file if File.exists? manifest_file
         end
         if File.exists? config_file
           debug "Loading Polytrix config: #{config_file}"

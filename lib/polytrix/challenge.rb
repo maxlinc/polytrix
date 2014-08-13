@@ -4,15 +4,14 @@ require 'hashie/extensions/indifferent_access'
 require 'polytrix/documentation/helpers/code_helper'
 
 module Polytrix
-  class Challenge < Hashie::Dash
-    include Hashie::Extensions::Coercion
-
+  class Challenge < Polytrix::ManifestSection
     # View heleprs
     include Polytrix::Documentation::Helpers::CodeHelper
 
     property :name
     property :description
     property :implementor
+    coerce_key :implementor, Polytrix::Implementor
     property :suite, required: true
     property :vars, default: {}
     property :source_file
