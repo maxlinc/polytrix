@@ -1,13 +1,14 @@
 require 'pathname'
-require 'hashie/dash'
-require 'hashie/mash'
-require 'hashie/extensions/coercion'
+require 'polytrix/core/hashie'
+require 'polytrix/core/string_helpers'
 require 'polytrix/version'
 require 'polytrix/logger'
 require 'polytrix/core/file_system_helper'
 require 'polytrix/runners/executor'
+require 'polytrix/core/manifest_section'
 require 'polytrix/core/implementor'
 require 'polytrix/challenge_runner'
+require 'polytrix/challenge_result'
 require 'polytrix/challenge'
 require 'polytrix/manifest'
 require 'polytrix/configuration'
@@ -33,12 +34,12 @@ module Polytrix
 
     # The {Polytrix::Manifest} that describes the test scenarios known to Polytrix.
     def manifest
-      configuration.test_manifest
+      configuration.manifest
     end
 
     # The set of {Polytrix::Implementor}s registered with Polytrix.
     def implementors
-      configuration.implementors
+      manifest.implementors.values
     end
 
     def find_implementor(file)
@@ -48,9 +49,6 @@ module Polytrix
         end
       end
       return existing_implementor if existing_implementor
-
-      implementor_basedir = recursive_parent_search(File.dirname(file), 'polytrix.yml')
-      return Polytrix.configuration.implementor implementor_basedir if implementor_basedir
 
       nil
     end
@@ -105,6 +103,7 @@ module Polytrix
     end
 
     def load_tests
+      manifest.build_challenges
       Polytrix::RSpec.run_manifest(manifest)
     end
 
@@ -142,17 +141,6 @@ module Polytrix
       yield(configuration)
     end
 
-    # Merges multiple test results files produced the rspec {Polytrix::RSpec::YAMLReport} formatter.
-    # @param result_files [Array] the location of the files to merge.
-    # @return [String] the merged content
-    def merge_results(result_files)
-      merged_results = Polytrix::Manifest.new
-      result_files.each do |result_file|
-        merged_results.deep_merge! YAML.load(File.read(result_file))
-      end
-      YAML.dump(merged_results.to_hash)
-    end
-
     protected
 
     def select_implementors(sdks)
@@ -163,7 +151,7 @@ module Polytrix
           sdk_dir = File.absolute_path(sdk)
           implementors.find { |i| File.absolute_path(i.basedir) == sdk_dir } || configuration.implementor(sdk_dir)
         else
-          implementor = implementors.find { |i| i.name == sdk }
+          implementor = implementors.find { |i| i.name.to_s.downcase == sdk.to_s.downcase }
           fail ArgumentError, "SDK #{sdk} not found" if implementor.nil?
           implementor
         end

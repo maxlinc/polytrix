@@ -6,7 +6,7 @@ Given(/^the (\w+) SDK$/) do |sdk|
 end
 
 Given(/^the (\w+) polytrix config$/) do |config|
-  FileUtils.cp_r "features/fixtures/configs/#{config}.yml", "#{current_dir}/polytrix_tests.yml"
+  FileUtils.cp_r "features/fixtures/configs/#{config}.yml", "#{current_dir}/polytrix.yml"
 end
 
 Given(/^the standard rspec setup$/) do

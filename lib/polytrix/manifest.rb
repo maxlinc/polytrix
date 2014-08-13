@@ -32,44 +32,57 @@ module Polytrix
   # The *global_env* values will be made available to all tests as environment variables, along with the *env*
   # values for that specific test.
   #
-  class Manifest < Hashie::Dash
+  class Manifest < Polytrix::ManifestSection
     include Logger
     include Hashie::Extensions::DeepMerge
 
-    class Environment < Hashie::Mash
-      # Hashie Coercion - automatically treat all values as String
-      def self.coerce(obj)
-        data = obj.reduce({}) do |h, (key, value)|
-          h[key] = value.to_s
-          h
-        end
-        new data
+    def initialize(hash = {})
+      super
+      implementors.each do | name, implementor |
+        implementor.name = name
       end
     end
 
-    class Suite < Hashie::Dash
-      include Hashie::Extensions::Coercion
+    class Environment < Hashie::Mash
+    end
+
+    class CodeSample < Polytrix::ManifestSection
+      property :name, required: true
+
+      def self.coerce(data)
+        data = { name: data } if data.is_a? String
+        new(data)
+      end
+    end
+
+    class Suite < Polytrix::ManifestSection
       property :env, default: {}
-      property :samples, default: []
+      property :samples, required: true
+      coerce_key :samples, Array[CodeSample]
       property :results
     end
 
-    class Suites < Hashie::Mash
-      # Hashie Coercion - automatically treat all values as Suite
-      def self.coerce(obj)
-        data = obj.reduce({}) do |h, (key, value)|
-          h[key] = Polytrix::Manifest::Suite.new(value)
-          h
+    property :implementors, required: true
+    coerce_key :implementors, Hash[String => Polytrix::Implementor]
+    property :global_env
+    coerce_key :global_env, Environment
+    property :suites
+    coerce_key :suites, Hash[String => Suite]
+
+    attr_accessor :challenges
+
+    def build_challenges
+      @challenges ||= {}
+
+      suites.each do | suite_name, suite |
+        suite.samples.each do | sample |
+          implementors.each_value do | implementor |
+            challenge = implementor.build_challenge suite: suite_name, name: sample.name, vars: suite.env
+            @challenges[challenge.slug] = challenge
+          end
         end
-        new data
       end
     end
-
-    include Hashie::Extensions::Coercion
-    property :global_env
-    coerce_key :global_env, Polytrix::Manifest::Environment
-    property :suites
-    coerce_key :suites, Polytrix::Manifest::Suites
 
     # Parses a YAML file to create a {Manifest} object.
     def self.from_yaml(yaml_file)
@@ -82,7 +95,7 @@ module Polytrix
     end
 
     def find_suite(suite_name)
-      _, suite = suites.find { |name, _| name.downcase == suite_name.downcase }
+      _, suite = suites.find { |name, _| name.to_s.downcase == suite_name.to_s.downcase }
       suite
     end
 

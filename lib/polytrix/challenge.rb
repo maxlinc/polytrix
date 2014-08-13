@@ -4,15 +4,14 @@ require 'hashie/extensions/indifferent_access'
 require 'polytrix/documentation/helpers/code_helper'
 
 module Polytrix
-  class Challenge < Hashie::Dash
-    include Hashie::Extensions::Coercion
-
-    # View heleprs
+  class Challenge < Polytrix::Dash
+    include Polytrix::StringHelpers
+    # View helpers
     include Polytrix::Documentation::Helpers::CodeHelper
 
     property :name
-    property :description
     property :implementor
+    coerce_key :implementor, Polytrix::Implementor
     property :suite, required: true
     property :vars, default: {}
     property :source_file
@@ -21,11 +20,18 @@ module Polytrix
     coerce_key :basedir, Pathname
     property :challenge_runner, default: ChallengeRunner.create_runner
     property :result
+    # coerce_key :results, Array[ChallengeResult]
     property :env_file
     # coerce_key :vars, Polytrix::Manifest::Environment
     property :plugin_data, default: {}
 
+    def slug
+      slugify("#{suite}-#{name}-#{implementor.name}")
+    end
+
     def run
+      fail FeatureNotImplementedError, "Implementor #{name} has not been cloned" unless implementor.cloned?
+      fail FeatureNotImplementedError, name unless File.exists?(absolute_source_file)
       @result = challenge_runner.run_challenge self
     end
 

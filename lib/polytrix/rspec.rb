@@ -13,16 +13,18 @@ module Polytrix
       def shared_examples(caller) # rubocop:disable MethodLength
         # FIXME: Long method because it's hard to eval in the right context
         caller.instance_eval do
-          Polytrix.manifest['suites'].each do |suite_name, suite_config|
+          Polytrix.manifest.suites.each do |suite_name, suite_config|
             describe suite_name do
-              samples = suite_config['samples'] || []
+              samples = suite_config.samples || []
               samples.each do |scenario|
-                describe scenario do
+                describe scenario.name do
                   Polytrix.implementors.each do |sdk|
                     it sdk.name, sdk.name.to_sym => true do
                       begin
                         skip "#{sdk.name} is not setup" unless File.directory? sdk.basedir
-                        challenge = sdk.build_challenge suite: suite_name, name: scenario, vars: suite_config['env']
+                        slug = Polytrix::Challenge.slugify(suite_name, scenario.name, sdk.name)
+                        challenge = Polytrix.manifest.challenges[slug]
+                        # sdk.build_challenge suite: suite_name, name: scenario, vars: suite_config.env
                         example.metadata[:polytrix_challenge] = challenge
                         challenge.run
                         validators = Polytrix::ValidatorRegistry.validators_for challenge

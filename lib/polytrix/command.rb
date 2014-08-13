@@ -59,7 +59,7 @@ module Polytrix
         config_file = File.expand_path @config
         if File.exists? manifest_file
           logger.debug "Loading manifest file: #{manifest_file}"
-          Polytrix.configuration.test_manifest = manifest_file if File.exists? manifest_file
+          Polytrix.configuration.manifest = manifest_file if File.exists? manifest_file
         end
         if File.exists? config_file
           logger.debug "Loading Polytrix config: #{config_file}"

@@ -1,7 +1,7 @@
 require 'hashie/dash'
 
 module Polytrix
-  class Validation < Hashie::Dash
+  class Validation < Polytrix::ManifestSection
     ALLOWABLE_STATES = %w(passed pending failed skipped)
     property :validated_by, required: true
     property :result

@@ -12,3 +12,4 @@ AllCops:
   Exclude:
     - bin/**/*
     - tmp/**/*
+    - tmp/**/*.rb

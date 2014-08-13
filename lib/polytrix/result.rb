@@ -4,6 +4,7 @@ module Polytrix
   class Result < Hashie::Dash
     extend Forwardable
     include Hashie::Extensions::Coercion
+
     property :execution_result # , required: true
     def_delegators :execution_result, :stdout, :stderr, :exitstatus
     property :source_file # , required: true

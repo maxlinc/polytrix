@@ -2,6 +2,7 @@ module Polytrix
   module Core
     module FileSystemHelper
       include Polytrix::Logger
+      include Polytrix::StringHelpers
       class FileNotFound < StandardError; end
 
       # Finds a file by loosely matching the file name to a scenario name
@@ -18,10 +19,6 @@ module Polytrix
 
         fail FileNotFound, "No file was found for #{scenario_name} within #{search_path}" if file.nil?
         Pathname.new file
-      end
-
-      def slugify(path)
-        path.downcase.gsub(' ', '_')
       end
 
       def recursive_parent_search(path, file_name = nil, &block)

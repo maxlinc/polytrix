@@ -7,8 +7,8 @@ module Polytrix
       super "Feature #{feature} is not implemented"
     end
   end
-  class Implementor < Hashie::Dash
-    class GitOptions < Hashie::Dash
+  class Implementor < Polytrix::ManifestSection
+    class GitOptions < Polytrix::ManifestSection
       property :repo, required: true
       property :branch
       property :to
@@ -21,7 +21,6 @@ module Polytrix
 
     include Polytrix::Logger
     include Polytrix::Core::FileSystemHelper
-    include Hashie::Extensions::Coercion
     include Polytrix::Runners::Executor
     property :name
     property :basedir, required: true
@@ -31,10 +30,8 @@ module Polytrix
     coerce_key :git, GitOptions
 
     def initialize(data)
-      data = Hashie::Mash.new data
-      data[:name] ||= File.basename data[:basedir]
       data[:basedir] = File.absolute_path(data[:basedir])
-      super(data)
+      super
     end
 
     def clone
@@ -53,21 +50,27 @@ module Polytrix
 
     def bootstrap
       Logging.mdc['implementor'] = name
+      fail "Implementor #{name} has not been cloned" unless cloned?
       execute('./scripts/bootstrap', cwd: basedir, prefix: name)
     rescue Errno::ENOENT
       logger.warn "Skipping bootstrapping for #{name}, no script/bootstrap exists"
     end
 
     def build_challenge(challenge_data)
-      challenge_data[:source_file] ||= find_file basedir, challenge_data[:name]
       challenge_data[:basedir] ||= basedir
-      challenge_data[:source_file] = relativize(challenge_data[:source_file], challenge_data[:basedir])
       challenge_data[:implementor] ||= self
       challenge_data[:suite] ||= ''
-      fail FeatureNotImplementedError, "#{name} is not setup" unless File.directory? challenge_data[:basedir]
+      begin
+        challenge_data[:source_file] ||= find_file basedir, challenge_data[:name]
+        challenge_data[:source_file] = relativize(challenge_data[:source_file], challenge_data[:basedir])
+      rescue Polytrix::Core::FileSystemHelper::FileNotFound
+        challenge_data[:source_file] = nil
+      end
       Challenge.new challenge_data
-    rescue Polytrix::Core::FileSystemHelper::FileNotFound
-      raise FeatureNotImplementedError, challenge_data[:name]
+    end
+
+    def cloned?
+      File.directory? basedir
     end
   end
 end

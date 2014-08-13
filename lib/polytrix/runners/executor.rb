@@ -1,5 +1,6 @@
 require 'hashie/dash'
 require 'thor'
+require 'polytrix/core/manifest_section'
 
 module Polytrix
   module Runners
@@ -10,7 +11,7 @@ module Polytrix
       attr_accessor :execution_result
     end
 
-    class ExecutionResult < Hashie::Dash
+    class ExecutionResult < Polytrix::ManifestSection
       property :exitstatus, require: true
       property :stdout, required: true
       property :stderr, required: true

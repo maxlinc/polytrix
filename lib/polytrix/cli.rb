@@ -1,16 +1,14 @@
-require "thor"
+require 'thor'
 
-require "polytrix"
-require "polytrix/command"
+require 'polytrix'
+require 'polytrix/command'
 # require "polytrix/command/base"
-require "polytrix/command/code2doc"
+require 'polytrix/command/code2doc'
 
 module Polytrix
   class CLI < Thor
-
     # Common module to load and invoke a CLI-implementation agnostic command.
     module PerformCommand
-
       # Perform a scenario subcommand.
       #
       # @param task [String] action to take, usually corresponding to the
@@ -24,10 +22,10 @@ module Polytrix
         require "polytrix/command/#{command}"
 
         command_options = {
-          :action => task,
-          :help => -> { help(task) },
-          :config => @config,
-          :shell => shell
+          action: task,
+          help: -> { help(task) },
+          config: @config,
+          shell: shell
         }.merge(additional_options)
 
         str_const = Thor::Util.camel_case(command)
@@ -49,30 +47,30 @@ module Polytrix
     def initialize(*args)
       super
       $stdout.sync = true
-      #Polytrix.logger = Polytrix.default_file_logger
+      # Polytrix.logger = Polytrix.default_file_logger
     end
 
-    desc "list [INSTANCE|REGEXP|all]", "Lists one or more scenarios"
+    desc 'list [INSTANCE|REGEXP|all]', 'Lists one or more scenarios'
     method_option :bare,
-      :aliases => "-b",
-      :type => :boolean,
-      :desc => "List the name of each scenario only, one per line"
+                  aliases: '-b',
+                  type: :boolean,
+                  desc: 'List the name of each scenario only, one per line'
     method_option :log_level,
-      :aliases => "-l",
-      :desc => "Set the log level (debug, info, warn, error, fatal)"
+                  aliases: '-l',
+                  desc: 'Set the log level (debug, info, warn, error, fatal)'
     def list(*args)
       update_config!
-      perform("list", "list", args)
+      perform('list', 'list', args)
     end
 
     {
-      :clone     => "Change scenario state to cloned. " \
+      clone: "Change scenario state to cloned. " \
                     "Clone the code sample from git",
-      :bootstrap => "Change scenario state to bootstraped. " \
+      bootstrap: "Change scenario state to bootstraped. " \
                     "Running bootstrap scripts for the implementor",
-      :exec      => "Change instance state to executed. " \
+      exec: "Change instance state to executed. " \
                     "Execute the code sample and capture the results.",
-      :verify    => "Change instance state to verified. " \
+      verify: "Change instance state to verified. " \
                     "Assert that the captured results match the expectations for the scenario."
     }.each do |action, short_desc|
       desc(
@@ -85,56 +83,56 @@ module Polytrix
         intermediate states will be executed.
       DESC
       method_option :concurrency,
-        :aliases => "-c",
-        :type => :numeric,
-        :lazy_default => MAX_CONCURRENCY,
-        :desc => <<-DESC.gsub(/^\s+/, "").gsub(/\n/, " ")
+                    aliases: '-c',
+                    type: :numeric,
+                    lazy_default: MAX_CONCURRENCY,
+                    desc: <<-DESC.gsub(/^\s+/, '').gsub(/\n/, ' ')
           Run a #{action} against all matching instances concurrently. Only N
           instances will run at the same time if a number is given.
         DESC
       method_option :log_level,
-        :aliases => "-l",
-        :desc => "Set the log level (debug, info, warn, error, fatal)"
+                    aliases: '-l',
+                    desc: 'Set the log level (debug, info, warn, error, fatal)'
       method_option :manifest,
-        :aliases => "-m",
-        :desc => "The Polytrix test manifest file location",
-        :default => 'polytrix.yml'
+                    aliases: '-m',
+                    desc: 'The Polytrix test manifest file location',
+                    default: 'polytrix.yml'
       method_option :config,
-        :aliases => "-C",
-        :desc => "The Polytrix config file file location",
-        :default => 'polytrix.rb'
+                    aliases: '-C',
+                    desc: 'The Polytrix config file file location',
+                    default: 'polytrix.rb'
       define_method(action) do |*args|
         update_config!
-        perform(action, "action", args, options)
+        perform(action, 'action', args, options)
       end
     end
 
-    desc "test [INSTANCE|REGEXP|all]",
-      "Test (clone, bootstrap, exec, and verify) one or more scenarios"
+    desc 'test [INSTANCE|REGEXP|all]',
+         'Test (clone, bootstrap, exec, and verify) one or more scenarios'
     long_desc <<-DESC
       The scenario states are in order: cloned, bootstrapped, executed, verified.
       Test changes the state of one or more scenarios executes
       the actions for each state up to verify.
     DESC
     method_option :concurrency,
-      :aliases => "-c",
-      :type => :numeric,
-      :lazy_default => MAX_CONCURRENCY,
-      :desc => <<-DESC.gsub(/^\s+/, "").gsub(/\n/, " ")
+                  aliases: '-c',
+                  type: :numeric,
+                  lazy_default: MAX_CONCURRENCY,
+                  desc: <<-DESC.gsub(/^\s+/, '').gsub(/\n/, ' ')
         Run a test against all matching instances concurrently. Only N
         instances will run at the same time if a number is given.
       DESC
     method_option :log_level,
-      :aliases => "-l",
-      :desc => "Set the log level (debug, info, warn, error, fatal)"
+                  aliases: '-l',
+                  desc: 'Set the log level (debug, info, warn, error, fatal)'
     method_option :manifest,
-        :aliases => "-m",
-        :desc => "The Polytrix test manifest file location",
-        :default => 'polytrix.yml'
+                  aliases: '-m',
+                  desc: 'The Polytrix test manifest file location',
+                  default: 'polytrix.yml'
       method_option :config,
-        :aliases => "-C",
-        :desc => "The Polytrix config file file location",
-        :default => 'polytrix.rb'
+                    aliases: '-C',
+                    desc: 'The Polytrix config file file location',
+                    default: 'polytrix.rb'
     def test(*args)
       abort "Test isn't implemented yet... need to implement an FSM"
       # update_config!
@@ -142,7 +140,7 @@ module Polytrix
       # perform("test", "test", args, options)
     end
 
-    desc "version", "Print Polytrix's version information"
+    desc 'version', "Print Polytrix's version information"
     def version
       puts "Polytrix version #{Polytrix::VERSION}"
     end
@@ -158,9 +156,9 @@ module Polytrix
     # D
     # tasks["init"].options = Polytrix::Generator::Init.class_options
 
-    register Polytrix::Command::Code2Doc, "code2doc",
-      "code2doc [FILEs]", "Convert sample code into documentation"
-    long_desc <<-D, :for => "code2doc"
+    register Polytrix::Command::Code2Doc, 'code2doc',
+             'code2doc [FILEs]', 'Convert sample code into documentation'
+    long_desc <<-D, for: 'code2doc'
       Convert annotated sample code into Markdown or reStructureText documentation.
       For example:
 
@@ -168,7 +166,7 @@ module Polytrix
 
       will create docs/hello_world.md.
     D
-    tasks["code2doc"].options = Polytrix::Command::Code2Doc.class_options
+    tasks['code2doc'].options = Polytrix::Command::Code2Doc.class_options
 
     private
 
@@ -190,21 +188,19 @@ module Polytrix
     #
     # @api private
     def update_config!
-
     end
 
     # If auto_init option is active, invoke the init generator.
     #
     # @api private
     def ensure_initialized
-
     end
 
     def duration(total)
       total = 0 if total.nil?
       minutes = (total / 60).to_i
       seconds = (total - (minutes * 60))
-      format("(%dm%.2fs)", minutes, seconds)
+      format('(%dm%.2fs)', minutes, seconds)
     end
   end
 end

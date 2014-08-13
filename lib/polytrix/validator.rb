@@ -10,7 +10,7 @@ module Polytrix
     end
 
     def should_validate?(challenge)
-      !!(@suite.match(challenge.suite) && @sample.match(challenge.name))
+      !!(@suite.match(challenge.suite.to_s) && @sample.match(challenge.name.to_s))
     end
 
     # def validate(challenge)

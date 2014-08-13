@@ -1,6 +1,4 @@
 require 'middleware'
-require 'hashie/dash'
-require 'hashie/extensions/coercion'
 
 module Polytrix
   RESOURCES_DIR = File.expand_path '../../../resources', __FILE__
@@ -19,9 +17,7 @@ module Polytrix
     end
   end
 
-  class Configuration < Hashie::Dash
-    include Hashie::Extensions::Coercion
-
+  class Configuration < Polytrix::ManifestSection
     property :dry_run,      default: false
     property :log_level,    default: 'info'
     property :middleware,   default: Polytrix::Runners::Middleware::STANDARD_MIDDLEWARE
@@ -37,30 +33,12 @@ module Polytrix
       @logger ||= Polytrix::Logger.default_logger(log_level)
     end
 
-    def test_manifest
-      @test_manifest ||= Manifest.from_yaml 'polytrix_tests.yml'
+    def manifest
+      @manifest ||= Manifest.from_yaml 'polytrix.yml'
     end
 
-    def test_manifest=(yaml_file)
-      @test_manifest = Manifest.from_yaml yaml_file
-    end
-
-    def implementor(metadata)
-      if metadata.is_a? Hash # load from data
-        Implementor.new(metadata).tap do |implementor|
-          implementors << implementor
-        end
-      else # load from filesystem
-        folder = metadata
-        fail ArgumentError, "#{folder} is not a directory" unless File.directory? folder
-        settings_file = File.expand_path('polytrix.yml', folder)
-        if File.exist? settings_file
-          settings = YAML.load(File.read(settings_file))
-          Polytrix.configuration.implementor(settings.merge(basedir: folder))
-        else
-          Polytrix.configuration.implementor name: File.basename(folder), basedir: folder
-        end
-      end
+    def manifest=(yaml_file)
+      @manifest = Manifest.from_yaml yaml_file
     end
 
     # The callback used to validate code samples that
