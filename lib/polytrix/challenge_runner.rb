@@ -20,14 +20,6 @@ module Polytrix
       end
     end
 
-    def editor_enabled?
-      !challenge_editor.nil?
-    end
-
-    def challenge_editor
-      ENV['CHALLENGE_EDITOR']
-    end
-
     def run_command(command)
       if Polytrix.configuration.dry_run
         puts "Would have run #{command}"

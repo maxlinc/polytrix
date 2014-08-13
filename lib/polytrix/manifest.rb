@@ -46,21 +46,20 @@ module Polytrix
     class Environment < Hashie::Mash
     end
 
-    class Suite < Polytrix::ManifestSection
-      property :env, default: {}
-      property :samples, default: []
-      property :results
+    class CodeSample < Polytrix::ManifestSection
+      property :name, required: true
+
+      def self.coerce(data)
+        data = { name: data } if data.is_a? String
+        new(data)
+      end
     end
 
-    class Suites < Hashie::Mash
-      # Hashie Coercion - automatically treat all values as Suite
-      def self.coerce(obj)
-        data = obj.reduce({}) do |h, (key, value)|
-          h[key] = Polytrix::Manifest::Suite.new(value)
-          h
-        end
-        new data
-      end
+    class Suite < Polytrix::ManifestSection
+      property :env, default: {}
+      property :samples, required: true
+      coerce_key :samples, Array[CodeSample]
+      property :results
     end
 
     property :implementors, required: true
@@ -68,7 +67,22 @@ module Polytrix
     property :global_env
     coerce_key :global_env, Environment
     property :suites
-    coerce_key :suites, Polytrix::Manifest::Suites
+    coerce_key :suites, Hash[String => Suite]
+
+    attr_accessor :challenges
+
+    def build_challenges
+      @challenges ||= {}
+
+      suites.each do | suite_name, suite |
+        suite.samples.each do | sample |
+          implementors.each_value do | implementor |
+            challenge = implementor.build_challenge suite: suite_name, name: sample.name, vars: suite.env
+            @challenges[challenge.slug] = challenge
+          end
+        end
+      end
+    end
 
     # Parses a YAML file to create a {Manifest} object.
     def self.from_yaml(yaml_file)

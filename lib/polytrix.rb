@@ -1,7 +1,6 @@
 require 'pathname'
-require 'hashie/dash'
-require 'hashie/mash'
-require 'hashie/extensions/coercion'
+require 'polytrix/core/hashie'
+require 'polytrix/core/string_helpers'
 require 'polytrix/version'
 require 'polytrix/logger'
 require 'polytrix/core/file_system_helper'
@@ -9,6 +8,7 @@ require 'polytrix/runners/executor'
 require 'polytrix/core/manifest_section'
 require 'polytrix/core/implementor'
 require 'polytrix/challenge_runner'
+require 'polytrix/challenge_result'
 require 'polytrix/challenge'
 require 'polytrix/manifest'
 require 'polytrix/configuration'
@@ -97,6 +97,7 @@ module Polytrix
     end
 
     def load_tests
+      manifest.build_challenges
       Polytrix::RSpec.run_manifest(manifest)
     end
 

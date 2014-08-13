@@ -16,7 +16,10 @@ module Polytrix
       end
 
       it 'parses suites' do
-        expect(manifest.suites).to be_an_instance_of Polytrix::Manifest::Suites
+        expect(manifest.suites).to be_an_instance_of Hashie::Hash
+        manifest.suites.each_value do | suite |
+          expect(suite).to be_an_instance_of Polytrix::Manifest::Suite
+        end
       end
 
       describe '#find_suite' do

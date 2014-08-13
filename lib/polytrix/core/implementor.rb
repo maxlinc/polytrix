@@ -57,15 +57,16 @@ module Polytrix
     end
 
     def build_challenge(challenge_data)
-      challenge_data[:source_file] ||= find_file basedir, challenge_data[:name]
       challenge_data[:basedir] ||= basedir
-      challenge_data[:source_file] = relativize(challenge_data[:source_file], challenge_data[:basedir])
       challenge_data[:implementor] ||= self
       challenge_data[:suite] ||= ''
-      fail FeatureNotImplementedError, "Implementor #{name} has not been cloned" unless cloned?
+      begin
+        challenge_data[:source_file] ||= find_file basedir, challenge_data[:name]
+        challenge_data[:source_file] = relativize(challenge_data[:source_file], challenge_data[:basedir])
+      rescue Polytrix::Core::FileSystemHelper::FileNotFound
+        challenge_data[:source_file] = nil
+      end
       Challenge.new challenge_data
-    rescue Polytrix::Core::FileSystemHelper::FileNotFound
-      raise FeatureNotImplementedError, challenge_data[:name]
     end
 
     def cloned?
