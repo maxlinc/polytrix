@@ -31,6 +31,7 @@ module Polytrix
 
     def run
       fail FeatureNotImplementedError, "Implementor #{name} has not been cloned" unless implementor.cloned?
+      fail FeatureNotImplementedError, name if source_file.nil?
       fail FeatureNotImplementedError, name unless File.exists?(absolute_source_file)
       @result = challenge_runner.run_challenge self
     end

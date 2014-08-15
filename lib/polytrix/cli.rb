@@ -58,9 +58,17 @@ module Polytrix
     method_option :log_level,
                   aliases: '-l',
                   desc: 'Set the log level (debug, info, warn, error, fatal)'
+    method_option :manifest,
+                  aliases: '-m',
+                  desc: 'The Polytrix test manifest file location',
+                  default: 'polytrix.yml'
+    method_option :config,
+                  aliases: '-C',
+                  desc: 'The Polytrix config file file location',
+                  default: 'polytrix.rb'
     def list(*args)
       update_config!
-      perform('list', 'list', args)
+      perform('list', 'list', args, options)
     end
 
     {
