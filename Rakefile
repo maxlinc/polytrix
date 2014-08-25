@@ -13,7 +13,7 @@ RSpec::Core::RakeTask.new('spec') do |t|
 end
 
 Cucumber::Rake::Task.new(:features) do |t|
-  t.cucumber_opts = "features --require features/support --require features/step_definitions"
+  t.cucumber_opts = "features --require features/support --require features/step_definitions -t ~@wip"
 end
 
 desc 'Remove reports and other generated artifacts'

@@ -43,6 +43,8 @@ class ThorSpy
       b.unshift("#{b.shift}: #{e.message} (#{e.class})")
       @stderr.puts(b.map { |s| "\tfrom #{s}" }.join("\n"))
       1
+    rescue SystemExit => e
+      e.status
     ensure
       # ...then we put them back.
       $stderr = STDERR

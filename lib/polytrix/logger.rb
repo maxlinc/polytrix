@@ -33,6 +33,10 @@ module Polytrix
     def logger
       @logger ||= Polytrix.configuration.logger
     end
+
+    def banner(msg, &block)
+      logger.info "-----> #{msg}", &block
+    end
   end
 
   class IOToLog < IO

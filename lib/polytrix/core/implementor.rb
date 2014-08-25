@@ -36,7 +36,10 @@ module Polytrix
 
     def clone
       Logging.mdc['implementor'] = name
-      return if git.nil? || git.repo.nil?
+      if git.nil? || git.repo.nil?
+        logger.info "Skipping clone because there are no git options"
+        return
+      end
       branch = git.branch ||= 'master'
       target_dir = git.to ||= basedir
       if File.exists? target_dir
@@ -50,7 +53,9 @@ module Polytrix
 
     def bootstrap
       Logging.mdc['implementor'] = name
+      banner "Bootstrapping #{name}"
       fail "Implementor #{name} has not been cloned" unless cloned?
+
       execute('./scripts/bootstrap', cwd: basedir, prefix: name)
     rescue Errno::ENOENT
       logger.warn "Skipping bootstrapping for #{name}, no script/bootstrap exists"

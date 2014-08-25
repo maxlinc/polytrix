@@ -22,7 +22,7 @@ module Polytrix
         @options = cmd_options
         @action = options.fetch(:action, nil)
         @help = options.fetch(:help, -> { 'No help provided' })
-        @manifest = options.fetch('manifest', nil)
+        @manifest_file = options.fetch('manifest', nil)
         @config = options.fetch('config', nil)
         @loader = options.fetch(:loader, nil)
         @shell = options.fetch(:shell)
@@ -55,11 +55,13 @@ module Polytrix
       attr_reader :action
 
       def setup
-        manifest_file = File.expand_path @manifest
+        manifest_file = File.expand_path @manifest_file
         config_file = File.expand_path @config
         if File.exists? manifest_file
           logger.debug "Loading manifest file: #{manifest_file}"
-          Polytrix.configuration.manifest = manifest_file if File.exists? manifest_file
+          Polytrix.configuration.manifest = manifest_file
+          @manifest = Polytrix.configuration.manifest
+          @manifest.build_challenges
         end
         if File.exists? config_file
           logger.debug "Loading Polytrix config: #{config_file}"
@@ -75,7 +77,7 @@ module Polytrix
       # @param msg [String] error message
       # @api private
       def die(msg)
-        error "\n#{msg}\n\n"
+        logger.error "\n#{msg}\n\n"
         help.call
         exit 1
       end
@@ -84,7 +86,7 @@ module Polytrix
       # @raise [SystemExit] if no scenario are returned
       # @api private
       def all_scenarios
-        result = @config.scenarios
+        result = @manifest.challenges.values
 
         if result.empty?
           die 'No scenarios defined'
@@ -102,17 +104,17 @@ module Polytrix
       # @api private
       def filtered_scenarios(regexp)
         result = begin
-          @config.scenarios.get(regexp) ||
-            @config.scenarios.get_all(/#{regexp}/)
+          @manifest.challenges.get(regexp) ||
+            @manifest.challenges.get_all(/#{regexp}/)
         rescue RegexpError => e
           die "Invalid Ruby regular expression, " \
             "you may need to single quote the argument. " \
             "Please try again or consult http://rubular.com/ (#{e.message})"
         end
-        result = Array(result)
+        result = [result] unless result.is_a? Array
 
         if result.empty?
-          die "No scenarios for regex `#{regexp}', try running `kitchen list'"
+          die "No scenarios for regex `#{regexp}', try running `polytrix list'"
         else
           result
         end
@@ -126,6 +128,7 @@ module Polytrix
       # @return [Array<Instance>] an array of scenarios
       # @api private
       def parse_subcommand(arg = nil)
+        arg ||= 'all'
         arg == 'all' ? all_scenarios : filtered_scenarios(arg)
       end
     end

@@ -111,7 +111,9 @@ module Polytrix
                     default: 'polytrix.rb'
       define_method(action) do |*args|
         update_config!
-        perform(action, 'action', args, options)
+        action_options = options.dup
+        action_options['on'] = :implementor if [:clone, :bootstrap].include? action
+        perform(action, 'action', args, action_options)
       end
     end
 

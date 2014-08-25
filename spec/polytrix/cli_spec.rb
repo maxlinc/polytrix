@@ -7,9 +7,10 @@ module Polytrix
     subject { ThorSpy.on(described_class, kernel) }
     describe 'bootstrap' do
       context 'with no args' do
-        it 'calls Polytrix.bootstrap' do
+        it 'calls bootstrap on each implementor' do
           expect(kernel).to receive(:exit).with(0)
-          expect(Polytrix).to receive(:bootstrap)
+          # TODO: Any way to test each implementor is called? We can't use
+          # `Polytrix.implementors` because it will be reloaded.
           subject.bootstrap
         end
       end
@@ -25,7 +26,9 @@ module Polytrix
 
       context 'with an non-existant SDK' do
         it 'fails' do
-          expect { subject.bootstrap('missing') }.to raise_error(SystemExit, 'SDK missing not found')
+          expect(kernel).to receive(:exit).with(1)
+          subject.bootstrap('missing')
+          expect(subject.stdout.string).to include('No scenarios for regex')
         end
       end
     end

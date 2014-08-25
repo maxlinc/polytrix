@@ -72,7 +72,7 @@ module Polytrix
     attr_accessor :challenges
 
     def build_challenges
-      @challenges ||= {}
+      @challenges ||= Challenges.new
 
       suites.each do | suite_name, suite |
         suite.samples.each do | sample |
