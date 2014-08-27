@@ -33,7 +33,8 @@ module Polytrix
   # values for that specific test.
   #
   class Manifest < Polytrix::ManifestSection
-    include Logger
+    include Polytrix::DefaultLogger
+    include Polytrix::Logging
     include Hashie::Extensions::DeepMerge
 
     def initialize(hash = {})

@@ -1,8 +1,13 @@
 require 'pathname'
+require 'polytrix/error'
 require 'polytrix/core/hashie'
 require 'polytrix/core/string_helpers'
 require 'polytrix/version'
+require 'polytrix/util'
+require 'polytrix/color'
 require 'polytrix/logger'
+require 'polytrix/logging'
+require 'polytrix/state_file'
 require 'polytrix/core/file_system_helper'
 require 'polytrix/runners/executor'
 require 'polytrix/core/manifest_section'
@@ -23,7 +28,8 @@ require 'polytrix/validator_registry'
 require 'polytrix/rspec'
 
 module Polytrix
-  include Polytrix::Logger
+  include Polytrix::DefaultLogger
+  include Polytrix::Logging
 
   class << self
     include Polytrix::Core::FileSystemHelper
@@ -86,7 +92,7 @@ module Polytrix
           source_file: File.expand_path(file, Dir.pwd)
         }
         challenge = implementor.build_challenge challenge_data
-        challenge.run
+        challenge.exec
       end
     end
 
@@ -140,6 +146,14 @@ module Polytrix
     # @see Polytrix::Configuration
     def configure
       yield(configuration)
+    end
+
+    # Returns whether or not standard output is associated with a terminal
+    # device (tty).
+    #
+    # @return [true,false] is there a tty?
+    def tty?
+      $stdout.tty?
     end
 
     protected

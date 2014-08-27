@@ -5,14 +5,15 @@ module Polytrix
       implementor.build_challenge name: 'factorial', vars: {}
     end
 
-    describe '#run' do
+    describe '#exec' do
       it 'executes the challenge and returns itself' do
-        expect(challenge.run).to be_an_instance_of Challenge
-        expect(challenge.run).to eq(challenge)
+        expect(challenge.exec).to be_an_instance_of Challenge
+        expect(challenge.exec).to eq(challenge)
       end
 
       it 'stores the result' do
-        expect(challenge.run[:result]).to be_an_instance_of Result
+        result = challenge.exec[:result]
+        expect(result).to be_an_instance_of Result
       end
     end
   end

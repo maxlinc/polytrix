@@ -1,5 +1,9 @@
+require 'rspec/expectations'
+
 module Polytrix
   class Validator
+    include RSpec::Matchers
+
     UNIVERSAL_MATCHER = //
     attr_reader :suite, :sample, :callback
 
@@ -13,8 +17,8 @@ module Polytrix
       !!(@suite.match(challenge.suite.to_s) && @sample.match(challenge.name.to_s))
     end
 
-    # def validate(challenge)
-    #   instance_exec challenge, @callback if should_validate?(challenge)
-    # end
+    def validate(challenge)
+      instance_exec challenge, &@callback if should_validate?(challenge)
+    end
   end
 end

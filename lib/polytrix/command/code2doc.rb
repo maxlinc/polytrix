@@ -14,7 +14,7 @@ module Polytrix
 
       def code2doc
         files = args
-        Logging.mdc['command'] = 'code2doc'
+        # Logging.mdc['command'] = 'code2doc'
         if files.empty?
           # help('code2doc')
           abort 'No FILES were specified, check usage above'

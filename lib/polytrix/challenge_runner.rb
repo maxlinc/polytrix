@@ -30,10 +30,10 @@ module Polytrix
     end
 
     def run_challenge(challenge)
-      Logging.mdc['implementor'] = "\033[35m#{challenge.implementor.name}\033[0m"
-      Logging.mdc['scenario'] = "\033[32m#{challenge.name}\033[0m"
+      # Logging.mdc['implementor'] = "\033[35m#{challenge.implementor.name}\033[0m"
+      # Logging.mdc['scenario'] = "\033[32m#{challenge.name}\033[0m"
       middleware.call(challenge)
-      challenge
+      challenge.result
     end
 
     private

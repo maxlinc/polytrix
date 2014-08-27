@@ -3,7 +3,8 @@ require 'thread'
 module Polytrix
   module Command
     class Base
-      include Polytrix::Logger
+      include Polytrix::DefaultLogger
+      include Polytrix::Logging
 
       # Contstructs a new Command object.
       #
@@ -133,9 +134,7 @@ module Polytrix
       end
     end
 
-    # Common module to execute a Kitchen action such as create, converge, etc.
-    #
-    # @author Fletcher Nichol <fnichol@nichol.ca>
+    # Common module to execute a Polytrix action such as create, converge, etc.
     module RunAction
       # Run an instance action (create, converge, setup, verify, destroy) on
       # a collection of scenarios. The instance actions will take place in a

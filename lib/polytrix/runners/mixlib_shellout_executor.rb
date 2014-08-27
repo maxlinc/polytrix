@@ -2,12 +2,30 @@ require 'mixlib/shellout'
 
 module Polytrix
   module Runners
+    class IOToLog < IO
+      def initialize(logger)
+        @logger = logger
+        @buffer = ''
+      end
+
+      def write(string)
+        (@buffer + string).lines.each do |line|
+          if line.end_with? "\n"
+            @buffer = ''
+            @logger.info(line.rstrip)
+          else
+            @buffer = line
+          end
+        end
+      end
+    end
+
     class MixlibShellOutExecutor
-      include Logger
+      include Polytrix::DefaultLogger
 
       def log_decorator(io, prefix)
         # OutputDecorator.new(io, prefix) unless Polytrix.configuration.suppress_output
-        logger = Logging.logger['polytrix::exec']
+        # logger = Logging.logger['polytrix::exec']
         IOToLog.new(logger)
       end
 

@@ -19,7 +19,8 @@ module Polytrix
 
   class Configuration < Polytrix::ManifestSection
     property :dry_run,      default: false
-    property :log_level,    default: 'info'
+    property :log_root,     default: '.polytrix/logs'
+    property :log_level,    default: :info
     property :middleware,   default: Polytrix::Runners::Middleware::STANDARD_MIDDLEWARE
     property :implementors, default: []
     # coerce_key :implementors, Polytrix::Implementor
@@ -29,8 +30,8 @@ module Polytrix
     # Extra options for rspec
     property :rspec_options, default: ''
 
-    def logger
-      @logger ||= Polytrix::Logger.default_logger(log_level)
+    def default_logger
+      @default_logger ||= Logger.new(stdout: $stdout, level: env_log)
     end
 
     def manifest
@@ -55,5 +56,18 @@ module Polytrix
     end
 
     attr_writer :default_validator_callback
+
+    private
+
+    # Determine the default log level from an environment variable, if it is
+    # set.
+    #
+    # @return [Integer,nil] a log level or nil if not set
+    # @api private
+    def env_log
+      level = ENV['POLYTRIX_LOG'] && ENV['POLYTRIX_LOG'].downcase.to_sym
+      level = Polytrix::Util.to_logger_level(level) unless level.nil?
+      level
+    end
   end
 end

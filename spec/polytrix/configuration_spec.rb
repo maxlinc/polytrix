@@ -2,10 +2,6 @@ module Polytrix
   describe Configuration do
     subject(:configuration) { Configuration.new }
 
-    it 'creates a logger' do
-      expect(configuration.logger).to be_kind_of Logging::Logger
-    end
-
     describe '.manifest' do
       it 'parses the YAML file and registers the manifest' do
         original_manifest = configuration.manifest

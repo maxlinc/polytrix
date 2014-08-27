@@ -9,7 +9,7 @@ module Polytrix
 
       def rundoc
         files = args
-        Logging.mdc['command'] = 'rundoc'
+        # Logging.mdc['command'] = 'rundoc'
         if files.empty?
           # help('code2doc')
           abort 'No FILES were specified, check usage above'

@@ -26,7 +26,7 @@ module Polytrix
                         challenge = Polytrix.manifest.challenges[slug]
                         # sdk.build_challenge suite: suite_name, name: scenario, vars: suite_config.env
                         example.metadata[:polytrix_challenge] = challenge
-                        challenge.run
+                        challenge.exec
                         validators = Polytrix::ValidatorRegistry.validators_for challenge
                         validators.each do |validator|
                           instance_exec challenge, &validator.callback

@@ -1,7 +1,7 @@
 module Polytrix
   module Core
     module FileSystemHelper
-      include Polytrix::Logger
+      include Polytrix::Logging
       include Polytrix::StringHelpers
       class FileNotFound < StandardError; end
 

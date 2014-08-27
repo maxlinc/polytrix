@@ -19,7 +19,7 @@ module Polytrix
       end
     end
 
-    include Polytrix::Logger
+    include Polytrix::Logging
     include Polytrix::Core::FileSystemHelper
     include Polytrix::Runners::Executor
     property :name
@@ -34,10 +34,14 @@ module Polytrix
       super
     end
 
+    def logger
+      @logger ||= Polytrix::Logger.new_logger(self)
+    end
+
     def clone
-      Logging.mdc['implementor'] = name
+      # Logging.mdc['implementor'] = name
       if git.nil? || git.repo.nil?
-        logger.info "Skipping clone because there are no git options"
+        logger.info 'Skipping clone because there are no git options'
         return
       end
       branch = git.branch ||= 'master'
@@ -52,7 +56,7 @@ module Polytrix
     end
 
     def bootstrap
-      Logging.mdc['implementor'] = name
+      # Logging.mdc['implementor'] = name
       banner "Bootstrapping #{name}"
       fail "Implementor #{name} has not been cloned" unless cloned?
 

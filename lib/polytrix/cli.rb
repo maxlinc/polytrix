@@ -79,7 +79,9 @@ module Polytrix
       exec: "Change instance state to executed. " \
                     "Execute the code sample and capture the results.",
       verify: "Change instance state to verified. " \
-                    "Assert that the captured results match the expectations for the scenario."
+                    "Assert that the captured results match the expectations for the scenario.",
+      destroy: "Change scenario state to destroyed. " \
+                   "Delete all information for one or more scenarios"
     }.each do |action, short_desc|
       desc(
         "#{action} [INSTANCE|REGEXP|all]",
