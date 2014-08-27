@@ -5,7 +5,7 @@ module Polytrix
     include RSpec::Matchers
 
     UNIVERSAL_MATCHER = //
-    attr_reader :suite, :sample, :callback
+    attr_reader :suite, :sample, :level, :callback
 
     def initialize(scope = {}, &validator)
       @suite = scope[:suite] ||= UNIVERSAL_MATCHER

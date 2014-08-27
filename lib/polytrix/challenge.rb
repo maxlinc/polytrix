@@ -96,6 +96,8 @@ module Polytrix
       end
       state[:last_action] = what.to_s
       elapsed
+    rescue Polytrix::FeatureNotImplementedError => e
+      raise e
     rescue ActionFailed => e
       log_failure(what, e)
       raise(InstanceFailure, failure_message(what) +

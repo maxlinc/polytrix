@@ -15,7 +15,7 @@ module Polytrix
       #   to the subcommand name (default: `nil`)
       # @option options [proc] :help a callable that displays help for the
       #   command
-      # @option options [Config] :config a Config object (default: `nil`)
+      # @option options [Config] :test_dir a Config object (default: `nil`)
       # @option options [Loader] :loader a Loader object (default: `nil`)
       # @option options [String] :shell a Thor shell object
       def initialize(cmd_args, cmd_options, options = {})
@@ -24,7 +24,7 @@ module Polytrix
         @action = options.fetch(:action, nil)
         @help = options.fetch(:help, -> { 'No help provided' })
         @manifest_file = options.fetch('manifest', nil)
-        @config = options.fetch('config', nil)
+        @test_dir = options.fetch('test_dir', nil)
         @loader = options.fetch(:loader, nil)
         @shell = options.fetch(:shell)
       end
@@ -45,7 +45,7 @@ module Polytrix
 
       # @return [Config] a Config object
       # @api private
-      attr_reader :config
+      attr_reader :test_dir
 
       # @return [Thor::Shell] a Thor shell object
       # @api private
@@ -57,16 +57,16 @@ module Polytrix
 
       def setup
         manifest_file = File.expand_path @manifest_file
-        config_file = File.expand_path @config
+        test_dir = File.expand_path @test_dir
         if File.exists? manifest_file
           logger.debug "Loading manifest file: #{manifest_file}"
           Polytrix.configuration.manifest = manifest_file
           @manifest = Polytrix.configuration.manifest
           @manifest.build_challenges
         end
-        if File.exists? config_file
-          logger.debug "Loading Polytrix config: #{config_file}"
-          require_relative config_file
+        if File.directory? test_dir
+          logger.debug "Loading Polytrix test_dir: #{test_dir}"
+          Dir["#{File.dirname(__FILE__)}/lib/**/*.rb"].each { |f| load(f) }
         end
       end
 

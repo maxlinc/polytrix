@@ -24,7 +24,7 @@ module Polytrix
         command_options = {
           action: task,
           help: -> { help(task) },
-          config: @config,
+          test_dir: @test_dir,
           shell: shell
         }.merge(additional_options)
 
@@ -62,10 +62,10 @@ module Polytrix
                   aliases: '-m',
                   desc: 'The Polytrix test manifest file location',
                   default: 'polytrix.yml'
-    method_option :config,
-                  aliases: '-C',
-                  desc: 'The Polytrix config file file location',
-                  default: 'polytrix.rb'
+    method_option :test_dir,
+                  aliases: '-t',
+                  desc: 'The Polytrix test directory',
+                  default: 'tests/polytrix'
     def list(*args)
       update_config!
       perform('list', 'list', args, options)
@@ -107,10 +107,10 @@ module Polytrix
                     aliases: '-m',
                     desc: 'The Polytrix test manifest file location',
                     default: 'polytrix.yml'
-      method_option :config,
-                    aliases: '-C',
-                    desc: 'The Polytrix config file file location',
-                    default: 'polytrix.rb'
+      method_option :test_dir,
+                    aliases: '-t',
+                    desc: 'The Polytrix test directory',
+                    default: 'tests/polytrix'
       define_method(action) do |*args|
         update_config!
         action_options = options.dup
@@ -141,10 +141,10 @@ module Polytrix
                   aliases: '-m',
                   desc: 'The Polytrix test manifest file location',
                   default: 'polytrix.yml'
-    method_option :config,
-                  aliases: '-C',
-                  desc: 'The Polytrix config file file location',
-                  default: 'polytrix.rb'
+    method_option :test_dir,
+                  aliases: '-t',
+                  desc: 'The Polytrix test directory',
+                  default: 'tests/polytrix'
     def test(*args)
       abort "Test isn't implemented yet... need to implement an FSM"
       # update_config!
