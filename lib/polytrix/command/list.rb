@@ -5,7 +5,7 @@ module Polytrix
         # Logging.mdc['command'] = 'list'
 
         setup
-        Polytrix.manifest.build_challenges
+        tests = parse_subcommand(args.first)
 
         table = [
           [
@@ -13,7 +13,7 @@ module Polytrix
             colorize('Implementor', :green), colorize('Status', :green)
           ]
         ]
-        table += Polytrix.manifest.challenges.values.map do | challenge |
+        table += tests.map do | challenge |
           [
             color_pad(challenge.suite),
             color_pad(challenge.name),

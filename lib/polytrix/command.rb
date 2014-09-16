@@ -5,6 +5,7 @@ module Polytrix
     class Base
       include Polytrix::DefaultLogger
       include Polytrix::Logging
+      include Polytrix::Core::FileSystemHelper
 
       # Contstructs a new Command object.
       #
@@ -65,8 +66,10 @@ module Polytrix
           @manifest.build_challenges
         end
         if File.directory? test_dir
-          logger.debug "Loading Polytrix test_dir: #{test_dir}"
-          Dir["#{File.dirname(__FILE__)}/lib/**/*.rb"].each { |f| load(f) }
+          $LOAD_PATH.unshift test_dir
+          Dir["#{test_dir}/**/*.rb"].each do | file_to_require |
+            require relativize(file_to_require, test_dir).to_s.gsub('.rb', '')
+          end
         end
       end
 

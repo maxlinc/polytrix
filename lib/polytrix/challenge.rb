@@ -65,8 +65,27 @@ module Polytrix
       transition_to :destroy
     end
 
+    def test(destroy_mode = :passing)
+      elapsed = Benchmark.measure do
+        banner "Cleaning up any prior instances of #{slug}"
+        destroy
+        banner "Testing #{slug}"
+        verify
+        # destroy if destroy_mode == :passing
+      end
+      info "Finished testing #{slug} #{Util.duration(elapsed.real)}."
+      self
+    # ensure
+      # destroy if destroy_mode == :always
+    end
+
     def destroy_action
-      perform_action(:destroy, 'Destroying') { state_file.destroy }
+      perform_action(:destroy, 'Destroying') do
+        # @state_file.destroy
+        # @state_file = nil
+      end
+      @state_file.destroy
+      @state_file = nil
     end
 
     def verify_action
@@ -94,15 +113,15 @@ module Polytrix
         # synchronize_or_call(what, state, &block)
         block.call(state)
       end
-      state[:last_action] = what.to_s
+      state['last_action'] = what.to_s
       elapsed
     rescue Polytrix::FeatureNotImplementedError => e
       raise e
     rescue ActionFailed => e
       log_failure(what, e)
-      raise(InstanceFailure, failure_message(what) +
+      fail(ChallengeFailure, failure_message(what) +
         "  Please see .polytrix/logs/#{name}.log for more details",
-            e.backtrace)
+           e.backtrace)
     rescue Exception => e # rubocop:disable RescueException
       log_failure(what, e)
       fail ActionFailed,
@@ -125,7 +144,10 @@ module Polytrix
           transition_result = send("#{transition}_action")
         end
       rescue Polytrix::FeatureNotImplementedError
-        info("#{slug} is not implemented")
+        warn("#{slug} is not implemented")
+      rescue ActionFailed => e
+        error("#{slug} failed: #{e}")
+        fail(ChallengeFailure, e.message, e.backtrace)
       end
       transition_result
     end

@@ -96,6 +96,10 @@ module Polytrix
   # Exception class capturing what caused an challenge to die.
   class ChallengeFailure < TransientFailure; end
 
+  class ExecutionError < TransientFailure
+    attr_accessor :execution_result
+  end
+
   # Yields to a code block in order to consistently emit a useful crash/error
   # message and exit appropriately. There are two primary failure conditions:
   # an expected challenge failure, and any other unexpected failures.

@@ -12,11 +12,12 @@ module Polytrix
       def call
         banner "Starting Polytrix (v#{Polytrix::VERSION})"
         elapsed = Benchmark.measure do
+          setup
           results = parse_subcommand(args.join('|'))
 
-          run_action(:test, results, destroy_mode)
+          run_action(:test, results)
         end
-        banner "Polytrix is finished. #{duration(elapsed.real)}"
+        banner "Polytrix is finished. #{Util.duration(elapsed.real)}"
       end
     end
   end

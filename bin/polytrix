@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
+require 'polytrix/error'
 require 'polytrix/cli'
 
 $LOAD_PATH << 'spec'
-Polytrix::CLI.start
+Polytrix.with_friendly_errors { Polytrix::CLI.start }

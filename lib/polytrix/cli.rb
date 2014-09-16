@@ -146,10 +146,9 @@ module Polytrix
                   desc: 'The Polytrix test directory',
                   default: 'tests/polytrix'
     def test(*args)
-      abort "Test isn't implemented yet... need to implement an FSM"
-      # update_config!
-      # ensure_initialized
-      # perform("test", "test", args, options)
+      update_config!
+      action_options = options.dup
+      perform('test', 'test', args, action_options)
     end
 
     desc 'version', "Print Polytrix's version information"

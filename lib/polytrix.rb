@@ -34,6 +34,9 @@ module Polytrix
   class << self
     include Polytrix::Core::FileSystemHelper
 
+    # @return [Mutex] a common mutex for global coordination
+    attr_accessor :mutex
+
     def reset
       @configuration = nil
       Polytrix::ValidatorRegistry.clear
@@ -174,3 +177,5 @@ module Polytrix
     end
   end
 end
+
+Polytrix.mutex = Mutex.new

@@ -7,10 +7,6 @@ module Polytrix
     autoload :BuffShellOutExecutor, 'polytrix/runners/buff_shellout_executor'
     autoload :MixlibShellOutExecutor, 'polytrix/runners/mixlib_shellout_executor'
 
-    class ExecutionError < StandardError
-      attr_accessor :execution_result
-    end
-
     class ExecutionResult < Polytrix::ManifestSection
       property :exitstatus, require: true
       property :stdout, required: true
