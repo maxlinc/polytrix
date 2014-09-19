@@ -25,11 +25,13 @@ end
 desc 'Self-test and self-document'
 task :self do
   sh 'bundle exec polytrix bootstrap'
-  # sh 'bundle exec polytrix test'
-  sh 'bundle exec polytrix code2doc samples/sdks/java/challenges/*.java --target-dir=docs/samples/code2doc/java'
-  sh 'bundle exec polytrix code2doc samples/sdks/python/challenges/*.py --target-dir=docs/samples/code2doc/python'
-  sh 'bundle exec polytrix code2doc samples/sdks/ruby/challenges/*.rb --target-dir=docs/samples/code2doc/ruby'
-  # sh 'bundle exec polytrix code2doc samples/*.rb'
+  Dir.chdir 'samples' do
+    # sh 'bundle exec polytrix test'
+    sh 'bundle exec polytrix code2doc java --target-dir=docs/samples/code2doc/java'
+    sh 'bundle exec polytrix code2doc python --target-dir=docs/samples/code2doc/python'
+    sh 'bundle exec polytrix code2doc ruby --target-dir=docs/samples/code2doc/ruby'
+    # sh 'bundle exec polytrix code2doc samples/*.rb'
+  end
 end
 
 Rubocop::RakeTask.new(:rubocop) do |task|

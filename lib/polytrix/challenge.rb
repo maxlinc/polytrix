@@ -6,6 +6,7 @@ require 'polytrix/documentation/helpers/code_helper'
 
 module Polytrix
   class Challenge < Polytrix::Dash # rubocop:disable ClassLength
+    include Polytrix::Core::FileSystemHelper
     include Polytrix::Logging
     include Polytrix::StringHelpers
     # View helpers
@@ -41,6 +42,8 @@ module Polytrix
     end
 
     def absolute_source_file
+      return nil if source_file.nil?
+
       File.expand_path source_file, basedir
     end
 
@@ -77,6 +80,28 @@ module Polytrix
       self
     # ensure
       # destroy if destroy_mode == :always
+    end
+
+    def code2doc
+      if source_file.nil?
+        warn "No code sample available for #{slug}, no documentation will be generated."
+        return
+      end
+
+      display_file = relativize(absolute_source_file, Dir.pwd)
+      banner "Generating documentation from #{display_file}"
+      target_dir = Polytrix.configuration.documentation_dir
+      format = Polytrix.configuration.documentation_format
+      # language = options[:lang]
+      language = '.rb'
+      target_file_name = File.basename(source_file, File.extname(source_file)) + ".#{format}"
+      target_file = File.join(target_dir, target_file_name)
+      doc = Polytrix::DocumentationGenerator.new.code2doc(absolute_source_file, language)
+      FileUtils.mkdir_p File.dirname(target_file)
+      File.write(target_file, doc)
+      info "Documentated saved to #{target_file}"
+    rescue Polytrix::Documentation::CommentStyles::UnknownStyleError => e
+      abort "Unknown file extension: #{e.extension}, please use --lang to set the language manually"
     end
 
     def destroy_action

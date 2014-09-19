@@ -203,7 +203,7 @@ module Polytrix
   def self.handle_error(e)
     stderr_log(Error.formatted_exception(e))
     stderr_log('Please see .polytrix/logs/polytrix.log for more details')
-    stderr_log("Also try running `polytrix diagnose --all` for configuration\n")
+    # stderr_log("Also try running `polytrix diagnose --all` for configuration\n")
     file_log(:error, Error.formatted_trace(e))
   end
 end

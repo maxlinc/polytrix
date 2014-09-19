@@ -27,6 +27,8 @@ module Polytrix
     property :suppress_output, default: false
     property :default_doc_template
     property :template_dir, default: "#{RESOURCES_DIR}"
+    property :documentation_dir, default: 'docs/'
+    property :documentation_format, default: 'md'
     # Extra options for rspec
     property :rspec_options, default: ''
 
@@ -35,12 +37,19 @@ module Polytrix
     end
 
     def manifest
-      @manifest ||= Manifest.from_yaml 'polytrix.yml'
+      @manifest ||= load_manifest('polytrix.yml')
     end
 
-    def manifest=(yaml_file)
-      @manifest = Manifest.from_yaml yaml_file
+    def manifest=(manifest_data)
+      if manifest_data.is_a? Manifest
+        @manifest = manifest_data
+      else
+        @manifest = Manifest.from_yaml manifest_data
+      end
+      @manifest
     end
+
+    alias_method :load_manifest, :manifest=
 
     # The callback used to validate code samples that
     # don't have a custom validator.  The default

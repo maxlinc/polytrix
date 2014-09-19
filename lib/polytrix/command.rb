@@ -7,6 +7,9 @@ module Polytrix
       include Polytrix::Logging
       include Polytrix::Core::FileSystemHelper
 
+      # Need standard executor...
+      SUPPORTED_EXTENSIONS = %w(py rb js)
+
       # Contstructs a new Command object.
       #
       # @param cmd_args [Array] remainder of the arguments from processed ARGV
@@ -58,19 +61,53 @@ module Polytrix
 
       def setup
         manifest_file = File.expand_path @manifest_file
-        test_dir = File.expand_path @test_dir
         if File.exists? manifest_file
           logger.debug "Loading manifest file: #{manifest_file}"
-          Polytrix.configuration.manifest = manifest_file
-          @manifest = Polytrix.configuration.manifest
-          @manifest.build_challenges
+          Polytrix.configuration.manifest = @manifest_file
+        elsif @options.solo
+          solo_setup
+        else
+          fail StandardError, "No manifest found at #{manifest_file} and not using --solo mode"
         end
-        if File.directory? test_dir
+
+        Polytrix.configuration.documentation_dir = options[:target_dir]
+        Polytrix.configuration.documentation_format = options[:format]
+
+        manifest.build_challenges
+
+        test_dir = @test_dir.nil? ? nil : File.expand_path(@test_dir)
+        if test_dir && File.directory?(test_dir)
           $LOAD_PATH.unshift test_dir
           Dir["#{test_dir}/**/*.rb"].each do | file_to_require |
             require relativize(file_to_require, test_dir).to_s.gsub('.rb', '')
           end
         end
+      end
+
+      def solo_setup
+        suites = {}
+        solo_basedir = @options.solo
+        solo_glob = @options.fetch(:solo_glob, "**/*.{#{SUPPORTED_EXTENSIONS.join(',')}}")
+        Dir[File.join(solo_basedir, solo_glob)].each do | code_sample |
+          code_sample = Pathname.new(code_sample)
+          suite_name = relativize(code_sample.dirname, solo_basedir).to_s
+          scenario_name = code_sample.basename(code_sample.extname).to_s
+          suite = suites[suite_name] ||= Polytrix::Manifest::Suite.new(samples: [])
+          suite.samples << scenario_name
+        end
+        @manifest = Polytrix.configuration.manifest = Polytrix::Manifest.new(
+          implementors: {
+            File.basename(solo_basedir) => {
+              basedir: solo_basedir
+            }
+          },
+          suites: suites
+        )
+      end
+
+      def manifest
+        @manifest ||= Polytrix.configuration.manifest
+        @manifest
       end
 
       # Emit an error message, display contextual help and then exit with a
@@ -90,7 +127,7 @@ module Polytrix
       # @raise [SystemExit] if no scenario are returned
       # @api private
       def all_scenarios
-        result = @manifest.challenges.values
+        result = manifest.challenges.values
 
         if result.empty?
           die 'No scenarios defined'
@@ -108,8 +145,8 @@ module Polytrix
       # @api private
       def filtered_scenarios(regexp)
         result = begin
-          @manifest.challenges.get(regexp) ||
-            @manifest.challenges.get_all(/#{regexp}/)
+          manifest.challenges.get(regexp) ||
+            manifest.challenges.get_all(/#{regexp}/)
         rescue RegexpError => e
           die "Invalid Ruby regular expression, " \
             "you may need to single quote the argument. " \

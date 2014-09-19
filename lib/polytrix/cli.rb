@@ -2,8 +2,6 @@ require 'thor'
 
 require 'polytrix'
 require 'polytrix/command'
-# require "polytrix/command/base"
-require 'polytrix/command/code2doc'
 
 module Polytrix
   class CLI < Thor # rubocop:disable ClassLength
@@ -66,6 +64,11 @@ module Polytrix
                   aliases: '-t',
                   desc: 'The Polytrix test directory',
                   default: 'tests/polytrix'
+    method_option :solo,
+                  desc: 'Enable solo mode - Polytrix will auto-configure a single implementor and its scenarios'
+                  # , default: 'polytrix.yml'
+    method_option :solo_glob,
+                  desc: 'The globbing pattern to find code samples in solo mode'
     def list(*args)
       update_config!
       perform('list', 'list', args, options)
@@ -111,6 +114,10 @@ module Polytrix
                     aliases: '-t',
                     desc: 'The Polytrix test directory',
                     default: 'tests/polytrix'
+      method_option :solo,
+                    desc: 'Enable solo mode - Polytrix will auto-configure a single implementor and its scenarios'
+      method_option :solo_glob,
+                    desc: 'The globbing pattern to find code samples in solo mode'
       define_method(action) do |*args|
         update_config!
         action_options = options.dup
@@ -145,10 +152,48 @@ module Polytrix
                   aliases: '-t',
                   desc: 'The Polytrix test directory',
                   default: 'tests/polytrix'
+    method_option :solo,
+                  desc: 'Enable solo mode - Polytrix will auto-configure a single implementor and its scenarios'
+                  # , default: 'polytrix.yml'
+    method_option :solo_glob,
+                  desc: 'The globbing pattern to find code samples in solo mode'
     def test(*args)
       update_config!
       action_options = options.dup
       perform('test', 'test', args, action_options)
+    end
+
+    desc 'code2doc [INSTANCE|REGEXP|all]',
+         'Generates documenation from sample code for one or more scenarios'
+    long_desc <<-DESC
+      This task will convert annotated sample code to documentation. Markdown or
+      reStructureText are supported.
+    DESC
+    method_option :log_level,
+                  aliases: '-l',
+                  desc: 'Set the log level (debug, info, warn, error, fatal)'
+    method_option :manifest,
+                  aliases: '-m',
+                  desc: 'The Polytrix test manifest file location',
+                  default: 'polytrix.yml'
+    method_option :solo,
+                  desc: 'Enable solo mode - Polytrix will auto-configure a single implementor and its scenarios'
+                  # , default: 'polytrix.yml'
+    method_option :solo_glob,
+                  desc: 'The globbing pattern to find code samples in solo mode'
+    method_option :format,
+                  aliases: '-f',
+                  enum: %w(md rst),
+                  default: 'md',
+                  desc: 'Target documentation format'
+    method_option :target_dir,
+                  aliases: '-d',
+                  default: 'docs/',
+                  desc: 'The target directory where documentation for generated documentation.'
+    def code2doc(*args)
+      update_config!
+      action_options = options.dup
+      perform('code2doc', 'action', args, action_options)
     end
 
     desc 'version', "Print Polytrix's version information"
@@ -166,18 +211,6 @@ module Polytrix
     #   and one or more gems will be added to the project's Gemfile.
     # D
     # tasks["init"].options = Polytrix::Generator::Init.class_options
-
-    register Polytrix::Command::Code2Doc, 'code2doc',
-             'code2doc [FILEs]', 'Convert sample code into documentation'
-    long_desc <<-D, for: 'code2doc'
-      Convert annotated sample code into Markdown or reStructureText documentation.
-      For example:
-
-      > polytrix code2doc samples/hello_world.rb
-
-      will create docs/hello_world.md.
-    D
-    tasks['code2doc'].options = Polytrix::Command::Code2Doc.class_options
 
     private
 
