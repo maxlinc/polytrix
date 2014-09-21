@@ -91,6 +91,7 @@ module Polytrix
         Dir[File.join(solo_basedir, solo_glob)].each do | code_sample |
           code_sample = Pathname.new(code_sample)
           suite_name = relativize(code_sample.dirname, solo_basedir).to_s
+          suite_name = solo_basedir if suite_name == '.'
           scenario_name = code_sample.basename(code_sample.extname).to_s
           suite = suites[suite_name] ||= Polytrix::Manifest::Suite.new(samples: [])
           suite.samples << scenario_name
