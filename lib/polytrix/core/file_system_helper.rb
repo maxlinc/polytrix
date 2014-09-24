@@ -12,10 +12,13 @@ module Polytrix
         potential_files.concat Dir.glob(glob_string.gsub('_', '-'), File::FNM_CASEFOLD)
         potential_files.concat Dir.glob(glob_string.gsub('_', ''), File::FNM_CASEFOLD)
 
-        # Find the first file, not including generated files
-        file = potential_files.find do |f|
+        # Filter out ignored filesFind the first file, not including generated files
+        files = potential_files.select do |f|
           !ignored? ignored_patterns, search_path, f
         end
+
+        # Select the shortest path, likely the best match
+        file = files.min_by(&:length)
 
         fail FileNotFound, "No file was found for #{scenario_name} within #{search_path}" if file.nil?
         Pathname.new file

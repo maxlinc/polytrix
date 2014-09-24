@@ -101,12 +101,9 @@ module Polytrix
 
     # Registers a {Polytrix::Validator} that will be used during test
     # execution on matching {Polytrix::Challenge}s.
-    def validate(scope = { suite: //, sample: // }, validator = nil, &block)
-      if block_given?
-        validator = Polytrix::Validator.new(scope, &block)
-      elsif validator.nil?
-        fail ArgumentError 'You must a block or a Validator as the second argument'
-      end
+    def validate(desc, scope = { suite: //, sample: // }, &block)
+      fail ArgumentError 'You must pass block' unless block_given?
+      validator = Polytrix::Validator.new(desc, scope, &block)
 
       Polytrix::ValidatorRegistry.register validator
       validator

@@ -13,11 +13,8 @@ module Polytrix
         instance.validators
       end
 
-      def register(validator, &callback)
-        if block_given?
-          match_rules = validator
-          validator = Validator.new(match_rules, &callback)
-        end
+      def register(validator, scope = {}, &callback)
+        validator = Validator.new(validator, scope, &callback) if block_given?
         validators << validator
       end
 

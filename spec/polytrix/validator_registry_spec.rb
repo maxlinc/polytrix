@@ -5,11 +5,12 @@ module Polytrix
     describe '#register' do
       it 'registers a validator' do
         callback = proc do |challenge|
+          expect(challenge[:result]).to_not be_nil
           expect(challenge[:result].execution_result.exitstatus).to eq(0)
         end
 
         expect(registry.validators).to be_empty
-        registry.register suite: 'java', sample: 'hello world', &callback
+        registry.register(Validator.new('dummy', suite: 'java', sample: 'hello world', &callback))
         validator = registry.validators.first
         expect(validator.suite).to eql('java')
         expect(validator.sample).to eql('hello world')

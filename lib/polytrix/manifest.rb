@@ -45,6 +45,8 @@ module Polytrix
     end
 
     class Environment < Hashie::Mash
+      include Hashie::Extensions::Coercion
+      coerce_value Integer, String
     end
 
     class CodeSample < Polytrix::ManifestSection

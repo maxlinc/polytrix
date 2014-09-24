@@ -11,7 +11,7 @@ module Polytrix
 
     def read
       if File.exist?(file_name)
-        Hashie::Mash.load(file_name).dup
+        Hashie::Mash.load(file_name).dup || {}
       else
         Hashie::Mash.new
       end

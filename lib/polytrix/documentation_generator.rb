@@ -40,7 +40,7 @@ module Polytrix
       end
     end
 
-    def code2doc(source_file, language)
+    def code2doc(source_file, language = nil)
       source_code = File.read(source_file)
       if language.nil?
         language, comment_style = Documentation::CommentStyles.infer File.extname(source_file)

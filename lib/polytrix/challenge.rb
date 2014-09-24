@@ -89,14 +89,12 @@ module Polytrix
       end
 
       display_file = relativize(absolute_source_file, Dir.pwd)
-      banner "Generating documentation from #{display_file}"
+      banner "Generating documentation for #{slug} from #{display_file}"
       target_dir = Polytrix.configuration.documentation_dir
       format = Polytrix.configuration.documentation_format
-      # language = options[:lang]
-      language = '.rb'
       target_file_name = File.basename(source_file, File.extname(source_file)) + ".#{format}"
       target_file = File.join(target_dir, target_file_name)
-      doc = Polytrix::DocumentationGenerator.new.code2doc(absolute_source_file, language)
+      doc = Polytrix::DocumentationGenerator.new.code2doc(absolute_source_file)
       FileUtils.mkdir_p File.dirname(target_file)
       File.write(target_file, doc)
       info "Documentated saved to #{target_file}"
@@ -106,19 +104,21 @@ module Polytrix
 
     def destroy_action
       perform_action(:destroy, 'Destroying') do
-        # @state_file.destroy
-        # @state_file = nil
+        @state_file.destroy
+        @state_file = nil
+        @validations = nil
+        @state = {}
       end
-      @state_file.destroy
-      @state_file = nil
     end
 
     def verify_action
       perform_action(:verify, 'Verifying') do
         validators = Polytrix::ValidatorRegistry.validators_for self
         validators.each do |validator|
-          validator.validate self
+          validator.validate(self)
+          validations << validator.description
         end
+        @state['validations'] = validations
       end
     end
 
@@ -133,12 +133,12 @@ module Polytrix
     end
 
     def action(what, &block)
-      state = state_file.read
+      @state = state_file.read
       elapsed = Benchmark.measure do
-        # synchronize_or_call(what, state, &block)
-        block.call(state)
+        # synchronize_or_call(what, @state, &block)
+        block.call(@state)
       end
-      state['last_action'] = what.to_s
+      @state['last_action'] = what.to_s
       elapsed
     rescue Polytrix::FeatureNotImplementedError => e
       raise e
@@ -152,7 +152,7 @@ module Polytrix
       fail ActionFailed,
            "Failed to complete ##{what} action: [#{e.message}]", e.backtrace
     ensure
-      state_file.write(state)
+      state_file.write(@state) unless what == :destroy
     end
 
     # Returns the last successfully completed action state of the instance.
@@ -160,6 +160,10 @@ module Polytrix
     # @return [String] a named action which was last successfully completed
     def last_action
       state_file.read['last_action']
+    end
+
+    def validations
+      @validations ||= (state_file.read['validations'] || [])
     end
 
     def transition_to(desired)

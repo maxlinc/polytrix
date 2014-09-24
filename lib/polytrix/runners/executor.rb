@@ -15,6 +15,7 @@ module Polytrix
 
     module Executor
       attr_writer :executor
+      attr_accessor :env
 
       def executor
         @executor ||= if RUBY_PLATFORM == 'java'
@@ -25,6 +26,7 @@ module Polytrix
       end
 
       def execute(command, opts = {})
+        opts[:env] = env unless env.nil?
         executor.execute(command, opts)
       end
     end

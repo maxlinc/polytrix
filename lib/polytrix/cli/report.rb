@@ -1,12 +1,12 @@
 module Polytrix
-  module CLI
-    module Reports
-      # autoload :TextReporter, 'polytrix/cli/reports/text_reporter'
-      autoload :MarkdownReporter, 'polytrix/cli/reports/markdown_reporter'
-      # autoload :HTMLReporter, 'polytrix/cli/reports/html_reporter'
-      autoload :JSONReporter, 'polytrix/cli/reports/json_reporter'
-      autoload :YAMLReporter, 'polytrix/cli/reports/yaml_reporter'
-    end
+  module Reports
+    # autoload :TextReporter, 'polytrix/cli/reports/text_reporter'
+    autoload :MarkdownReporter, 'polytrix/cli/reports/markdown_reporter'
+    # autoload :HTMLReporter, 'polytrix/cli/reports/html_reporter'
+    autoload :JSONReporter, 'polytrix/cli/reports/json_reporter'
+    autoload :YAMLReporter, 'polytrix/cli/reports/yaml_reporter'
+  end
+  module Command
     class Report < Polytrix::CLI::Base
       # class_options = super.class_options
       class_option :format, desc: 'Output format for the report', default: 'text', enum: %w(text markdown json yaml)

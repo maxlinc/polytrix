@@ -45,7 +45,6 @@ module Polytrix
     def initialize(*args)
       super
       $stdout.sync = true
-      # Polytrix.logger = Polytrix.default_file_logger
     end
 
     desc 'list [INSTANCE|REGEXP|all]', 'Lists one or more scenarios'
@@ -72,6 +71,32 @@ module Polytrix
     def list(*args)
       update_config!
       perform('list', 'list', args, options)
+    end
+
+    desc 'report [INSTANCE|REGEXP|all]', 'Summary report for one or more scenarios'
+    method_option :bare,
+                  aliases: '-b',
+                  type: :boolean,
+                  desc: 'List the name of each scenario only, one per line'
+    method_option :log_level,
+                  aliases: '-l',
+                  desc: 'Set the log level (debug, info, warn, error, fatal)'
+    method_option :manifest,
+                  aliases: '-m',
+                  desc: 'The Polytrix test manifest file location',
+                  default: 'polytrix.yml'
+    method_option :test_dir,
+                  aliases: '-t',
+                  desc: 'The Polytrix test directory',
+                  default: 'tests/polytrix'
+    method_option :solo,
+                  desc: 'Enable solo mode - Polytrix will auto-configure a single implementor and its scenarios'
+                  # , default: 'polytrix.yml'
+    method_option :solo_glob,
+                  desc: 'The globbing pattern to find code samples in solo mode'
+    def report(*args)
+      update_config!
+      perform('report', 'report', args, options)
     end
 
     {
@@ -202,7 +227,7 @@ module Polytrix
     end
     map %w[-v --version] => :version
 
-    # register Polytrix::Generator::Init, "init",
+    # register Polytrix::CLI::Report, "init",
     #   "init", "Adds some configuration to your cookbook so Polytrix can rock"
     # long_desc <<-D, :for => "init"
     #   Init will add Test Polytrix support to an existing project for
@@ -210,7 +235,7 @@ module Polytrix
     #   intended to be customized) is created in the project's root directory
     #   and one or more gems will be added to the project's Gemfile.
     # D
-    # tasks["init"].options = Polytrix::Generator::Init.class_options
+    # tasks["init"].options = Polytrix::CLI::Report.class_options
 
     private
 

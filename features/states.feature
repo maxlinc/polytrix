@@ -34,7 +34,7 @@ Feature: States
     Then the output should contain:
     """
     Suite  Scenario     Implementor  Status
-    Katas  hello world  ruby         Verified (Level 0)
+    Katas  hello world  ruby         Verified (x1)
     Katas  hello world  java         <Not Found>
     Katas  hello world  python       Executed
     """

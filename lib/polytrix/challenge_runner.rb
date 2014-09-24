@@ -11,6 +11,8 @@ module Polytrix
     include Polytrix::Core::FileSystemHelper
     include Polytrix::Runners::Executor
 
+    attr_accessor :env
+
     def self.create_runner
       case RbConfig::CONFIG['host_os']
       when /mswin(\d+)|mingw/i
@@ -30,8 +32,6 @@ module Polytrix
     end
 
     def run_challenge(challenge)
-      # Logging.mdc['implementor'] = "\033[35m#{challenge.implementor.name}\033[0m"
-      # Logging.mdc['scenario'] = "\033[32m#{challenge.name}\033[0m"
       middleware.call(challenge)
       challenge.result
     end

@@ -43,7 +43,7 @@ module Polytrix
         when 'clone' then colorize('Cloned', :cyan)
         when 'bootstrap' then colorize('Bootstrapped', :magenta)
         when 'exec' then colorize('Executed', :blue)
-        when 'verify' then colorize("Verified (Level #{challenge.verification_level})", :yellow)
+        when 'verify' then colorize("Verified (x#{challenge.validations.count})", :yellow)
         when nil then colorize('<Not Found>', :red)
         else colorize("<Unknown (#{challenge.last_action})>", :white)
         end

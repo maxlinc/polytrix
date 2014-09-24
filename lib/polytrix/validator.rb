@@ -5,9 +5,10 @@ module Polytrix
     include RSpec::Matchers
 
     UNIVERSAL_MATCHER = //
-    attr_reader :suite, :sample, :level, :callback
+    attr_reader :description, :suite, :sample, :level, :callback
 
-    def initialize(scope = {}, &validator)
+    def initialize(description, scope = {}, &validator)
+      @description = description
       @suite = scope[:suite] ||= UNIVERSAL_MATCHER
       @sample = scope[:sample] ||= UNIVERSAL_MATCHER
       @callback = validator
@@ -19,6 +20,10 @@ module Polytrix
 
     def validate(challenge)
       instance_exec challenge, &@callback if should_validate?(challenge)
+    end
+
+    def to_s
+      @description
     end
   end
 end

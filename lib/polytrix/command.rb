@@ -87,7 +87,7 @@ module Polytrix
       def solo_setup
         suites = {}
         solo_basedir = @options.solo
-        solo_glob = @options.fetch(:solo_glob, "**/*.{#{SUPPORTED_EXTENSIONS.join(',')}}")
+        solo_glob = @options.fetch('solo_glob', "**/*.{#{SUPPORTED_EXTENSIONS.join(',')}}")
         Dir[File.join(solo_basedir, solo_glob)].each do | code_sample |
           code_sample = Pathname.new(code_sample)
           suite_name = relativize(code_sample.dirname, solo_basedir).to_s

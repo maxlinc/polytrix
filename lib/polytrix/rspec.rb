@@ -19,7 +19,7 @@ module Polytrix
               samples.each do |scenario|
                 describe scenario.name do
                   Polytrix.implementors.each do |sdk|
-                    it sdk.name, sdk.name.to_sym => true do
+                    it sdk.name, sdk.name.to_sym => true do | example |
                       begin
                         skip "#{sdk.name} is not setup" unless File.directory? sdk.basedir
                         slug = Polytrix::Challenge.slugify(suite_name, scenario.name, sdk.name)
