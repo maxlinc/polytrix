@@ -88,7 +88,7 @@ module Polytrix
         suites = {}
         solo_basedir = @options.solo
         solo_glob = @options.fetch('solo_glob', "**/*.{#{SUPPORTED_EXTENSIONS.join(',')}}")
-        Dir[File.join(solo_basedir, solo_glob)].each do | code_sample |
+        Dir[File.join(solo_basedir, solo_glob)].sort.each do | code_sample |
           code_sample = Pathname.new(code_sample)
           suite_name = relativize(code_sample.dirname, solo_basedir).to_s
           suite_name = solo_basedir if suite_name == '.'
