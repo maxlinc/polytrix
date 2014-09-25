@@ -33,6 +33,10 @@ module Polytrix
       @state_file ||= StateFile.new(Dir.pwd, slug)
     end
 
+    def validators
+      Polytrix::ValidatorRegistry.validators_for self
+    end
+
     def logger
       implementor.logger
     end
@@ -113,7 +117,6 @@ module Polytrix
 
     def verify_action
       perform_action(:verify, 'Verifying') do
-        validators = Polytrix::ValidatorRegistry.validators_for self
         validators.each do |validator|
           validator.validate(self)
           validations << validator.description
