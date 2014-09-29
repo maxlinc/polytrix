@@ -1,5 +1,5 @@
 module Polytrix
-  module Reports
+  module Reporters
     # autoload :TextReporter, 'polytrix/cli/reports/text_reporter'
     autoload :MarkdownReporter, 'polytrix/cli/reports/markdown_reporter'
     # autoload :HTMLReporter, 'polytrix/cli/reports/html_reporter'
@@ -57,11 +57,11 @@ module Polytrix
                       when 'text'
                         self
                       when 'markdown'
-                        Polytrix::CLI::Reports::MarkdownReporter.new
+                        Polytrix::CLI::Reporters::MarkdownReporter.new
                       when 'json'
-                        Polytrix::CLI::Reports::JSONReporter.new
+                        Polytrix::CLI::Reporters::JSONReporter.new
                       when 'yaml'
-                        Polytrix::CLI::Reports::YAMLReporter.new
+                        Polytrix::CLI::Reporters::YAMLReporter.new
                       else
                         fail "Unknown report format #{options[:format]}"
                       end

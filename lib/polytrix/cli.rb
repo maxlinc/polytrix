@@ -55,6 +55,10 @@ module Polytrix
     method_option :log_level,
                   aliases: '-l',
                   desc: 'Set the log level (debug, info, warn, error, fatal)'
+    method_option :format,
+                  desc: 'List output format',
+                  enum: %w(text markdown json yaml),
+                  default: 'text'
     method_option :manifest,
                   aliases: '-m',
                   desc: 'The Polytrix test manifest file location',

@@ -1,8 +1,8 @@
 require 'yaml'
-require 'polytrix/cli/reports/hash_reporter'
+require 'polytrix/reporters/hash_reporter'
 
 module Polytrix
-  module Reports
+  module Reporters
     class YAMLReporter < HashReporter
       def convert(data)
         YAML.dump data

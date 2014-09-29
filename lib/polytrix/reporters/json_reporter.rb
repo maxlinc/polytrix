@@ -1,8 +1,8 @@
 require 'json'
-require 'polytrix/cli/reports/hash_reporter'
+require 'polytrix/reporters/hash_reporter'
 
 module Polytrix
-  module Reports
+  module Reporters
     class JSONReporter < HashReporter
       def convert(data)
         JSON.pretty_generate data

@@ -1,7 +1,7 @@
 require 'csv'
 
 module Polytrix
-  module Reports
+  module Reporters
     class HashReporter
       def initialize(io = $stdout)
         @buffer = io
@@ -22,6 +22,10 @@ module Polytrix
 
       def convert(data)
         fail 'Subclass HashReporter and convert the data to the target format'
+      end
+
+      def colors?
+        false
       end
     end
   end

@@ -1,8 +1,12 @@
+require 'polytrix/reporters'
 module Polytrix
   module Command
     class List < Polytrix::Command::Base
+      include Polytrix::Reporters
+
       def call
         setup
+        @reporter = Polytrix::Reporters.reporter(options[:format], shell)
         tests = parse_subcommand(args.first)
 
         table = [
@@ -19,17 +23,18 @@ module Polytrix
             format_last_action(challenge)
           ]
         end
-        shell.print_table table
+        print_table(table)
       end
 
       private
 
       def print_table(*args)
-        shell.print_table(*args)
+        @reporter.print_table(*args)
       end
 
       def colorize(string, *args)
-        shell.set_color(string, *args)
+        return string unless @reporter.respond_to? :set_color
+        @reporter.set_color(string, *args)
       end
 
       def color_pad(string)

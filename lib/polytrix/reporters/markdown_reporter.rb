@@ -1,5 +1,5 @@
 module Polytrix
-  module Reports
+  module Reporters
     class MarkdownReporter
       def initialize(io = $stdout)
         @buffer = io
@@ -15,6 +15,10 @@ module Polytrix
         table[1..-1].each do |data_line|
           @buffer.puts data_line.join ' | '
         end
+      end
+
+      def colors?
+        false
       end
     end
   end
