@@ -2,7 +2,7 @@ require 'thread'
 
 module Polytrix
   module Command
-    class Base
+    class Base # rubocop:disable ClassLength
       include Polytrix::DefaultLogger
       include Polytrix::Logging
       include Polytrix::Core::FileSystemHelper
@@ -31,6 +31,7 @@ module Polytrix
         @test_dir = options.fetch('test_dir', nil)
         @loader = options.fetch(:loader, nil)
         @shell = options.fetch(:shell)
+        @queue = Queue.new
       end
 
       private
@@ -191,19 +192,34 @@ module Polytrix
           concurrency = scenarios.size if concurrency > scenarios.size
         end
 
-        queue = Queue.new
-        scenarios.each { |i| queue << i }
-        concurrency.times { queue << nil }
+        scenarios.each { |i| @queue << i }
+        concurrency.times { @queue << nil }
 
-        threads = []
-        concurrency.times do
-          threads << Thread.new do
-            while (instance = queue.pop)
+        threads = concurrency.times.map { spawn }
+        threads.map do |i|
+          begin
+            i.join
+          rescue Polytrix::ExecutionError, Polytrix::ChallengeFailure
+            # respawn thread
+            i.kill
+            threads.delete(i)
+            threads.push(spawn)
+          end
+        end while threads.any?(&:alive?)
+      end
+
+      private
+
+      def spawn
+        Thread.new do
+          while (instance = @queue.pop)
+            begin
               instance.public_send(action, *args)
+            rescue Polytrix::ExecutionError, Polytrix::ChallengeFailure => e
+              logger.error(e)
             end
           end
         end
-        threads.map { |i| i.join }
       end
     end
   end
