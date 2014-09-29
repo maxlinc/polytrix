@@ -2,8 +2,6 @@ module Polytrix
   module Command
     class List < Polytrix::Command::Base
       def call
-        # Logging.mdc['command'] = 'list'
-
         setup
         tests = parse_subcommand(args.first)
 
