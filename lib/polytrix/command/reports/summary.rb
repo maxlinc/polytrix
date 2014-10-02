@@ -106,9 +106,10 @@ module Polytrix
         end
 
         def create_spy_reports
-          Polytrix::Spies.reports[:summary].each do | report_class |
+          reports = Polytrix::Spies.reports[:summary]
+          reports.each do | report_class |
             invoke report_class, args, options
-          end
+          end if reports
         end
       end
     end

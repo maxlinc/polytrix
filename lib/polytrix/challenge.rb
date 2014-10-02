@@ -61,7 +61,6 @@ module Polytrix
         fail FeatureNotImplementedError, name if source_file.nil?
         fail FeatureNotImplementedError, name unless File.exists?(absolute_source_file)
         self.result = challenge_runner.run_challenge self
-        @state['result'] = result
       end
     end
 
@@ -138,11 +137,12 @@ module Polytrix
 
     def action(what, &block)
       @state = state_file.read
+      @state['last_attempted_action'] = what.to_s
       elapsed = Benchmark.measure do
         # synchronize_or_call(what, @state, &block)
         block.call(@state)
       end
-      @state['last_action'] = what.to_s
+      @state['last_completed_action'] = what.to_s
       elapsed
     rescue Polytrix::FeatureNotImplementedError => e
       raise e
@@ -156,6 +156,7 @@ module Polytrix
       fail ActionFailed,
            "Failed to complete ##{what} action: [#{e.message}]", e.backtrace
     ensure
+      @state['result'] = result
       state_file.write(@state) unless what == :destroy
     end
 

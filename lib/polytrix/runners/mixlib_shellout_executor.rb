@@ -35,15 +35,12 @@ module Polytrix
         shell.live_stream = log_decorator $stdout, prefix
         shell.run_command
         execution_result = ExecutionResult.new exitstatus: shell.exitstatus, stdout: shell.stdout, stderr: shell.stderr
-        begin
-          shell.error!
-        rescue Mixlib::ShellOut::ShellCommandFailed => e
-          execution_error = ExecutionError.new(e)
-          execution_error.execution_result = execution_result
-          raise execution_error
-        end
-
+        shell.error!
         execution_result
+      rescue SystemCallError, Mixlib::ShellOut::ShellCommandFailed => e
+        execution_error = ExecutionError.new(e)
+        execution_error.execution_result = execution_result
+        raise execution_error
       end
 
       class OutputDecorator
