@@ -6,6 +6,36 @@ Polytrix was influenced by a number of polyglot projects, including [Travis-CI](
 
 The user-experience was heavily influenced by [test-kitchen](http://kitchen.ci/). Polytrix aims to do for multi-language development of command-line applications what test-kitchen has done for multi-platform development of infrastructure.
 
+## Features
+
+### Stages
+
+The stages involved in testing a code sample are:
+- **clone**: Polytrix fetches the code samples from Git (if they aren't already present)
+- **bootstrap**: Polytrix makes sure the necessary dependencies are installed
+- **exec**: Polytrix executes the code sample and captures information with [Spies](http://tbd)
+- **verify**: Polytrix checks the execution results against [Validators](http://tbd)
+
+You can run each of these stages individually with `polytrix <stage>`. You can also run `polytrix test` which will clean up old results and then run all of the stages.
+
+### Reports
+
+Polytrix can generate several reports, including reports that group similar code samples across different implementors to create report for compliance testing.
+
+You can run `polytrix list` to see a list of the known tests and their statuses. It will print a table to the terminal by default, but you can use the `--format` option to choose JSON, YAML, or Markdown output.
+
+TODO: Include screenshot
+
+You can also run `polytrix dashboard` to generate a more complete HTML report.
+
+### Spies
+
+
+
+
+
+The In order to test a code sample, Polytrix:Polytrix tests code samples.
+
 ## Installing Polytrix
 
 Polytrix is distributed as a Ruby Gem. It should be installed using Bundler by adding this line to your Gemfile:
@@ -20,7 +50,7 @@ It can also be installed without Bundler by running `gem install polytrix`.
 
 ## Getting Help
 
-Polytrix is primarily intented to be run as a standalone utility, though it does have an API for integrating with RSpec or other Ruby-based test frameworks.
+Polytrix is primarily intended to be run as a standalone utility, though it does have an API for integrating with RSpec or other Ruby-based test frameworks.
 
 Note: You may need to prefix commands with `bundle exec` if you installed Polytrix using Bundler.
 
@@ -41,10 +71,54 @@ Commands:s
   polytrix version                          # Print Polytrix's version information
 ```
 
-## The polytrix.yml file
+## Solo mode
 
-The Polytrix test suites and the implementors that should be tested are defined in a polytrix.yml file.
-A basic file looks like this:
+Although Polytrix is designed for compliance testing multiple implementations, you can also use Polytrix to run tests (and create documentation) for a single implementor. Polytrix has a `--solo` mode to make this easier. This mode let's you skip a lot of configuration that would be necessary for a polyglot suite. This may be useful if you're starting out with a "reference implementation" that you plan to port to other languages in the future.
+
+In solo mode Polytrix:
+- Will detect and configure a single implementor
+- Will try to choose appropriate tools to install dependencies, compile, and/or run the code samples
+- Will detect code samples and configure tests for them
+- Code samples must not require input (stdin or environment variables)
+- Code samples will be run in alphabetical order
+
+If you need to control the order or add input then you should create a [test manifest]](http://tbd).
+If you need to customize the tools used for dependencies, compilation and/or running samples, you can add [wrapper scripts](http://tbd)
+
+In order to run tests in solo mode you just tell the directory that contains samples via the `--solo` option:
+
+```bash
+$ bundle exec polytrix test --solo=samples/sdks/python/
+-----> Starting Polytrix (v0.1.2)
+-----> Cleaning up any prior instances of challenges-hello_world-python
+-----> Destroying challenges-hello_world-python...
+       Finished destroying challenges-hello_world-python (0m0.00s).
+-----> Testing challenges-hello_world-python
+-----> Executing challenges-hello_world-python...
+polytrix:execute  scripts/wrapper ./challenges/hello_world.py
+       Hello, world!
+       Finished executing challenges-hello_world-python (0m0.20s).
+-----> Verifying challenges-hello_world-python...
+       Finished verifying challenges-hello_world-python (0m0.00s).
+       Finished testing challenges-hello_world-python (0m0.21s).
+-----> Cleaning up any prior instances of challenges-quine-python
+-----> Destroying challenges-quine-python...
+       Finished destroying challenges-quine-python (0m0.00s).
+-----> Testing challenges-quine-python
+-----> Executing challenges-quine-python...
+polytrix:execute  scripts/wrapper ./challenges/quine.py
+       s = 's = %r\nprint(s%%s)'
+       print(s%s)
+       Finished executing challenges-quine-python (0m0.04s).
+-----> Verifying challenges-quine-python...
+       Finished verifying challenges-quine-python (0m0.00s).
+       Finished testing challenges-quine-python (0m0.05s).
+-----> Polytrix is finished. (0m0.26s)
+```
+
+## The test manifest - polytrix.yml
+
+The test manifest, polytrix.yml, defines the implementations you plan to test, and the test suite you want to run. A basic test manifest looks like this:
 
 ```yaml
 polytrix:

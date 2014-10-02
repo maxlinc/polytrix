@@ -5,6 +5,9 @@ module Polytrix
     autoload :JSONReporter, 'polytrix/reporters/json_reporter'
     autoload :YAMLReporter, 'polytrix/reporters/yaml_reporter'
 
+    RESOURCES_DIR = File.expand_path '../../../resources/', __FILE__
+    TEMPLATE_DIR = File.expand_path 'templates/', RESOURCES_DIR
+
     def self.reporter(format, shell)
       case format
       when 'text'

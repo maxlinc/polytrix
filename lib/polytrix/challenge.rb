@@ -26,7 +26,7 @@ module Polytrix
     # coerce_key :results, Array[ChallengeResult]
     property :env_file
     # coerce_key :vars, Polytrix::Manifest::Environment
-    property :plugin_data, default: {}
+    property :spy_data, default: {}
     property :verification_level, default: 0
 
     def state_file
@@ -61,6 +61,7 @@ module Polytrix
         fail FeatureNotImplementedError, name if source_file.nil?
         fail FeatureNotImplementedError, name unless File.exists?(absolute_source_file)
         self.result = challenge_runner.run_challenge self
+        @state['result'] = result
       end
     end
 

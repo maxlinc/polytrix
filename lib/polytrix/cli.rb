@@ -2,6 +2,7 @@ require 'thor'
 
 require 'polytrix'
 require 'polytrix/command'
+require 'polytrix/command/report'
 
 module Polytrix
   class CLI < Thor # rubocop:disable ClassLength
@@ -30,7 +31,9 @@ module Polytrix
         klass = ::Polytrix::Command.const_get(str_const)
         klass.new(args, options, command_options).call
       rescue ArgumentError => e
-        abort e.message
+        # This was hiding too many exceptions!
+        # abort e.message
+        raise e
       end
     end
 
@@ -75,32 +78,6 @@ module Polytrix
     def list(*args)
       update_config!
       perform('list', 'list', args, options)
-    end
-
-    desc 'report [INSTANCE|REGEXP|all]', 'Summary report for one or more scenarios'
-    method_option :bare,
-                  aliases: '-b',
-                  type: :boolean,
-                  desc: 'List the name of each scenario only, one per line'
-    method_option :log_level,
-                  aliases: '-l',
-                  desc: 'Set the log level (debug, info, warn, error, fatal)'
-    method_option :manifest,
-                  aliases: '-m',
-                  desc: 'The Polytrix test manifest file location',
-                  default: 'polytrix.yml'
-    method_option :test_dir,
-                  aliases: '-t',
-                  desc: 'The Polytrix test directory',
-                  default: 'tests/polytrix'
-    method_option :solo,
-                  desc: 'Enable solo mode - Polytrix will auto-configure a single implementor and its scenarios'
-                  # , default: 'polytrix.yml'
-    method_option :solo_glob,
-                  desc: 'The globbing pattern to find code samples in solo mode'
-    def report(*args)
-      update_config!
-      perform('report', 'report', args, options)
     end
 
     {
@@ -231,15 +208,14 @@ module Polytrix
     end
     map %w[-v --version] => :version
 
-    # register Polytrix::CLI::Report, "init",
-    #   "init", "Adds some configuration to your cookbook so Polytrix can rock"
-    # long_desc <<-D, :for => "init"
-    #   Init will add Test Polytrix support to an existing project for
-    #   convergence integration testing. A default .polytrix.yml file (which is
-    #   intended to be customized) is created in the project's root directory
-    #   and one or more gems will be added to the project's Gemfile.
+    desc 'report', 'Generate reports'
+    subcommand 'report', Polytrix::Command::Report
+    # register Polytrix::Command::Report, 'report',
+    #          'report', 'Generates a report'
+    # long_desc <<-D, for: 'report'
+    #   Polytrix will generate an HTML report.
     # D
-    # tasks["init"].options = Polytrix::CLI::Report.class_options
+    # tasks['report'].options = Polytrix::Command::Report.class_options
 
     private
 

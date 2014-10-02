@@ -66,6 +66,11 @@ module Polytrix
 
     attr_writer :default_validator_callback
 
+    def register_spy(spy)
+      Polytrix::Spies.register_spy(spy)
+      middleware.insert 0, spy, {}
+    end
+
     private
 
     # Determine the default log level from an environment variable, if it is
