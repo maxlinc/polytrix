@@ -85,6 +85,8 @@ module Polytrix
                     "Clone the code sample from git",
       bootstrap: "Change scenario state to bootstraped. " \
                     "Running bootstrap scripts for the implementor",
+      detect: "Find sample code that matches a test scenario. " \
+                    "Attempts to locate a code sample with a filename that the test scenario name.",
       exec: "Change instance state to executed. " \
                     "Execute the code sample and capture the results.",
       verify: "Change instance state to verified. " \

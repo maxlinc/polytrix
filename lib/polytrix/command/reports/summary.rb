@@ -25,7 +25,7 @@ module Polytrix
               }
               Polytrix.implementors.each do |implementor|
                 challenge = challenges.find { |c| c.implementor == implementor }
-                row[slug(implementor.name)] = status(challenge)
+                row[slug(implementor.name)] = challenge.display_status
               end
               results << row
             end
@@ -38,17 +38,6 @@ module Polytrix
 
           def slug(label)
             label.gsub('.', '_').gsub('-', '_')
-          end
-
-          def status(challenge)
-            case challenge.last_action
-            when 'clone' then 'Cloned'
-            when 'bootstrap' then 'Bootstrapped'
-            when 'exec' then 'Executed'
-            when 'verify' then verification_message(challenge)
-            when nil then '<Not Found>'
-            else "<Unknown (#{challenge.last_action})>"
-            end
           end
 
           def verification_message(challenge)

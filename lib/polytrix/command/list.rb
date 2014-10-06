@@ -20,7 +20,7 @@ module Polytrix
             color_pad(challenge.suite),
             color_pad(challenge.name),
             color_pad(challenge.implementor.name),
-            format_last_action(challenge)
+            format_status(challenge)
           ]
         end
         print_table(table)
@@ -41,14 +41,22 @@ module Polytrix
         string + colorize('', :white)
       end
 
-      def format_last_action(challenge)
-        case challenge.last_action
-        when 'clone' then colorize('Cloned', :cyan)
-        when 'bootstrap' then colorize('Bootstrapped', :magenta)
-        when 'exec' then colorize('Executed', :blue)
-        when 'verify' then verification_message(challenge)
+      def format_status(challenge)
+        status = challenge.display_status
+        case status
         when nil then colorize('<Not Found>', :red)
-        else colorize("<Unknown (#{challenge.last_action})>", :white)
+        when 'Cloned' then colorize(status, :magenta)
+        when 'Bootstrapped' then colorize(status, :magenta)
+        when 'Sample Found' then colorize(status, :cyan)
+        when 'Executed' then colorize(status, :blue)
+        when /Verified/
+          if status =~ /Fully/
+            colorize(status, :green)
+          else
+            colorize(status, :yellow)
+          end
+        when /failed/i then colorize(status.capitalize, :red)
+        else colorize(status, :red)
         end
       end
 

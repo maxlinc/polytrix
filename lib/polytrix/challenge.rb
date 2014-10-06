@@ -29,6 +29,8 @@ module Polytrix
     property :spy_data, default: {}
     property :verification_level, default: 0
 
+    KEYS_TO_PERSIST = [:validations, :result, :source_file]
+
     def state_file
       @state_file ||= StateFile.new(Dir.pwd, slug)
     end
@@ -49,6 +51,18 @@ module Polytrix
       return nil if source_file.nil?
 
       File.expand_path source_file, basedir
+    end
+
+    def detect
+      transition_to :detect
+    end
+
+    def detect_action
+      perform_action(:detect, 'Detecting code sample') do
+        fail FeatureNotImplementedError, "Implementor #{name} has not been cloned" unless implementor.cloned?
+        fail FeatureNotImplementedError, name if source_file.nil?
+        fail FeatureNotImplementedError, name unless File.exists?(absolute_source_file)
+      end
     end
 
     def exec
@@ -121,7 +135,6 @@ module Polytrix
           validator.validate(self)
           validations << validator.description
         end
-        @state['validations'] = validations
       end
     end
 
@@ -136,7 +149,7 @@ module Polytrix
     end
 
     def action(what, &block)
-      @state = state_file.read
+      @state ||= state_file.read
       @state['last_attempted_action'] = what.to_s
       elapsed = Benchmark.measure do
         # synchronize_or_call(what, @state, &block)
@@ -156,15 +169,50 @@ module Polytrix
       fail ActionFailed,
            "Failed to complete ##{what} action: [#{e.message}]", e.backtrace
     ensure
-      @state['result'] = result
+      KEYS_TO_PERSIST.each do |key|
+        @state[key] = public_send(key)
+      end
       state_file.write(@state) unless what == :destroy
+    end
+
+    def status
+      status = last_attempted_action
+      (last_attempted_action == last_completed_action) ? status : "#{status}_failed"
+    end
+
+    def display_status
+      case status
+      when 'clone' then 'Cloned'
+      when 'clone_failed' then 'Clone Failed'
+      when 'detect' then 'Sample Found'
+      when 'detect_failed', nil then '<Not Found>'
+      when 'bootstrap' then 'Bootstrapped'
+      when 'bootstrap_failed' then 'Bootstrap Failed'
+      when 'detect' then 'Detected'
+      when 'exec' then 'Executed'
+      when 'exec_failed' then 'Execution Failed'
+      when 'verify'
+        validator_count = validators.count
+        validation_count = validators.count
+        if validator_count == validation_count
+          "Fully Verified (#{validation_count} of #{validator_count})"
+        else
+          "Partially Verified (#{validation_count} of #{validator_count})"
+        end
+      when 'verify_failed' then 'Verification Failed'
+      else "<Unknown (#{status})>"
+      end
     end
 
     # Returns the last successfully completed action state of the instance.
     #
     # @return [String] a named action which was last successfully completed
-    def last_action
-      state_file.read['last_action']
+    def last_attempted_action
+      state_file.read['last_attempted_action']
+    end
+
+    def last_completed_action
+      state_file.read['last_completed_action']
     end
 
     def validations
@@ -174,7 +222,7 @@ module Polytrix
     def transition_to(desired)
       transition_result = nil
       begin
-        FSM.actions(last_action, desired).each do |transition|
+        FSM.actions(last_completed_action, desired).each do |transition|
           transition_result = send("#{transition}_action")
         end
       rescue Polytrix::FeatureNotImplementedError
@@ -228,7 +276,7 @@ module Polytrix
         end
       end
 
-      TRANSITIONS = [:destroy, :exec, :verify]
+      TRANSITIONS = [:destroy, :detect, :exec, :verify]
 
       # Determines the index of a state in the state lifecycle vector. Woah.
       #
