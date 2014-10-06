@@ -1,8 +1,7 @@
 require 'polytrix'
 begin
-  require 'rspec/core'
-  require 'rspec/expectations'
-  require 'rspec/core/formatters/base_text_formatter'
+  require 'rspec/support'
+  require 'rspec'
 rescue LoadError
   raise 'polytrix/rspec requires rspec 2 or later'
 end

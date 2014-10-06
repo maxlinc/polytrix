@@ -61,8 +61,12 @@ module Polytrix
       fail "Implementor #{name} has not been cloned" unless cloned?
 
       execute('./scripts/bootstrap', cwd: basedir, prefix: name)
-    rescue Errno::ENOENT
-      logger.warn "Skipping bootstrapping for #{name}, no script/bootstrap exists"
+    rescue ExecutionError => e
+      if e.cause.is_a? Errno::ENOENT
+        logger.warn "Skipping bootstrapping for #{name}, no script/bootstrap exists"
+      else
+        raise e
+      end
     end
 
     def build_challenge(challenge_data)

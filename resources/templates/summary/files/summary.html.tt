@@ -21,9 +21,9 @@
 </style>
 </head>
 <body ng-app="main" ng-controller="DemoCtrl">
-  <script data-require="angular.js@*" data-semver="1.2.0-rc3-nonmin" src="http://code.angularjs.org/1.2.0-rc.3/angular.js"></script>
-  <script data-require="ng-table@*" data-semver="0.3.0" src="http://bazalt-cms.com/assets/ng-table/0.3.0/ng-table.js"></script>
-  <link data-require="ng-table@*" data-semver="0.3.0" href="http://bazalt-cms.com/assets/ng-table/0.3.0/ng-table.css" rel="stylesheet">
+  <script data-require="angular.js@*" data-semver="1.2.26" src="https://code.angularjs.org/1.2.26/angular.min.js"></script>
+  <script data-require="ng-table@*" data-semver="0.3.3" src="http://bazalt-cms.com/assets/ng-table/0.3.0/ng-table.js"></script>
+  <link data-require="ng-table@*" data-semver="0.3.3" href="http://bazalt-cms.com/assets/ng-table/0.3.3/ng-table.css" rel="stylesheet">
   <script type="text/javascript">
     var app = angular.module('main', ['ngTable']).
     controller('DemoCtrl', function($scope, $filter, ngTableParams) {
@@ -58,7 +58,7 @@
           {{results.scenario}}
         </td>
         <% implementors.each do |implementor| %>
-        <td data-title="'<%= implementor %>'" ng-class="{'passed': feature.<%= implementor %> === 'verify', 'failed': feature.<%= implementor %> === 'failed'}" sortable="<%= implementor %>">
+        <td data-title="'<%= implementor %>'" ng-class="{'passed': results.<%= implementor %>.indexOf('Fully Verified') != -1, 'failed': results.<%= implementor %>.indexOf('Failed') != -1 }" sortable="<%= implementor %>">
           {{results.<%= implementor %>}}
         </td>
         <% end %>
@@ -66,19 +66,4 @@
     </tbody>
   </table>
 </body>
-<script type="text/javascript">
-  // var cells = document.getElementsByTagName('td');
-
-  // for (var i=0, len=cells.length; i<len; i++){
-  //     if (cells[i].innerText === 'failed'){
-  //         cells[i].className = 'failed';
-  //     }
-  //     else if (cells[i].innerText === 'verify'){
-  //         cells[i].className = 'passed';
-  //     }
-  //     else if (cells[i].innerText === 'pending'){
-  //         cells[i].className = 'pending';
-  //     }
-  // }
-</script>
 </html>
