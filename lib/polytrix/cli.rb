@@ -51,10 +51,6 @@ module Polytrix
     end
 
     desc 'list [INSTANCE|REGEXP|all]', 'Lists one or more scenarios'
-    method_option :bare,
-                  aliases: '-b',
-                  type: :boolean,
-                  desc: 'List the name of each scenario only, one per line'
     method_option :log_level,
                   aliases: '-l',
                   desc: 'Set the log level (debug, info, warn, error, fatal)'
@@ -78,6 +74,38 @@ module Polytrix
     def list(*args)
       update_config!
       perform('list', 'list', args, options)
+    end
+
+    desc 'show [INSTANCE|REGEXP|all]', 'Show detailed status for one or more scenarios'
+    method_option :log_level,
+                  aliases: '-l',
+                  desc: 'Set the log level (debug, info, warn, error, fatal)'
+    method_option :format,
+                  desc: 'List output format',
+                  enum: %w(text markdown json yaml),
+                  default: 'text'
+    method_option :manifest,
+                  aliases: '-m',
+                  desc: 'The Polytrix test manifest file location',
+                  default: 'polytrix.yml'
+    method_option :test_dir,
+                  aliases: '-t',
+                  desc: 'The Polytrix test directory',
+                  default: 'tests/polytrix'
+    method_option :solo,
+                  desc: 'Enable solo mode - Polytrix will auto-configure a single implementor and its scenarios'
+                  # , default: 'polytrix.yml'
+    method_option :solo_glob,
+                  desc: 'The globbing pattern to find code samples in solo mode'
+    method_option :failed,
+                  type: :boolean,
+                  desc: 'Display results for tests that failed'
+    method_option :skipped,
+                  type: :boolean,
+                  desc: 'Display results for tests that were skipped (e.g. no code sample found)'
+    def show(*args)
+      update_config!
+      perform('show', 'show', args, options)
     end
 
     {

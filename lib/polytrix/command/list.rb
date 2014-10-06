@@ -11,12 +11,13 @@ module Polytrix
 
         table = [
           [
-            colorize('Suite', :green), colorize('Scenario', :green),
+            colorize('Test ID', :green), colorize('Suite', :green), colorize('Scenario', :green),
             colorize('Implementor', :green), colorize('Status', :green)
           ]
         ]
         table += tests.map do | challenge |
           [
+            color_pad(challenge.slug),
             color_pad(challenge.suite),
             color_pad(challenge.name),
             color_pad(challenge.implementor.name),
@@ -42,22 +43,7 @@ module Polytrix
       end
 
       def format_status(challenge)
-        status = challenge.display_status
-        case status
-        when nil then colorize('<Not Found>', :red)
-        when 'Cloned' then colorize(status, :magenta)
-        when 'Bootstrapped' then colorize(status, :magenta)
-        when 'Sample Found' then colorize(status, :cyan)
-        when 'Executed' then colorize(status, :blue)
-        when /Verified/
-          if status =~ /Fully/
-            colorize(status, :green)
-          else
-            colorize(status, :yellow)
-          end
-        when /failed/i then colorize(status.capitalize, :red)
-        else colorize(status, :red)
-        end
+        colorize(challenge.status_description, challenge.status_color)
       end
 
       def verification_message(challenge)

@@ -29,10 +29,24 @@ module Polytrix
     property :spy_data, default: {}
     property :verification_level, default: 0
 
-    KEYS_TO_PERSIST = [:validations, :result, :source_file]
+    KEYS_TO_PERSIST = [:validations, :result, :spy_data]
+
+    attr_writer :validations
+
+    def initialize(hash)
+      super
+      refresh
+    end
 
     def state_file
       @state_file ||= StateFile.new(Dir.pwd, slug)
+    end
+
+    def refresh
+      @state = state_file.read
+      KEYS_TO_PERSIST.each do |key|
+        public_send("#{key}=".to_sym, @state[key]) if @state[key]
+      end
     end
 
     def validators
@@ -126,6 +140,7 @@ module Polytrix
         @state_file = nil
         @validations = nil
         @state = {}
+        refresh
       end
     end
 
@@ -175,12 +190,20 @@ module Polytrix
       state_file.write(@state) unless what == :destroy
     end
 
-    def status
-      status = last_attempted_action
-      (last_attempted_action == last_completed_action) ? status : "#{status}_failed"
+    def failed?
+      last_attempted_action != last_completed_action
     end
 
-    def display_status
+    def skipped?
+      result.nil?
+    end
+
+    def status
+      status = last_attempted_action
+      failed? ? "#{status}_failed" : status
+    end
+
+    def status_description
       case status
       when 'clone' then 'Cloned'
       when 'clone_failed' then 'Clone Failed'
@@ -201,6 +224,23 @@ module Polytrix
         end
       when 'verify_failed' then 'Verification Failed'
       else "<Unknown (#{status})>"
+      end
+    end
+
+    def status_color
+      case status_description
+      when '<Not Found>' then :white
+      when 'Cloned' then :magenta
+      when 'Bootstrapped' then :magenta
+      when 'Sample Found' then :cyan
+      when 'Executed' then :blue
+      when /Verified/
+        if status_description =~ /Fully/
+          :green
+        else
+          :yellow
+        end
+      else :red
       end
     end
 

@@ -25,7 +25,7 @@ module Polytrix
               }
               Polytrix.implementors.each do |implementor|
                 challenge = challenges.find { |c| c.implementor == implementor }
-                row[slug(implementor.name)] = challenge.display_status
+                row[slug(implementor.name)] = challenge.status_description
               end
               results << row
             end
