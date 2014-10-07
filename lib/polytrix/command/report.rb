@@ -3,9 +3,9 @@ module Polytrix
     class Report < Thor
       namespace :report
       # class_option :destination, default: 'reports/'
-      autoload :Summary, 'polytrix/command/reports/summary'
-      register Summary, 'summary', 'summary', 'Create a summary report'
-      tasks['summary'].options = Summary.class_options
+      autoload :Dashboard, 'polytrix/command/reports/dashboard'
+      register Dashboard, 'dashboard', 'dashboard', 'Create a report dashboard'
+      tasks['dashboard'].options = Dashboard.class_options
     end
   end
 end

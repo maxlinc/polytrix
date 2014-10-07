@@ -7,6 +7,7 @@ module Polytrix
 
     RESOURCES_DIR = File.expand_path '../../../resources/', __FILE__
     TEMPLATE_DIR = File.expand_path 'templates/', RESOURCES_DIR
+    ASSETS_DIR = File.expand_path 'assets/', RESOURCES_DIR
 
     def self.reporter(format, shell)
       case format

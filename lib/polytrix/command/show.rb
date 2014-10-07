@@ -1,4 +1,5 @@
 require 'polytrix/reporters'
+
 module Polytrix
   module Command
     class Show < Polytrix::Command::Base
@@ -20,11 +21,12 @@ module Polytrix
         tests.each do | test |
           status(test.status_description, test.slug, test.status_color.to_sym)
           indent do
-            status('Test suite:', test.suite)
-            status('Test scenario:', test.name)
-            status('Implementor:', test.implementor.name)
+            status('Test suite', test.suite)
+            status('Test scenario', test.name)
+            status('Implementor', test.implementor.name)
             source_file = test.absolute_source_file ? relativize(test.absolute_source_file, Dir.pwd) : colorize('<No code sample>', :red)
-            status('Source:', source_file)
+            status('Source', source_file)
+            display_source(test)
             display_execution_result(test)
             display_validations(test)
             display_spy_data(test)
@@ -53,37 +55,41 @@ module Polytrix
         end
       end
 
+      def display_source(test)
+        return if !options[:source] || !test.source?
+
+        shell.say test.highlighted_code
+      end
+
       def display_execution_result(test)
-        return unless test.result && test.result.execution_result
+        return if test.result.nil? || test.result.execution_result.nil?
 
         execution_result = test.result.execution_result
+        status 'Execution result'
         indent do
-          status 'Execution result:'
-          indent do
-            status('Exit Status:', execution_result.exitstatus)
-            status 'Stdout:'
-            say reformat(execution_result.stdout)
-            status 'Stderr:'
-            say reformat(execution_result.stderr)
-          end
-        end if execution_result
+          status('Exit Status', execution_result.exitstatus)
+          status 'Stdout'
+          say reformat(execution_result.stdout)
+          status 'Stderr'
+          say reformat(execution_result.stderr)
+        end
       end
 
       def display_validations(test)
-        return unless test.validations
+        return if test.validations.nil?
 
-        status 'Validations:'
+        status 'Validations'
         indent do
           test.validations.each do | validation |
-            status(validation)
+            say "#{indent}- #{validation}"
           end
         end
       end
 
       def display_spy_data(test)
-        return unless test.spy_data
+        return if test.spy_data.nil?
 
-        status 'Data from spies:'
+        status 'Data from spies'
         indent do
           test.spy_data.each do |spy, data|
             indent do
@@ -101,13 +107,12 @@ module Polytrix
 
       def status(status, msg = nil, color = :cyan)
         msg = yield if block_given?
-        if msg.nil?
-          # This is to avoid trailing spaces that say_status produces if msg is nil
-          msg = shell.set_color(indent + status, color, true)
-          shell.say msg
-        else
-          shell.say_status(indent + status, msg, color)
-        end
+        shell.say(indent)
+        status = shell.set_color("#{status}:", color, true)
+        status << ' ' unless msg.nil?
+        # The built-in say_status is right-aligned, we want left-aligned
+        shell.say status
+        shell.say msg unless msg.nil?
       end
 
       def print_table(*args)

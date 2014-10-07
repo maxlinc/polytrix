@@ -1,0 +1,65 @@
+<html>
+<head>
+  <link data-require="bootstrap-css@*" data-semver="3.0.0" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="assets/pygments/<%= options[:code_style] %>.css" rel="stylesheet" type="text/css">
+  <link href="assets/style.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div class="panel panel-<%= bootstrap_color(@challenge.status_color) %>">
+      <div class="panel-heading">
+        <div class="panel-title">
+          <h3>
+            <%= @challenge.slug %>
+            <span class="label pull-right label-<%= bootstrap_color(@challenge.status_color) %>"><%= @challenge.status_description%></span>
+          </h3>
+        </div>
+      </div>
+      <div class="panel-body">
+        <ul class="list-group">
+          <li class="list-group-item"><%= status('Test suite:', @challenge.suite) %></li>
+          <li class="list-group-item"><%= status('Test scenario:', @challenge.name) %></li>
+          <li class="list-group-item"><%= status('Implementor:', @challenge.implementor.name) %></li>
+          <% source_file = @challenge.absolute_source_file ? relativize(@challenge.absolute_source_file, Dir.pwd) : '<No code sample>' %>
+          <div class="list-group-item">
+            <div class="panel panel-default">
+              <div class="panel-heading"><h4>Code sample</h4></div>
+              <div class="panel-body">
+                <% if @challenge.absolute_source_file %>
+<%= @challenge.highlighted_code('html') %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <div class="list-group-item">
+            <div class="panel panel-default">
+              <div class="panel-heading"><h4>STDOUT</h4></div>
+              <div class="panel-body console">
+                <% if @challenge.result %>
+                <pre>
+                  <code>
+<%= ansi2html(@challenge.result.execution_result.stdout) %>
+                  </code>
+                </pre>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <div class="list-group-item">
+            <div class="panel panel-default">
+              <div class="panel-heading"><h4>STDERR</h4></div>
+              <div class="panel-body console">
+                <% if @challenge.result %>
+                <pre>
+                  <code>
+<%= ansi2html(@challenge.result.execution_result.stderr) %>
+                  </code>
+                </pre>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>

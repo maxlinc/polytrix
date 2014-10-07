@@ -58,7 +58,7 @@ module Polytrix
     end
 
     def slug
-      slugify("#{suite}-#{name}-#{implementor.name}")
+      slugify(suite, name, implementor.name)
     end
 
     def absolute_source_file

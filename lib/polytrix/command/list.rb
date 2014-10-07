@@ -45,16 +45,6 @@ module Polytrix
       def format_status(challenge)
         colorize(challenge.status_description, challenge.status_color)
       end
-
-      def verification_message(challenge)
-        validator_count = challenge.validators.count
-        validation_count = challenge.validators.count
-        if validator_count == validation_count
-          colorize("Fully Verified (#{validation_count} of #{validator_count})", :green)
-        else
-          colorize("Partially Verified (#{validation_count} of #{validator_count})", :yellow)
-        end
-      end
     end
   end
 end

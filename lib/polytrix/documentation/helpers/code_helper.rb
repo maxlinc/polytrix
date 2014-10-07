@@ -1,4 +1,5 @@
 require 'polytrix/documentation/code_segmenter'
+require 'rouge'
 
 module Polytrix
   module Documentation
@@ -33,6 +34,16 @@ module Polytrix
 
         def source
           File.read absolute_source_file
+        end
+
+        def source?
+          !absolute_source_file.nil?
+        end
+
+        def highlighted_code(formatter = 'terminal256')
+          lexer = Rouge::Lexer.find(implementor.language) || Rouge::Lexer.guess_by_filename(absolute_source_file)
+
+          Rouge.highlight(source, lexer, formatter)
         end
 
         def code_block(source_code, language, opts = { format: :markdown })

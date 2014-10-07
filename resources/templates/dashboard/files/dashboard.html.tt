@@ -18,6 +18,15 @@
   .pending {
       background-color: LightGrey;
   }
+
+  a:link {
+      color: #000000;
+  }
+
+  /* visited link */
+  a:visited {
+      color: #000000;
+  }
 </style>
 </head>
 <body ng-app="main" ng-controller="DemoCtrl">
@@ -59,7 +68,7 @@
         </td>
         <% implementors.each do |implementor| %>
         <td data-title="'<%= implementor %>'" ng-class="{'passed': results.<%= implementor %>.indexOf('Fully Verified') != -1, 'failed': results.<%= implementor %>.indexOf('Failed') != -1 }" sortable="<%= implementor %>">
-          {{results.<%= implementor %>}}
+          <a href="{{results.slug_prefix}}-<%= implementor %>.html">{{results.<%= implementor %>}}</a>
         </td>
         <% end %>
       </tr>

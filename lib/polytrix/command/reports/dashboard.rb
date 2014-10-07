@@ -4,13 +4,18 @@ require 'polytrix/reporters'
 module Polytrix
   module Command
     class Report
-      class Summary < Thor::Group
+      class Dashboard < Thor::Group
         include Thor::Actions
         include Polytrix::Core::FileSystemHelper
         module Helpers
+          include Polytrix::StringHelpers
+          include Padrino::Helpers::TagHelpers
+          include Padrino::Helpers::OutputHelpers
+          include Padrino::Helpers::AssetTagHelpers
+
           def implementors
             Polytrix.implementors.map do |implementor|
-              slug(implementor.name)
+              slugify(implementor.name)
             end
           end
 
@@ -20,12 +25,13 @@ module Polytrix
             grouped_challenges = manifest.challenges.values.group_by { |challenge| [challenge.suite, challenge.name] }
             grouped_challenges.each do |(suite, name), challenges|
               row = {
+                slug_prefix: slugify(suite, name),
                 suite: suite,
                 scenario: name
               }
               Polytrix.implementors.each do |implementor|
                 challenge = challenges.find { |c| c.implementor == implementor }
-                row[slug(implementor.name)] = challenge.status_description
+                row[slugify(implementor.name)] = challenge.status_description
               end
               results << row
             end
@@ -36,23 +42,27 @@ module Polytrix
             JSON.dump(table)
           end
 
-          def slug(label)
-            label.gsub('.', '_').gsub('-', '_')
+          def status(status, msg = nil, color = :cyan)
+            # color = bootstrap_color(color)
+            # "<h3><span class=\"label label-#{color.to_s}\">#{status}</span>#{msg}</h3>"
+            "<h3>#{status} <em>#{msg}</em></h3>"
           end
 
-          def verification_message(challenge)
-            validator_count = challenge.validators.count
-            validation_count = challenge.validators.count
-            if validator_count == validation_count
-              "Fully Verified (#{validation_count} of #{validator_count})"
-            else
-              "Partially Verified (#{validation_count} of #{validator_count})"
-            end
+          def bootstrap_color(color)
+            bootstrap_classes = {
+              green: 'success',
+              cyan: 'primary',
+              red: 'danger',
+              yellow: 'warning'
+            }
+            bootstrap_classes.key?(color) ? bootstrap_classes[color] : color
           end
         end
+
         include Helpers
 
         class_option :destination, default: 'reports/'
+        class_option :code_style, default: 'github'
 
         def self.source_root
           Polytrix::Reporters::TEMPLATE_DIR
@@ -90,12 +100,23 @@ module Polytrix
           end
         end
 
+        def copy_assets
+          directory Polytrix::Reporters::ASSETS_DIR, 'assets'
+        end
+
         def copy_base_structure
           directory 'files', '.'
         end
 
+        def create_test_reports
+          Polytrix.manifest.challenges.values.each do |challenge|
+            @challenge = challenge
+            template 'templates/_test_report.html.tt', "#{challenge.slug}.html"
+          end
+        end
+
         def create_spy_reports
-          reports = Polytrix::Spies.reports[:summary]
+          reports = Polytrix::Spies.reports[:dashboard]
           reports.each do | report_class |
             invoke report_class, args, options
           end if reports

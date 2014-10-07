@@ -103,6 +103,9 @@ module Polytrix
     method_option :skipped,
                   type: :boolean,
                   desc: 'Display results for tests that were skipped (e.g. no code sample found)'
+    method_option :source,
+                  type: :boolean,
+                  desc: 'Print the source code for the code sample'
     def show(*args)
       update_config!
       perform('show', 'show', args, options)
