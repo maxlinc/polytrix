@@ -6,10 +6,10 @@ module Polytrix
       context 'mixed pass/fail' do
         let(:subject) do
           Polytrix::Result.new(
-            validations: [
-              { validated_by: 'max', result: 'passed' },
-              { validated_by: 'polytrix', result: 'failed' }
-            ]
+            validations: {
+              'max' => { result: 'passed' },
+              'polytrix' => { result: 'failed', error: 'foo!' }
+            }
           ).status
         end
         it 'reports the failed status' do
@@ -19,11 +19,11 @@ module Polytrix
       context 'mix passed/pending/skipped' do
         let(:subject) do
           Polytrix::Result.new(
-            validations: [
-              { validated_by: 'max', result: 'passed' },
-              { validated_by: 'polytrix', result: 'pending' },
-              { validated_by: 'john doe', result: 'skipped' }
-            ]
+            validations: {
+              'max' => { result: 'passed' },
+              'polytrix' => { result: 'pending' },
+              'john doe' => { result: 'skipped' }
+            }
           ).status
         end
         it 'reports the passed status' do
@@ -33,11 +33,11 @@ module Polytrix
       context 'mix pending/skipped' do
         let(:subject) do
           Polytrix::Result.new(
-            validations: [
-              { validated_by: 'max', result: 'pending' },
-              { validated_by: 'polytrix', result: 'pending' },
-              { validated_by: 'john doe', result: 'skipped' }
-            ]
+            validations: {
+              'max' => { result: 'pending' },
+              'polytrix' => { result: 'pending' },
+              'john doe' => { result: 'skipped' }
+            }
           ).status
         end
         it 'reports the pending status' do

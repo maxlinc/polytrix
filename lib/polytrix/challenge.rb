@@ -29,9 +29,7 @@ module Polytrix
     property :spy_data, default: {}
     property :verification_level, default: 0
 
-    KEYS_TO_PERSIST = [:validations, :result, :spy_data]
-
-    attr_writer :validations
+    KEYS_TO_PERSIST = [:result, :spy_data]
 
     def initialize(hash)
       super
@@ -138,7 +136,6 @@ module Polytrix
       perform_action(:destroy, 'Destroying') do
         @state_file.destroy
         @state_file = nil
-        @validations = nil
         @state = {}
         refresh
       end
@@ -148,7 +145,6 @@ module Polytrix
       perform_action(:verify, 'Verifying') do
         validators.each do |validator|
           validator.validate(self)
-          validations << validator.description
         end
       end
     end
@@ -214,15 +210,15 @@ module Polytrix
       when 'detect' then 'Detected'
       when 'exec' then 'Executed'
       when 'exec_failed' then 'Execution Failed'
-      when 'verify'
+      when 'verify', 'verify_failed'
         validator_count = validators.count
-        validation_count = validators.count
+        validation_count = validations.values.select { |v| v['result'] == :passed }.count
         if validator_count == validation_count
           "Fully Verified (#{validation_count} of #{validator_count})"
         else
           "Partially Verified (#{validation_count} of #{validator_count})"
         end
-      when 'verify_failed' then 'Verification Failed'
+      # when 'verify_failed' then 'Verification Failed'
       else "<Unknown (#{status})>"
       end
     end
@@ -256,7 +252,8 @@ module Polytrix
     end
 
     def validations
-      @validations ||= (state_file.read['validations'] || [])
+      return nil if result.nil?
+      result.validations
     end
 
     def transition_to(desired)
@@ -288,7 +285,7 @@ module Polytrix
     # @return [String] a failure message
     # @api private
     def failure_message(what)
-      "#{what.capitalize} failed on instance #{slug}."
+      "#{what.capitalize} failed for test #{slug}."
     end
 
     # The simplest finite state machine pseudo-implementation needed to manage

@@ -35,7 +35,7 @@ module Polytrix
         shell.live_stream = log_decorator $stdout, prefix
         shell.run_command
         execution_result = ExecutionResult.new exitstatus: shell.exitstatus, stdout: shell.stdout, stderr: shell.stderr
-        shell.error!
+        # shell.error!
         execution_result
       rescue SystemCallError, Mixlib::ShellOut::RuntimeError, TypeError => e
         # See https://github.com/opscode/mixlib-shellout/issues/62

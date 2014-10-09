@@ -1,4 +1,5 @@
 require 'middleware'
+require 'rspec'
 
 module Polytrix
   RESOURCES_DIR = File.expand_path '../../../resources', __FILE__
@@ -31,6 +32,8 @@ module Polytrix
     property :documentation_format, default: 'md'
     # Extra options for rspec
     property :rspec_options, default: ''
+
+    ::RSpec.configuration.color = true
 
     def default_logger
       @default_logger ||= Logger.new(stdout: $stdout, level: env_log)

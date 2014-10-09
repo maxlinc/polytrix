@@ -9,12 +9,11 @@ Feature: Show
     When I run `bundle exec polytrix show katas-hello_world-ruby`
     Then the output should contain:
     """
-    <Not Found>: katas-hello_world-ruby
-      Test suite: Katas
-      Test scenario: hello world
-      Implementor: ruby
-      Source: sdks/ruby/challenges/hello_world.rb
-      Validations:
+    katas-hello_world-ruby:                            <Not Found>
+      Test suite:                                        Katas
+      Test scenario:                                     hello world
+      Implementor:                                       ruby
+      Source:                                            sdks/ruby/challenges/hello_world.rb
       Data from spies:
     """
 
@@ -24,17 +23,17 @@ Feature: Show
     When I run `bundle exec polytrix show katas-hello_world-ruby`
     Then the output should contain:
     """
-    Fully Verified (1 of 1): katas-hello_world-ruby
-      Test suite: Katas
-      Test scenario: hello world
-      Implementor: ruby
-      Source: sdks/ruby/challenges/hello_world.rb
+    katas-hello_world-ruby:                            Fully Verified (1 of 1)
+      Test suite:                                        Katas
+      Test scenario:                                     hello world
+      Implementor:                                       ruby
+      Source:                                            sdks/ruby/challenges/hello_world.rb
       Execution result:
-        Exit Status: 0
+        Exit Status:                                       0
         Stdout:
           Hello, world!
         Stderr:
       Validations:
-        - default validator
+        default validator:                                 ✓ Passed
       Data from spies:
     """

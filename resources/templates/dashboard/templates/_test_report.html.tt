@@ -21,43 +21,66 @@
           <li class="list-group-item"><%= status('Implementor:', @challenge.implementor.name) %></li>
           <% source_file = @challenge.absolute_source_file ? relativize(@challenge.absolute_source_file, Dir.pwd) : '<No code sample>' %>
           <div class="list-group-item">
-            <div class="panel panel-default">
-              <div class="panel-heading"><h4>Code sample</h4></div>
-              <div class="panel-body">
-                <% if @challenge.absolute_source_file %>
+            <h3 class="list-group-item-heading">Code sample</h3>
+            <p class="list-group-item-text">
+              <% if @challenge.absolute_source_file %>
 <%= @challenge.highlighted_code('html') %>
-                <% end %>
-              </div>
-            </div>
+              <% end %>
+            </p>
           </div>
-          <div class="list-group-item">
-            <div class="panel panel-default">
-              <div class="panel-heading"><h4>STDOUT</h4></div>
-              <div class="panel-body console">
+          <% if @challenge.result %>
+          <li class="list-group-item">
+            <h3 class="list-group-item-heading">Execution Results</h3>
+            <ul class="list-group">`
+              <li class="list-group-item">
+                <h4 class="list-group-item-heading">Validation Results</h4>
+                <ul class="list-group">
+                  <% @challenge.result.validations.each do |description, result| %>
+                  <li class="list-group-item">
+                    <h4 class="list-group-item-heading"><%= description %></h4>
+                    <% if result.error %>
+                    <div class="list-group-item">
+                      <h5 class="list-group-item-heading">Error Message</h3>
+                      <pre class="list-group-item-text">
+<%= ansi2html(h result.error.to_s) %>
+                      </pre>
+                    </div>
+                    <div class="list-group-item">
+                      <h5 class="list-group-item-heading">Validator Source</h3>
+                      <pre class="list-group-item-text">
+                        <code>
+<%= highlight(result.error_source, language: 'ruby', formatter: 'html') %>
+                        </code>
+                      </pre>
+                    </div>
+                    <% end %>
+                  </li>
+                  <% end %>
+                </ul>
+              </li>
+              <li class="list-group-item">
+                <h4 class="list-group-item-heading">STDOUT</h4>
+                <pre class="list-group-item-text console">
                 <% if @challenge.result %>
-                <pre>
                   <code>
 <%= ansi2html(@challenge.result.execution_result.stdout) %>
                   </code>
-                </pre>
                 <% end %>
-              </div>
-            </div>
-          </div>
-          <div class="list-group-item">
-            <div class="panel panel-default">
-              <div class="panel-heading"><h4>STDERR</h4></div>
-              <div class="panel-body console">
+                </pre>
+              </li>
+              <li class="list-group-item">
+                <h4 class="list-group-item-heading">STDERR</h4>
+                <pre class="list-group-item-text console">
                 <% if @challenge.result %>
-                <pre>
                   <code>
 <%= ansi2html(@challenge.result.execution_result.stderr) %>
                   </code>
-                </pre>
                 <% end %>
-              </div>
-            </div>
-          </div>
+                </p>
+              </li>
+            </ul>
+          </li>
+          <% end %>
         </ul>
       </div>
     </div>

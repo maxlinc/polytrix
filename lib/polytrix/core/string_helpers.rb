@@ -10,7 +10,18 @@ module Polytrix
       end
 
       def ansi2html(text)
-        ANSI2HTML.ansi2html(text)
+        HTML.from_ansi(text)
+      end
+
+      def escape_html(text)
+        HTML.escape_html(text)
+      end
+      alias_method :h, :escape_html
+
+      def highlight(source, opts = {})
+        opts[:language] ||= 'ruby'
+        opts[:formatter] ||= 'terminal256'
+        Highlight.new(opts).highlight(source)
       end
     end
 
@@ -21,7 +32,18 @@ module Polytrix
     include ClassMethods
   end
 
-  class ANSI2HTML
+  class Highlight
+    def initialize(opts)
+      @lexer = Rouge::Lexer.find(opts[:language]) || Rouge::Lexer.guess_by_filename(opts[:filename])
+      @formatter = opts[:formatter]
+    end
+
+    def highlight(source)
+      Rouge.highlight(source, @lexer, @formatter)
+    end
+  end
+
+  class HTML
     ANSICODES = {
       '1' => 'bold',
       '4' => 'underline',
@@ -43,7 +65,7 @@ module Polytrix
       '47' => 'bg-white'
     }
 
-    def self.ansi2html(text)
+    def self.from_ansi(text)
       ansi = StringScanner.new(text)
       html = StringIO.new
       until ansi.eos?
@@ -58,6 +80,29 @@ module Polytrix
         end
       end
       html.string
+    end
+
+    # From Rack
+
+    ESCAPE_HTML = {
+      '&' => '&amp;',
+      '<' => '&lt;',
+      '>' => '&gt;',
+      "'" => '&#x27;',
+      '"' => '&quot;',
+      '/' => '&#x2F;'
+    }
+    if //.respond_to?(:encoding)
+      ESCAPE_HTML_PATTERN = Regexp.union(*ESCAPE_HTML.keys)
+    else
+      # On 1.8, there is a kcode = 'u' bug that allows for XSS otherwise
+      # TODO: doesn't apply to jruby, so a better condition above might be preferable?
+      ESCAPE_HTML_PATTERN = /#{Regexp.union(*ESCAPE_HTML.keys)}/n
+    end
+
+    # Escape ampersands, brackets and quotes to their HTML/XML entities.
+    def self.escape_html(string)
+      string.to_s.gsub(ESCAPE_HTML_PATTERN) { |c| ESCAPE_HTML[c] }
     end
   end
 end

@@ -10,13 +10,16 @@
     border: 1px solid #ddd;
   }
   .passed {
-      background-color: green;
+    background-color: green;
+  }
+  .partial {
+    background-color: #FF9900;
   }
   .failed {
-      background-color: red;
+    background-color: red;
   }
   .pending {
-      background-color: LightGrey;
+    background-color: LightGrey;
   }
 
   a:link {
@@ -67,7 +70,7 @@
           {{results.scenario}}
         </td>
         <% implementors.each do |implementor| %>
-        <td data-title="'<%= implementor %>'" ng-class="{'passed': results.<%= implementor %>.indexOf('Fully Verified') != -1, 'failed': results.<%= implementor %>.indexOf('Failed') != -1 }" sortable="<%= implementor %>">
+        <td data-title="'<%= implementor %>'" ng-class="{'passed': results.<%= implementor %>.indexOf('Fully Verified') != -1, 'partial': results.<%= implementor %>.indexOf('Partially Verified') != -1, 'failed': results.<%= implementor %>.indexOf('Failed') != -1 }" sortable="<%= implementor %>">
           <a href="{{results.slug_prefix}}-<%= implementor %>.html">{{results.<%= implementor %>}}</a>
         </td>
         <% end %>

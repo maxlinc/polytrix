@@ -4,6 +4,7 @@ module Polytrix
   module Command
     class Show < Polytrix::Command::Base
       include Polytrix::Reporters
+      include Polytrix::StringHelpers
       include Polytrix::Core::FileSystemHelper
 
       def initialize(cmd_args, cmd_options, options = {})
@@ -19,7 +20,8 @@ module Polytrix
         tests.keep_if { |test| test.skipped? == options[:skipped] } unless options[:skipped].nil?
 
         tests.each do | test |
-          status(test.status_description, test.slug, test.status_color.to_sym)
+          status_color = test.status_color.to_sym
+          status(test.slug, colorize(test.status_description, status_color), status_color)
           indent do
             status('Test suite', test.suite)
             status('Test scenario', test.name)
@@ -80,8 +82,15 @@ module Polytrix
 
         status 'Validations'
         indent do
-          test.validations.each do | validation |
-            say "#{indent}- #{validation}"
+          test.validations.each do | name, validation |
+            status(name, indicator(validation))
+            indent do
+              status 'Error message', validation.error if validation.error
+              unless !options[:source] || !validation.error_source?
+                status 'Validator source'
+                say highlight(validation.error_source, language: 'ruby')
+              end
+            end
           end
         end
       end
@@ -105,14 +114,12 @@ module Polytrix
         shell.say msg if msg
       end
 
-      def status(status, msg = nil, color = :cyan)
+      def status(status, msg = nil, color = :cyan, colwidth = 50)
         msg = yield if block_given?
         shell.say(indent)
         status = shell.set_color("#{status}:", color, true)
-        status << ' ' unless msg.nil?
         # The built-in say_status is right-aligned, we want left-aligned
-        shell.say status
-        shell.say msg unless msg.nil?
+        shell.say sprintf("%-#{colwidth}s %s", status, msg).rstrip
       end
 
       def print_table(*args)
@@ -126,6 +133,17 @@ module Polytrix
 
       def color_pad(string)
         string + colorize('', :white)
+      end
+
+      def indicator(validation)
+        case validation.result
+        when :passed
+          colorize('✓ Passed', :green)
+        when :failed
+          colorize('x Failed', :red)
+        else
+          colorize(validation.result, :yellow)
+        end
       end
     end
   end
