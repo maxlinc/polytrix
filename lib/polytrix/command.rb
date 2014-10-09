@@ -195,14 +195,14 @@ module Polytrix
         scenarios.each { |i| @queue << i }
         concurrency.times { @queue << nil }
 
-        threads = concurrency.times.map { spawn }
-        threads.map do |i|
+        threads = concurrency.times.map {|i| spawn(i) }
+        threads.map do |t|
           begin
-            i.join
+            t.join
           rescue Polytrix::ExecutionError, Polytrix::ChallengeFailure
             # respawn thread
-            i.kill
-            threads.delete(i)
+            t.kill
+            threads.delete(t)
             threads.push(spawn)
           end
         end while threads.any?(&:alive?)
@@ -210,8 +210,10 @@ module Polytrix
 
       private
 
-      def spawn
-        Thread.new do
+      def spawn(i)
+        Thread.new(i) do |i|
+          puts "Starting thread #{i}"
+          Thread.current[:test_env_number] = i
           while (instance = @queue.pop)
             begin
               instance.public_send(action, *args)
