@@ -23,6 +23,12 @@ module Polytrix
     class MixlibShellOutExecutor
       include Polytrix::DefaultLogger
 
+      MIXLIB_SHELLOUT_EXCEPTION_CLASSES = Mixlib::ShellOut.constants.map {|name|
+                                            Mixlib::ShellOut.const_get(name)
+                                          }.select {|klass|
+                                            klass.is_a?(Class) && klass <= RuntimeError
+                                          }
+
       def log_decorator(io, prefix)
         # OutputDecorator.new(io, prefix) unless Polytrix.configuration.suppress_output
         # logger = Logging.logger['polytrix::exec']
@@ -37,7 +43,7 @@ module Polytrix
         execution_result = ExecutionResult.new exitstatus: shell.exitstatus, stdout: shell.stdout, stderr: shell.stderr
         # shell.error!
         execution_result
-      rescue SystemCallError, Mixlib::ShellOut::RuntimeError, TypeError => e
+      rescue SystemCallError, *MIXLIB_SHELLOUT_EXCEPTION_CLASSES, TypeError => e
         # See https://github.com/opscode/mixlib-shellout/issues/62
         execution_error = ExecutionError.new(e)
         execution_error.execution_result = execution_result
