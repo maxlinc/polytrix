@@ -9,7 +9,7 @@ module Polytrix
 
   class ChallengeRunner < Thor::Shell::Color
     include Polytrix::Core::FileSystemHelper
-    include Polytrix::Executors::Executor
+    include Executor
 
     attr_accessor :env
 
