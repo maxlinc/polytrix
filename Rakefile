@@ -27,9 +27,9 @@ task :self do
   sh 'bundle exec polytrix bootstrap'
   Dir.chdir 'samples' do
     # sh 'bundle exec polytrix test'
-    sh 'bundle exec polytrix code2doc java --target-dir=docs/samples/code2doc/java'
-    sh 'bundle exec polytrix code2doc python --target-dir=docs/samples/code2doc/python'
-    sh 'bundle exec polytrix code2doc ruby --target-dir=docs/samples/code2doc/ruby'
+    sh 'bundle exec polytrix report code2doc java --destination=docs/samples/code2doc/java'
+    sh 'bundle exec polytrix report code2doc python --destination=docs/samples/code2doc/python'
+    sh 'bundle exec polytrix report code2doc ruby --destination=docs/samples/code2doc/ruby'
     # sh 'bundle exec polytrix code2doc samples/*.rb'
   end
 end
