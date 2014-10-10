@@ -195,7 +195,7 @@ module Polytrix
         scenarios.each { |i| @queue << i }
         concurrency.times { @queue << nil }
 
-        threads = concurrency.times.map {|i| spawn(i) }
+        threads = concurrency.times.map { |i| spawn(i) }
         threads.map do |t|
           begin
             t.join
@@ -211,9 +211,8 @@ module Polytrix
       private
 
       def spawn(i)
-        Thread.new(i) do |i|
-          puts "Starting thread #{i}"
-          Thread.current[:test_env_number] = i
+        Thread.new(i) do |test_env_number|
+          Thread.current[:test_env_number] = test_env_number
           while (instance = @queue.pop)
             begin
               instance.public_send(action, *args)

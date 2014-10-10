@@ -7,7 +7,6 @@ Feature: Boostrapping
     And the java SDK
     And the python SDK
     And the hello_world polytrix config
-    And the standard rspec setup
     When I run `bundle exec polytrix bootstrap`
     Then the output should contain "-----> Bootstrapping java"
     Then the output should contain "-----> Bootstrapping python"
@@ -18,7 +17,6 @@ Feature: Boostrapping
     And the java SDK
     And the python SDK
     And the hello_world polytrix config
-    And the standard rspec setup
     When I run `bundle exec polytrix bootstrap "(java|ruby)"`
     Then the output should contain "-----> Bootstrapping java"
     Then the output should not contain "-----> Bootstrapping python"
@@ -29,7 +27,6 @@ Feature: Boostrapping
     And the java SDK
     And the python SDK
     And the hello_world polytrix config
-    And the standard rspec setup
     When I run `bundle exec polytrix bootstrap hello`
     Then the output should contain "-----> Bootstrapping java"
     Then the output should contain "-----> Bootstrapping python"

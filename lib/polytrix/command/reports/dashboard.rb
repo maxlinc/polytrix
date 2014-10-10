@@ -21,7 +21,7 @@ module Polytrix
 
           def results
             manifest = Polytrix.manifest
-            results = []
+            rows = []
             grouped_challenges = manifest.challenges.values.group_by { |challenge| [challenge.suite, challenge.name] }
             grouped_challenges.each do |(suite, name), challenges|
               row = {
@@ -33,9 +33,9 @@ module Polytrix
                 challenge = challenges.find { |c| c.implementor == implementor }
                 row[slugify(implementor.name)] = challenge.status_description
               end
-              results << row
+              rows << row
             end
-            results
+            rows
           end
 
           def as_json(table)

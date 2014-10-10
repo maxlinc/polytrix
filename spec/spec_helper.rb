@@ -2,7 +2,6 @@ require 'simplecov'
 SimpleCov.start
 
 require 'polytrix'
-require 'polytrix/rspec'
 require 'fabrication'
 require 'thor_spy'
 

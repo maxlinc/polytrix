@@ -1,5 +1,6 @@
 require 'middleware'
-require 'rspec'
+require 'rspec/support'
+require 'rspec/expectations'
 
 module Polytrix
   RESOURCES_DIR = File.expand_path '../../../resources', __FILE__
@@ -30,10 +31,14 @@ module Polytrix
     property :template_dir, default: "#{RESOURCES_DIR}"
     property :documentation_dir, default: 'docs/'
     property :documentation_format, default: 'md'
-    # Extra options for rspec
-    property :rspec_options, default: ''
 
-    ::RSpec.configuration.color = true
+    # TODO: This should probably be configurable, or tied to Thor color options.
+    # require 'pry'; binding.pry
+    if RSpec.respond_to?(:configuration)
+      RSpec.configuration.color = true
+    else
+      RSpec::Expectations.configuration.color = true
+    end
 
     def default_logger
       @default_logger ||= Logger.new(stdout: $stdout, level: env_log)

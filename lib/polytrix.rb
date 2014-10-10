@@ -25,8 +25,6 @@ require 'polytrix/documentation_generator'
 require 'polytrix/validator'
 require 'polytrix/validator_registry'
 
-require 'polytrix/rspec'
-
 module Polytrix
   include Polytrix::DefaultLogger
   include Polytrix::Logging
@@ -107,30 +105,6 @@ module Polytrix
 
       Polytrix::ValidatorRegistry.register validator
       validator
-    end
-
-    def load_tests
-      manifest.build_challenges
-      Polytrix::RSpec.run_manifest(manifest)
-    end
-
-    # Runs all of the tests described in the {manifest}
-    def verify(implementors = [])
-      test_env = ENV['TEST_ENV_NUMBER'].to_i
-      rspec_options = %W[--color -f documentation -f Polytrix::RSpec::YAMLReport -o reports/test_report#{test_env}.yaml]
-      rspec_options.concat Polytrix.configuration.rspec_options.split if Polytrix.configuration.rspec_options
-      unless implementors.empty?
-        target_sdks = implementors.map(&:name)
-        Polytrix.implementors.map(&:name).each do |sdk|
-          # We don't have an "or" for tags, so it's easier to exclude than include multiple tags
-          rspec_options.concat %W[-t ~#{sdk.to_sym}] unless target_sdks.include? sdk
-        end
-      end
-
-      load_tests
-      logger.info "polytrix:test\tTesting with rspec options: #{rspec_options.join ' '}"
-      ::RSpec::Core::Runner.run rspec_options
-      logger.info "polytrix:test\tTest execution completed"
     end
 
     def reset

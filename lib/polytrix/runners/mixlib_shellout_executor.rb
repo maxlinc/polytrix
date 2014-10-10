@@ -23,11 +23,14 @@ module Polytrix
     class MixlibShellOutExecutor
       include Polytrix::DefaultLogger
 
-      MIXLIB_SHELLOUT_EXCEPTION_CLASSES = Mixlib::ShellOut.constants.map {|name|
-                                            Mixlib::ShellOut.const_get(name)
-                                          }.select {|klass|
-                                            klass.is_a?(Class) && klass <= RuntimeError
-                                          }
+      MIXLIB_SHELLOUT_EXCEPTION_CLASSES = Mixlib::ShellOut.constants.map do|name|
+        klass = Mixlib::ShellOut.const_get(name)
+        if klass.is_a?(Class) && klass <= RuntimeError
+          klass
+        else
+          nil
+        end
+      end.compact
 
       def log_decorator(io, prefix)
         # OutputDecorator.new(io, prefix) unless Polytrix.configuration.suppress_output
