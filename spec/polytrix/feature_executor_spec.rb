@@ -1,5 +1,5 @@
 module Polytrix
-  module Runners
+  module Executors
     module Middleware
       describe FeatureExecutor do
         let(:spies) { double('Spies') }

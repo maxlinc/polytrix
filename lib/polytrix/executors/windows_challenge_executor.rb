@@ -1,5 +1,5 @@
 module Polytrix
-  module Runners
+  module Executors
     class WindowsChallengeRunner < ChallengeRunner
       PS_OPTIONS = '-NoProfile -ExecutionPolicy Bypass'
 

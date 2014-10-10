@@ -1,3 +1,4 @@
+require 'thor'
 require 'pathname'
 require 'polytrix/error'
 require 'polytrix/core/hashie'
@@ -12,7 +13,7 @@ require 'polytrix/core/file_system_helper'
 require 'polytrix/spies'
 # TODO: Merge these three classes!
 require 'polytrix/feature_executor'
-require 'polytrix/runners/executor'
+require 'polytrix/executor'
 require 'polytrix/challenge_runner'
 require 'polytrix/core/manifest_section'
 require 'polytrix/core/implementor'

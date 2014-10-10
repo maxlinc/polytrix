@@ -1,13 +1,9 @@
-require 'hashie/dash'
-require 'thor'
-require 'polytrix/core/manifest_section'
-
 module Polytrix
-  module Runners
-    autoload :BuffShellOutExecutor, 'polytrix/runners/buff_shellout_executor'
-    autoload :MixlibShellOutExecutor, 'polytrix/runners/mixlib_shellout_executor'
+  module Executors
+    autoload :BuffShellOutExecutor, 'polytrix/executors/buff_shellout_executor'
+    autoload :MixlibShellOutExecutor, 'polytrix/executors/mixlib_shellout_executor'
 
-    class ExecutionResult < Polytrix::ManifestSection
+    class ExecutionResult < Polytrix::Dash
       property :exitstatus, require: true
       property :stdout, required: true
       property :stderr, required: true
@@ -21,9 +17,9 @@ module Polytrix
         @executor ||= if RUBY_PLATFORM == 'java'
                         # TODO: Display warning that JRuby support is experimental
                         # (because executor may not be equivalent)
-                        Polytrix::Runners::BuffShellOutExecutor.new
+                        Polytrix::Executors::BuffShellOutExecutor.new
                       else
-                        Polytrix::Runners::MixlibShellOutExecutor.new
+                        Polytrix::Executors::MixlibShellOutExecutor.new
                       end
       end
 

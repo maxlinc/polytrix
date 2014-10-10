@@ -1,5 +1,5 @@
 module Polytrix
-  module Runners
+  module Executors
     class LinuxChallengeRunner < ChallengeRunner
       include Polytrix::Core::FileSystemHelper
 

@@ -21,7 +21,7 @@ module Polytrix
 
     include Polytrix::Logging
     include Polytrix::Core::FileSystemHelper
-    include Polytrix::Runners::Executor
+    include Polytrix::Executors::Executor
     property :name
     property :basedir, required: true
     property :language

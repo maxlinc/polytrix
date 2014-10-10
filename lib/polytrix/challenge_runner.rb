@@ -2,14 +2,14 @@ require 'polytrix'
 require 'rbconfig'
 
 module Polytrix
-  module Runners
-    autoload :LinuxChallengeRunner, 'polytrix/runners/linux_challenge_runner'
-    autoload :WindowsChallengeRunner, 'polytrix/runners/windows_challenge_runner'
+  module Executors
+    autoload :LinuxChallengeRunner, 'polytrix/executors/linux_challenge_executor'
+    autoload :WindowsChallengeRunner, 'polytrix/executors/windows_challenge_executor'
   end
 
   class ChallengeRunner < Thor::Shell::Color
     include Polytrix::Core::FileSystemHelper
-    include Polytrix::Runners::Executor
+    include Polytrix::Executors::Executor
 
     attr_accessor :env
 
@@ -17,9 +17,9 @@ module Polytrix
       case RbConfig::CONFIG['host_os']
       when /mswin(\d+)|mingw/i
         # TODO: Display warning that Windows support is experimental
-        Runners::WindowsChallengeRunner.new
+        Executors::WindowsChallengeRunner.new
       else
-        Runners::LinuxChallengeRunner.new
+        Executors::LinuxChallengeRunner.new
       end
     end
 

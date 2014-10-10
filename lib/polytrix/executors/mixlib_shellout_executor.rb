@@ -1,7 +1,7 @@
 require 'mixlib/shellout'
 
 module Polytrix
-  module Runners
+  module Executors
     class IOToLog < IO
       def initialize(logger)
         @logger = logger
