@@ -33,14 +33,8 @@ module Polytrix
     end
 
     def run_challenge(challenge)
-      middleware.call(challenge)
+      FeatureExecutor.new.execute(challenge)
       challenge.result
-    end
-
-    private
-
-    def middleware
-      Polytrix.configuration.middleware
     end
   end
 end

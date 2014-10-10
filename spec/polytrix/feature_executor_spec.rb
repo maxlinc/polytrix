@@ -2,12 +2,12 @@ module Polytrix
   module Runners
     module Middleware
       describe FeatureExecutor do
-        let(:app) { double('Middleware Chain') }
+        let(:spies) { double('Spies') }
         let(:challenge_runner) { double('ChallengeRunner') }
-        subject(:middleware) { described_class.new app }
+        subject(:executor) { described_class.new spies }
 
-        describe '#call' do
-          let(:env) do
+        describe '#execute' do
+          let(:challenge) do
             {
               basedir: Pathname.new('spec/fixtures'),
               vars: {},
@@ -25,7 +25,7 @@ module Polytrix
             allow(challenge_runner).to receive(:run_command).with(
               'some command to execute', cwd: 'spec/fixtures').and_return Polytrix::Result.new(execution_result: 'a', source_file: 'b'
             )
-            allow(app).to receive(:call).with(env)
+            allow(spies).to receive(:observe).with(challenge)
           end
 
           # Most of this belongs in the ChallengeRunner...
@@ -39,12 +39,12 @@ module Polytrix
           end
 
           it 'returns a result' do
-            expect(middleware.call(env)).to be_an_instance_of Polytrix::Result
+            expect(executor.execute(challenge)).to be_an_instance_of Polytrix::Result
           end
 
-          it 'continues the middleware chain' do
-            expect(app).to receive(:call).with env
-            middleware.call(env)
+          it 'calls the spy chain' do
+            expect(spies).to receive(:observe).with challenge
+            executor.execute(challenge)
           end
         end
       end

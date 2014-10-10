@@ -1,3 +1,5 @@
+require 'middleware'
+
 module Polytrix
   # # @abstract
   class Spy
@@ -23,12 +25,21 @@ module Polytrix
     class << self
       attr_reader :spies
 
+      def middleware
+        @middleware ||= Middleware::Builder.new
+      end
+
       def spies
         @spies ||= Set.new
       end
 
       def register_spy(spy)
         spies.add(spy)
+        middleware.insert 0, spy, {}
+      end
+
+      def observe(challenge)
+        middleware.call(challenge)
       end
 
       def reports

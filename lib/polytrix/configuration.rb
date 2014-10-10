@@ -1,25 +1,14 @@
-require 'middleware'
+
 require 'rspec/support'
 require 'rspec/expectations'
 
 module Polytrix
   RESOURCES_DIR = File.expand_path '../../../resources', __FILE__
-  # Autoload pool
-  module Runners
-    module Middleware
-      autoload :FeatureExecutor, 'polytrix/runners/middleware/feature_executor'
-
-      STANDARD_MIDDLEWARE = ::Middleware::Builder.new do
-        use Polytrix::Runners::Middleware::FeatureExecutor
-      end
-    end
-  end
 
   class Configuration < Polytrix::ManifestSection
     property :dry_run,      default: false
     property :log_root,     default: '.polytrix/logs'
     property :log_level,    default: :info
-    property :middleware,   default: Polytrix::Runners::Middleware::STANDARD_MIDDLEWARE
     property :implementors, default: []
     # coerce_key :implementors, Polytrix::Implementor
     property :suppress_output, default: false
@@ -71,7 +60,6 @@ module Polytrix
 
     def register_spy(spy)
       Polytrix::Spies.register_spy(spy)
-      middleware.insert 0, spy, {}
     end
 
     private
