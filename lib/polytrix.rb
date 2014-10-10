@@ -35,6 +35,32 @@ module Polytrix
     # @return [Mutex] a common mutex for global coordination
     attr_accessor :mutex
 
+    # @return [Logger] the common Polytrix logger
+    attr_accessor :logger
+
+    # Returns a default file logger which emits on standard output and to a
+    # log file.
+    #
+    # @return [Logger] a logger
+    def default_file_logger
+      logfile = File.expand_path(File.join('.polytrix', 'logs', 'polytrix.log'))
+      Logger.new(stdout: $stdout, logdev: logfile, level: env_log)
+    end
+
+    # Determine the default log level from an environment variable, if it is
+    # set.
+    #
+    # @return [Integer,nil] a log level or nil if not set
+    # @api private
+    def env_log
+      level = ENV['POLYTRIX_LOG'] && ENV['POLYTRIX_LOG'].downcase.to_sym
+      level = Util.to_logger_level(level) unless level.nil?
+      level
+    end
+
+    # Default log level verbosity
+    DEFAULT_LOG_LEVEL = :info
+
     def reset
       @configuration = nil
       Polytrix::ValidatorRegistry.clear

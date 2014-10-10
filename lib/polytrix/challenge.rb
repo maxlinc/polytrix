@@ -24,7 +24,6 @@ module Polytrix
     property :challenge_runner, default: ChallengeRunner.create_runner
     property :result
     # coerce_key :results, Array[ChallengeResult]
-    property :env_file
     # coerce_key :vars, Polytrix::Manifest::Environment
     property :spy_data, default: {}
     property :verification_level, default: 0
@@ -245,7 +244,9 @@ module Polytrix
       rescue Polytrix::FeatureNotImplementedError
         warn("#{slug} is not implemented")
       rescue ActionFailed => e
-        error("#{slug} failed: #{e}")
+        # Need to use with_friendly_errors again somewhere, since errors don't bubble up
+        # without fast-fail?
+        Polytrix.handle_error(e)
         fail(ChallengeFailure, e.message, e.backtrace)
       end
       transition_result

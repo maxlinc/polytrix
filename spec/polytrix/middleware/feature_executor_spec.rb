@@ -10,7 +10,7 @@ module Polytrix
           let(:env) do
             {
               basedir: Pathname.new('spec/fixtures'),
-              env_file: 'tmp/vars.sh',
+              vars: {},
               source_file: Pathname.new('spec/fixtures/test.js'),
               command: 'some command to execute',
               challenge_runner: challenge_runner
@@ -19,8 +19,9 @@ module Polytrix
 
           before do
             allow(challenge_runner).to receive(:challenge_command).with(
-              env[:env_file], 'spec/fixtures/test.js', 'spec/fixtures').and_return('some command to execute'
+              'spec/fixtures/test.js', 'spec/fixtures').and_return('some command to execute'
             )
+            allow(challenge_runner).to receive(:env=)
             allow(challenge_runner).to receive(:run_command).with(
               'some command to execute', cwd: 'spec/fixtures').and_return Polytrix::Result.new(execution_result: 'a', source_file: 'b'
             )

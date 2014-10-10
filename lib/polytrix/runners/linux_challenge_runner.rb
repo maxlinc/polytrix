@@ -3,18 +3,10 @@ module Polytrix
     class LinuxChallengeRunner < ChallengeRunner
       include Polytrix::Core::FileSystemHelper
 
-      def script_extension
-        'sh'
-      end
-
-      def challenge_command(env_file, challenge_script, basedir = Dir.pwd)
+      def challenge_command(challenge_script, basedir = Dir.pwd)
         challenge_script = "./#{challenge_script}" unless challenge_script.to_s.start_with? '/'
 
         [wrapper_script(basedir), challenge_script].compact.join(' ')
-      end
-
-      def save_environment_variable(key, value)
-        "export #{key}=\"#{value}\""
       end
 
       protected

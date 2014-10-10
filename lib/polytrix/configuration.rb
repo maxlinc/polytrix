@@ -8,10 +8,8 @@ module Polytrix
   module Runners
     module Middleware
       autoload :FeatureExecutor, 'polytrix/runners/middleware/feature_executor'
-      autoload :SetupEnvVars,    'polytrix/runners/middleware/setup_env_vars'
 
       STANDARD_MIDDLEWARE = ::Middleware::Builder.new do
-        use Polytrix::Runners::Middleware::SetupEnvVars
         use Polytrix::Runners::Middleware::FeatureExecutor
       end
     end

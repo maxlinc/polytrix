@@ -19,6 +19,8 @@ module Polytrix
 
       def executor
         @executor ||= if RUBY_PLATFORM == 'java'
+                        # TODO: Display warning that JRuby support is experimental
+                        # (because executor may not be equivalent)
                         Polytrix::Runners::BuffShellOutExecutor.new
                       else
                         Polytrix::Runners::MixlibShellOutExecutor.new

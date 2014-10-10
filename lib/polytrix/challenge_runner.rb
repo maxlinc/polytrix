@@ -16,6 +16,7 @@ module Polytrix
     def self.create_runner
       case RbConfig::CONFIG['host_os']
       when /mswin(\d+)|mingw/i
+        # TODO: Display warning that Windows support is experimental
         Runners::WindowsChallengeRunner.new
       else
         Runners::LinuxChallengeRunner.new
