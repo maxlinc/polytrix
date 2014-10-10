@@ -33,7 +33,6 @@ module Polytrix
     property :documentation_format, default: 'md'
 
     # TODO: This should probably be configurable, or tied to Thor color options.
-    # require 'pry'; binding.pry
     if RSpec.respond_to?(:configuration)
       RSpec.configuration.color = true
     else

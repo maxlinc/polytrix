@@ -49,19 +49,10 @@ module Polytrix
       coerce_value Integer, String
     end
 
-    class CodeSample < Polytrix::ManifestSection
-      property :name, required: true
-
-      def self.coerce(data)
-        data = { name: data } if data.is_a? String
-        new(data)
-      end
-    end
-
     class Suite < Polytrix::ManifestSection
       property :env, default: {}
       property :samples, required: true
-      coerce_key :samples, Array[CodeSample]
+      coerce_key :samples, Array[String]
       property :results
     end
 
@@ -80,7 +71,7 @@ module Polytrix
       suites.each do | suite_name, suite |
         suite.samples.each do | sample |
           implementors.each_value do | implementor |
-            challenge = implementor.build_challenge suite: suite_name, name: sample.name, vars: suite.env
+            challenge = implementor.build_challenge suite: suite_name, name: sample, vars: suite.env
             @challenges[challenge.slug] = challenge
           end
         end
@@ -95,25 +86,6 @@ module Polytrix
       processed_content = ERB.new(raw_content).result
       data = YAML.load processed_content
       new data
-    end
-
-    def find_suite(suite_name)
-      _, suite = suites.find { |name, _| name.to_s.downcase == suite_name.to_s.downcase }
-      suite
-    end
-
-    def find_challenge(suite_name, scenario_name)
-      suite = find_suite suite_name
-      return nil if suite.nil?
-
-      if suite.samples.is_a? Array
-        # No results yet
-        suite.samples.find { |name, _| name.downcase == scenario_name.downcase }
-        Challenge.new suite: suite_name, name: scenario_name
-      else
-        _, challenge_data = find_suite('identity').samples.find { |name, challenge| name.downcase == scenario_name.downcase }
-        Challenge.new(suite: suite_name, name: scenario_name, result: challenge_data)
-      end
     end
   end
 end
