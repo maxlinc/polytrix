@@ -22,12 +22,12 @@ module Polytrix
       end
     end
 
-    def run_command(command)
+    def run_command(command, opts = { cwd: Dir.pwd })
       if Polytrix.configuration.dry_run
-        puts "Would have run #{command}"
+        puts "Would have run #{command} with #{opts.inspect}"
       else
         say_status 'polytrix:execute', command
-        execute command
+        execute(command, opts)
       end
     end
 

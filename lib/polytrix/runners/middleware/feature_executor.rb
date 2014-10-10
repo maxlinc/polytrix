@@ -10,11 +10,11 @@ module Polytrix
         def call(env)
           challenge_runner = env[:challenge_runner]
           env_file = env[:env_file]
-          source_file = env[:source_file]
-          relative_source_file = relativize(source_file, env[:basedir])
-          command = challenge_runner.challenge_command(env_file, relative_source_file)
-          execution_result = challenge_runner.run_command command
-          env[:result] = Result.new(execution_result: execution_result, source_file: env[:source_file].to_s)
+          source_file = env[:source_file].to_s
+          basedir = env[:basedir].to_s
+          command = challenge_runner.challenge_command(env_file, source_file, basedir)
+          execution_result = challenge_runner.run_command(command, cwd: basedir)
+          env[:result] = Result.new(execution_result: execution_result, source_file: source_file)
           @app.call env
           env[:result]
         end

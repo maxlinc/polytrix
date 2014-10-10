@@ -9,10 +9,8 @@ module Polytrix
     module Middleware
       autoload :FeatureExecutor, 'polytrix/runners/middleware/feature_executor'
       autoload :SetupEnvVars,    'polytrix/runners/middleware/setup_env_vars'
-      autoload :ChangeDirectory, 'polytrix/runners/middleware/change_directory'
 
       STANDARD_MIDDLEWARE = ::Middleware::Builder.new do
-        use Polytrix::Runners::Middleware::ChangeDirectory
         use Polytrix::Runners::Middleware::SetupEnvVars
         use Polytrix::Runners::Middleware::FeatureExecutor
       end

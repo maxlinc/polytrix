@@ -17,3 +17,11 @@ RSpec.configure do |c|
   end
   c.expose_current_running_example_as :example
 end
+
+# For Fabricators
+LANGUAGES = %w(java ruby python nodejs c# golang php)
+SAMPLE_NAMES = [
+  'hello world',
+  'quine',
+  'my_kata'
+]

@@ -18,8 +18,12 @@ module Polytrix
           end
 
           before do
-            allow(challenge_runner).to receive(:challenge_command).with(env[:env_file], Pathname.new('test.js')).and_return('some command to execute')
-            allow(challenge_runner).to receive(:run_command).with('some command to execute').and_return Polytrix::Result.new(execution_result: 'a', source_file: 'b')
+            allow(challenge_runner).to receive(:challenge_command).with(
+              env[:env_file], 'spec/fixtures/test.js', 'spec/fixtures').and_return('some command to execute'
+            )
+            allow(challenge_runner).to receive(:run_command).with(
+              'some command to execute', cwd: 'spec/fixtures').and_return Polytrix::Result.new(execution_result: 'a', source_file: 'b'
+            )
             allow(app).to receive(:call).with(env)
           end
 

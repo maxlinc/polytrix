@@ -6,7 +6,7 @@ module Polytrix
         'ps1'
       end
 
-      def challenge_command(env_file, challenge_script)
+      def challenge_command(env_file, challenge_script, basedir = Dir.pwd)
         # I don't know a simple powershell replacement for &&
         # See http://stackoverflow.com/questions/2416662/what-are-the-powershell-equivalent-of-bashs-and-operators
         if File.exist? 'scripts/wrapper.ps1'
