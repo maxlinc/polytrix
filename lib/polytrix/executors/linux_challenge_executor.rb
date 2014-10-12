@@ -18,6 +18,7 @@ module Polytrix
         if File.exists? basedir_relative_wrapper
           relativize(basedir_relative_wrapper, basedir).to_s
         elsif File.exists? root_relative_wrapper
+          # FIXME: This isn't always desired, probably better to opt-in to this behavior
           relativize(root_relative_wrapper, basedir).to_s
         else
           nil

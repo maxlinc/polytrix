@@ -11,8 +11,6 @@ module Polytrix
     include Polytrix::Core::FileSystemHelper
     include Executor
 
-    attr_accessor :env
-
     def self.create_runner
       case RbConfig::CONFIG['host_os']
       when /mswin(\d+)|mingw/i
@@ -32,9 +30,26 @@ module Polytrix
       end
     end
 
-    def run_challenge(challenge)
-      FeatureExecutor.new.execute(challenge)
-      challenge.result
+    def run_challenge(challenge, spies = Polytrix::Spies)
+      source_file = challenge[:source_file].to_s
+      basedir = challenge[:basedir].to_s
+      command = challenge_command(source_file, basedir)
+      spies.observe(challenge) do
+        execution_result = run_command(command, cwd: basedir, env: environment_variables(challenge[:vars]))
+        challenge[:result] = Result.new(execution_result: execution_result, source_file: source_file)
+      end
+      challenge[:result]
+    end
+
+    protected
+
+    def environment_variables(test_vars)
+      global_vars = begin
+        Polytrix.manifest[:global_env].dup
+      rescue
+        {}
+      end
+      global_vars.merge(test_vars.dup)
     end
   end
 end

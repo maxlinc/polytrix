@@ -38,7 +38,12 @@ module Polytrix
         middleware.insert 0, spy, {}
       end
 
-      def observe(challenge)
+      def observe(challenge, &blk)
+        middleware = Middleware::Builder.new
+        spies.each do |spy|
+          middleware.use spy
+        end
+        middleware.use blk
         middleware.call(challenge)
       end
 

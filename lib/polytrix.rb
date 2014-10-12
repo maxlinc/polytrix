@@ -11,8 +11,7 @@ require 'polytrix/logging'
 require 'polytrix/state_file'
 require 'polytrix/core/file_system_helper'
 require 'polytrix/spies'
-# TODO: Merge these three classes!
-require 'polytrix/feature_executor'
+# TODO: Merge these two classes?
 require 'polytrix/executor'
 require 'polytrix/challenge_runner'
 require 'polytrix/core/manifest_section'
