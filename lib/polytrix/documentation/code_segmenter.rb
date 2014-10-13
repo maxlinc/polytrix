@@ -5,7 +5,7 @@ module Polytrix
     # This class was extracted from the [Rocco](http://rtomayko.github.com/rocco/) project
     # which was in turn based on the [Docco](http://jashkenas.github.com/docco/).
     class CodeSegmenter # rubocop:disable all
-                        # Cops are disabled because the code is from Rocco
+      # Cops are disabled because the code is from Rocco
       include CommentStyles
 
       DEFAULT_OPTIONS = {
@@ -23,7 +23,7 @@ module Polytrix
       # Parse the raw file source_code into a list of two-tuples. Each tuple has the
       # form `[docs, code]` where both elements are arrays containing the
       # raw lines parsed from the input file, comment characters stripped.
-      def segment(source_code)
+      def segment(source_code) # rubocop:disable all
         sections, docs, code = [], [], []
         lines = source_code.split("\n")
 
@@ -42,20 +42,20 @@ module Polytrix
         in_heredoc = false
         single_line_comment, block_comment_start, block_comment_mid, block_comment_end =
           nil, nil, nil, nil
-        if not @options[:comment_chars][:single].nil?
+        unless @options[:comment_chars][:single].nil?
           single_line_comment = Regexp.new("^\\s*#{Regexp.escape(@options[:comment_chars][:single])}\\s?")
         end
-        if not @options[:comment_chars][:multi].nil?
+        unless @options[:comment_chars][:multi].nil?
           block_comment_start = Regexp.new("^\\s*#{Regexp.escape(@options[:comment_chars][:multi][:start])}\\s*$")
           block_comment_end   = Regexp.new("^\\s*#{Regexp.escape(@options[:comment_chars][:multi][:end])}\\s*$")
-          block_comment_one_liner = Regexp.new("^\\s*#{Regexp.escape(@options[:comment_chars][:multi][:start])}\\s*(.*?)\\s*#{Regexp.escape(@options[:comment_chars][:multi][:end])}\\s*$")
+          block_comment_one_liner = Regexp.new("^\\s*#{Regexp.escape(@options[:comment_chars][:multi][:start])}\\s*(.*?)\\s*#{Regexp.escape(@options[:comment_chars][:multi][:end])}\\s*$") # rubocop:disable Metrics/LineLength
           block_comment_start_with = Regexp.new("^\\s*#{Regexp.escape(@options[:comment_chars][:multi][:start])}\\s*(.*?)$")
           block_comment_end_with = Regexp.new("\\s*(.*?)\\s*#{Regexp.escape(@options[:comment_chars][:multi][:end])}\\s*$")
           if @options[:comment_chars][:multi][:middle]
             block_comment_mid = Regexp.new("^\\s*#{Regexp.escape(@options[:comment_chars][:multi][:middle])}\\s?")
           end
         end
-        if not @options[:comment_chars][:heredoc].nil?
+        unless @options[:comment_chars][:heredoc].nil?
           heredoc_start = Regexp.new("#{Regexp.escape(@options[:comment_chars][:heredoc])}(\\S+)$")
         end
         lines.each do |line|
@@ -67,8 +67,8 @@ module Polytrix
               in_comment_block = false
             elsif block_comment_end_with && line.match(block_comment_end_with)
               in_comment_block = false
-              docs << line.match(block_comment_end_with).captures.first.
-                            sub(block_comment_mid || '', '')
+              docs << line.match(block_comment_end_with).captures.first
+                            .sub(block_comment_mid || '', '')
             else
               docs << line.sub(block_comment_mid || '', '')
             end

@@ -42,7 +42,7 @@ module Polytrix
             JSON.dump(table)
           end
 
-          def status(status, msg = nil, color = :cyan)
+          def status(status, msg = nil, _color = :cyan)
             # color = bootstrap_color(color)
             # "<h3><span class=\"label label-#{color.to_s}\">#{status}</span>#{msg}</h3>"
             "<h3>#{status} <em>#{msg}</em></h3>"
@@ -92,11 +92,11 @@ module Polytrix
         def setup
           Polytrix.manifest.build_challenges
           test_dir = 'tests/polytrix' # @test_dir.nil? ? nil : File.expand_path(@test_dir)
-          if test_dir && File.directory?(test_dir)
-            $LOAD_PATH.unshift test_dir
-            Dir["#{test_dir}/**/*.rb"].each do | file_to_require |
-              require relativize(file_to_require, test_dir).to_s.gsub('.rb', '')
-            end
+          return nil unless test_dir && File.directory?(test_dir)
+
+          $LOAD_PATH.unshift test_dir
+          Dir["#{test_dir}/**/*.rb"].each do | file_to_require |
+            require relativize(file_to_require, test_dir).to_s.gsub('.rb', '')
           end
         end
 

@@ -92,17 +92,13 @@ module Polytrix
     # Invokes the clone action for each SDK.
     # @see Polytrix::Implementor#clone
     def clone(*sdks)
-      select_implementors(sdks).each do |implementor|
-        implementor.clone
-      end
+      select_implementors(sdks).each(&:clone)
     end
 
     # Invokes the bootstrap  action for each SDK.
     # @see Polytrix::Implementor#bootstrap
     def bootstrap(*sdks)
-      select_implementors(sdks).each do |implementor|
-        implementor.bootstrap
-      end
+      select_implementors(sdks).each(&:bootstrap)
     end
 
     def exec(*files)

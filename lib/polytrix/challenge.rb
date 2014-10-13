@@ -72,7 +72,7 @@ module Polytrix
       perform_action(:detect, 'Detecting code sample') do
         fail FeatureNotImplementedError, "Implementor #{name} has not been cloned" unless implementor.cloned?
         fail FeatureNotImplementedError, name if source_file.nil?
-        fail FeatureNotImplementedError, name unless File.exists?(absolute_source_file)
+        fail FeatureNotImplementedError, name unless File.exist?(absolute_source_file)
       end
     end
 
@@ -84,7 +84,7 @@ module Polytrix
       perform_action(:exec, 'Executing') do
         fail FeatureNotImplementedError, "Implementor #{name} has not been cloned" unless implementor.cloned?
         fail FeatureNotImplementedError, name if source_file.nil?
-        fail FeatureNotImplementedError, name unless File.exists?(absolute_source_file)
+        fail FeatureNotImplementedError, name unless File.exist?(absolute_source_file)
         self.result = challenge_runner.run_challenge self
       end
     end
@@ -97,7 +97,7 @@ module Polytrix
       transition_to :destroy
     end
 
-    def test(destroy_mode = :passing)
+    def test(_destroy_mode = :passing)
       elapsed = Benchmark.measure do
         banner "Cleaning up any prior instances of #{slug}"
         destroy
@@ -107,7 +107,7 @@ module Polytrix
       end
       info "Finished testing #{slug} #{Util.duration(elapsed.real)}."
       self
-    # ensure
+      # ensure
       # destroy if destroy_mode == :always
     end
 
@@ -151,13 +151,13 @@ module Polytrix
       raise e
     rescue ActionFailed => e
       log_failure(what, e)
-      fail(ChallengeFailure, failure_message(what) +
+      raise(ChallengeFailure, failure_message(what) +
         "  Please see .polytrix/logs/#{name}.log for more details",
-           e.backtrace)
+            e.backtrace)
     rescue Exception => e # rubocop:disable RescueException
       log_failure(what, e)
-      fail ActionFailed,
-           "Failed to complete ##{what} action: [#{e.message}]", e.backtrace
+      raise ActionFailed,
+            "Failed to complete ##{what} action: [#{e.message}]", e.backtrace
     ensure
       KEYS_TO_PERSIST.each do |key|
         @state[key] = public_send(key)
@@ -247,12 +247,12 @@ module Polytrix
         # Need to use with_friendly_errors again somewhere, since errors don't bubble up
         # without fast-fail?
         Polytrix.handle_error(e)
-        fail(ChallengeFailure, e.message, e.backtrace)
+        raise(ChallengeFailure, e.message, e.backtrace)
       end
       transition_result
     end
 
-    def log_failure(what, e)
+    def log_failure(what, _e)
       return if logger.logdev.nil?
 
       logger.logdev.error(failure_message(what))

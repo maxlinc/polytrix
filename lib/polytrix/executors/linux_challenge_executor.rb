@@ -15,9 +15,9 @@ module Polytrix
         basedir_relative_wrapper = File.expand_path('scripts/wrapper', basedir)
         root_relative_wrapper = File.expand_path('scripts/wrapper', Dir.pwd)
 
-        if File.exists? basedir_relative_wrapper
+        if File.exist? basedir_relative_wrapper
           relativize(basedir_relative_wrapper, basedir).to_s
-        elsif File.exists? root_relative_wrapper
+        elsif File.exist? root_relative_wrapper
           # FIXME: This isn't always desired, probably better to opt-in to this behavior
           relativize(root_relative_wrapper, basedir).to_s
         else

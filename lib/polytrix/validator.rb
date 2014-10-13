@@ -15,7 +15,7 @@ module Polytrix
     end
 
     def should_validate?(challenge)
-      !!(@suite.match(challenge.suite.to_s) && @sample.match(challenge.name.to_s))
+      !!(@suite.match(challenge.suite.to_s) && @sample.match(challenge.name.to_s)) # rubocop:disable Style/DoubleNegation
     end
 
     def validate(challenge)

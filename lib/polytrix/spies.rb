@@ -8,7 +8,7 @@ module Polytrix
       @opts = opts
     end
 
-    def call(challenge)
+    def call(_challenge)
       fail NotImplementedError, 'Subclass must implement #call'
     end
 
@@ -52,9 +52,8 @@ module Polytrix
         all_reports = spies.flat_map do |spy|
           spy.reports.to_a if spy.respond_to? :reports
         end
-        all_reports.reduce({}) do |h, (k, v)|
+        all_reports.each_with_object({}) do |(k, v), h|
           (h[k] ||= []) << v
-          h
         end
       end
     end

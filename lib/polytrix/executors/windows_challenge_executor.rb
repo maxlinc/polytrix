@@ -3,7 +3,7 @@ module Polytrix
     class WindowsChallengeRunner < ChallengeRunner
       PS_OPTIONS = '-NoProfile -ExecutionPolicy Bypass'
 
-      def challenge_command(challenge_script, basedir = Dir.pwd)
+      def challenge_command(challenge_script, _basedir = Dir.pwd)
         # I don't know a simple powershell replacement for &&
         # See http://stackoverflow.com/questions/2416662/what-are-the-powershell-equivalent-of-bashs-and-operators
         if File.exist? 'scripts/wrapper.ps1'

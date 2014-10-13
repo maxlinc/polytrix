@@ -32,7 +32,7 @@ module Polytrix
         end
       end.compact
 
-      def log_decorator(io, prefix)
+      def log_decorator(_io, _prefix)
         # OutputDecorator.new(io, prefix) unless Polytrix.configuration.suppress_output
         # logger = Logging.logger['polytrix::exec']
         IOToLog.new(logger)

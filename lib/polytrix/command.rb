@@ -62,7 +62,7 @@ module Polytrix
 
       def setup
         manifest_file = File.expand_path @manifest_file
-        if File.exists? manifest_file
+        if File.exist? manifest_file
           logger.debug "Loading manifest file: #{manifest_file}"
           Polytrix.configuration.manifest = @manifest_file
         elsif @options.solo
@@ -77,11 +77,11 @@ module Polytrix
         manifest.build_challenges
 
         test_dir = @test_dir.nil? ? nil : File.expand_path(@test_dir)
-        if test_dir && File.directory?(test_dir)
-          $LOAD_PATH.unshift test_dir
-          Dir["#{test_dir}/**/*.rb"].each do | file_to_require |
-            require relativize(file_to_require, test_dir).to_s.gsub('.rb', '')
-          end
+        return nil unless test_dir && File.directory?(test_dir)
+
+        $LOAD_PATH.unshift test_dir
+        Dir["#{test_dir}/**/*.rb"].each do | file_to_require |
+          require relativize(file_to_require, test_dir).to_s.gsub('.rb', '')
         end
       end
 
@@ -150,8 +150,8 @@ module Polytrix
           manifest.challenges.get(regexp) ||
             manifest.challenges.get_all(/#{regexp}/)
         rescue RegexpError => e
-          die "Invalid Ruby regular expression, " \
-            "you may need to single quote the argument. " \
+          die 'Invalid Ruby regular expression, ' \
+            'you may need to single quote the argument. ' \
             "Please try again or consult http://rubular.com/ (#{e.message})"
         end
         result = [result] unless result.is_a? Array
@@ -185,7 +185,7 @@ module Polytrix
       #
       # @param action [String] action to perform
       # @param scenarios [Array<Instance>] an array of scenarios
-      def run_action(action, scenarios, *args)
+      def run_action(_action, scenarios, *_args)
         concurrency = 1
         if options[:concurrency]
           concurrency = options[:concurrency] || scenarios.size

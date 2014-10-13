@@ -46,7 +46,7 @@ module Polytrix
       end
       branch = git.branch ||= 'master'
       target_dir = git.to ||= basedir
-      if File.exists? target_dir
+      if File.exist? target_dir
         logger.info "Skipping clone because #{target_dir} already exists"
       else
         clone_cmd = "git clone #{git.repo} -b #{branch} #{target_dir}"

@@ -10,5 +10,5 @@ Fabricator(:validator, from: Polytrix::Validator) do
   transient description: 'Sample validator'
   transient suite: LANGUAGES.sample
   transient sample: SAMPLE_NAMES.sample
-  transient callback: Proc.new { Proc.new { |challenge| } } # rubocop:disable Proc
+  transient callback: Proc.new { Proc.new { |_challenge| } } # rubocop:disable Proc
 end

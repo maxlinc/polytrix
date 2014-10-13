@@ -1,10 +1,10 @@
 module Polytrix
   module Spies
     class FileSystemSpy < Polytrix::Spy
-      def initialize(app, server_options)
+      def initialize(_app, _server_options)
       end
 
-      def spy(challenge)
+      def spy(_challenge)
       end
 
       report :summary, SummaryReport

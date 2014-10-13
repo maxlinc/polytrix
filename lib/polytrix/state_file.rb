@@ -21,7 +21,7 @@ module Polytrix
       dir = File.dirname(file_name)
       serialized_string = serialize_hash(Util.stringified_hash(state))
 
-      FileUtils.mkdir_p(dir) unless File.directory?(dir)
+      FileUtils.mkdir_p(dir)
       File.open(file_name, 'wb') { |f| f.write(serialized_string) }
     end
 

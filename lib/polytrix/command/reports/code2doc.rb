@@ -19,7 +19,7 @@ module Polytrix
                      default: 'polytrix.yml'
         class_option :solo,
                      desc: 'Enable solo mode - Polytrix will auto-configure a single implementor and its scenarios'
-                      # , default: 'polytrix.yml'
+        # , default: 'polytrix.yml'
         class_option :solo_glob,
                      desc: 'The globbing pattern to find code samples in solo mode'
         class_option :format,

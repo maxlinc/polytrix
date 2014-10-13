@@ -65,7 +65,7 @@ module Polytrix
                   default: 'tests/polytrix'
     method_option :solo,
                   desc: 'Enable solo mode - Polytrix will auto-configure a single implementor and its scenarios'
-                  # , default: 'polytrix.yml'
+    # , default: 'polytrix.yml'
     method_option :solo_glob,
                   desc: 'The globbing pattern to find code samples in solo mode'
     def list(*args)
@@ -91,7 +91,7 @@ module Polytrix
                   default: 'tests/polytrix'
     method_option :solo,
                   desc: 'Enable solo mode - Polytrix will auto-configure a single implementor and its scenarios'
-                  # , default: 'polytrix.yml'
+    # , default: 'polytrix.yml'
     method_option :solo_glob,
                   desc: 'The globbing pattern to find code samples in solo mode'
     method_option :failed,
@@ -109,18 +109,18 @@ module Polytrix
     end
 
     {
-      clone: "Change scenario state to cloned. " \
-                    "Clone the code sample from git",
-      bootstrap: "Change scenario state to bootstraped. " \
-                    "Running bootstrap scripts for the implementor",
-      detect: "Find sample code that matches a test scenario. " \
-                    "Attempts to locate a code sample with a filename that the test scenario name.",
-      exec: "Change instance state to executed. " \
-                    "Execute the code sample and capture the results.",
-      verify: "Change instance state to verified. " \
-                    "Assert that the captured results match the expectations for the scenario.",
-      destroy: "Change scenario state to destroyed. " \
-                   "Delete all information for one or more scenarios"
+      clone: 'Change scenario state to cloned. ' \
+                    'Clone the code sample from git',
+      bootstrap: 'Change scenario state to bootstraped. ' \
+                    'Running bootstrap scripts for the implementor',
+      detect: 'Find sample code that matches a test scenario. ' \
+                    'Attempts to locate a code sample with a filename that the test scenario name.',
+      exec: 'Change instance state to executed. ' \
+                    'Execute the code sample and capture the results.',
+      verify: 'Change instance state to verified. ' \
+                    'Assert that the captured results match the expectations for the scenario.',
+      destroy: 'Change scenario state to destroyed. ' \
+                   'Delete all information for one or more scenarios'
     }.each do |action, short_desc|
       desc(
         "#{action} [INSTANCE|REGEXP|all]",
@@ -190,7 +190,7 @@ module Polytrix
                   default: 'tests/polytrix'
     method_option :solo,
                   desc: 'Enable solo mode - Polytrix will auto-configure a single implementor and its scenarios'
-                  # , default: 'polytrix.yml'
+    # , default: 'polytrix.yml'
     method_option :solo_glob,
                   desc: 'The globbing pattern to find code samples in solo mode'
     def test(*args)
@@ -203,7 +203,7 @@ module Polytrix
     def version
       puts "Polytrix version #{Polytrix::VERSION}"
     end
-    map %w[-v --version] => :version
+    map %w(-v --version) => :version
 
     desc 'report', 'Generate reports'
     subcommand 'report', Polytrix::Command::Report

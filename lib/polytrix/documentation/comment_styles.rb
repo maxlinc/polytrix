@@ -15,7 +15,7 @@ module Polytrix
         extension.tr! '.', ''
         return extension, COMMENT_STYLES[extension] if COMMENT_STYLES.key? extension
 
-        COMMENT_STYLES.each do | style_name, style |
+        COMMENT_STYLES.each do | _style_name, style |
           return extension, style if style[:extensions].include? extension
         end
 
