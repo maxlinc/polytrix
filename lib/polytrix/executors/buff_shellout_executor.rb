@@ -1,7 +1,7 @@
 require 'buff/shell_out'
 
 module Polytrix
-  module Runners
+  module Executors
     class BuffShellOutExecutor
       def execute(command, opts)
         cwd = opts.delete(:cwd) || Dir.pwd

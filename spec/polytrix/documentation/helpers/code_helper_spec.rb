@@ -4,7 +4,7 @@ module Polytrix
       describe CodeHelper do
         let(:challenge) { Fabricate(:challenge, name: 'test', source_file: @source_file) }
         let(:source) do
-          %q[
+          %q(
             # This snippet should not be in the output.
             puts "Random: #{rand}"
 
@@ -13,12 +13,12 @@ module Polytrix
 
             # Nor should this snippet
             puts 'Done'
-          ]
+                    )
         end
         let(:expected_snippet) do
-          %q[
+          "
             puts 'Hello, world!'
-          ]
+                    "
         end
 
         around do | example |
@@ -48,11 +48,11 @@ module Polytrix
         describe '#snippet_between' do
           # Yes, whitespace doesn't work very well w/ snippet_between
           let(:expected_snippet) do
-            %q[
+            %q(
            puts "Random: #{rand}"
 # Snippet: Hello, world!
             puts 'Hello, world!'
-            ]
+                        )
           end
 
           it 'inserts all code blocks between the matching regexes' do
@@ -110,7 +110,7 @@ module Polytrix
             end
             yield tmpfiles.map(&:path)
           ensure
-            tmpfiles.each { |tmpfile| tmpfile.unlink }
+            tmpfiles.each(&:unlink)
           end
         end
 

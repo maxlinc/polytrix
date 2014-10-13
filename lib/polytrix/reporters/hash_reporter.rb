@@ -20,7 +20,7 @@ module Polytrix
         @buffer.puts convert(data)
       end
 
-      def convert(data)
+      def convert(_data)
         fail 'Subclass HashReporter and convert the data to the target format'
       end
 

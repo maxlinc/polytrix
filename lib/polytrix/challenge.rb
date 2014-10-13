@@ -1,7 +1,4 @@
 require 'benchmark'
-require 'hashie/dash'
-require 'hashie/extensions/coercion'
-require 'hashie/extensions/indifferent_access'
 require 'polytrix/documentation/helpers/code_helper'
 
 module Polytrix
@@ -24,7 +21,6 @@ module Polytrix
     property :challenge_runner, default: ChallengeRunner.create_runner
     property :result
     # coerce_key :results, Array[ChallengeResult]
-    property :env_file
     # coerce_key :vars, Polytrix::Manifest::Environment
     property :spy_data, default: {}
     property :verification_level, default: 0
@@ -73,7 +69,7 @@ module Polytrix
       perform_action(:detect, 'Detecting code sample') do
         fail FeatureNotImplementedError, "Implementor #{name} has not been cloned" unless implementor.cloned?
         fail FeatureNotImplementedError, name if source_file.nil?
-        fail FeatureNotImplementedError, name unless File.exists?(absolute_source_file)
+        fail FeatureNotImplementedError, name unless File.exist?(absolute_source_file)
       end
     end
 
@@ -85,7 +81,7 @@ module Polytrix
       perform_action(:exec, 'Executing') do
         fail FeatureNotImplementedError, "Implementor #{name} has not been cloned" unless implementor.cloned?
         fail FeatureNotImplementedError, name if source_file.nil?
-        fail FeatureNotImplementedError, name unless File.exists?(absolute_source_file)
+        fail FeatureNotImplementedError, name unless File.exist?(absolute_source_file)
         self.result = challenge_runner.run_challenge self
       end
     end
@@ -98,7 +94,7 @@ module Polytrix
       transition_to :destroy
     end
 
-    def test(destroy_mode = :passing)
+    def test(_destroy_mode = :passing)
       elapsed = Benchmark.measure do
         banner "Cleaning up any prior instances of #{slug}"
         destroy
@@ -108,28 +104,8 @@ module Polytrix
       end
       info "Finished testing #{slug} #{Util.duration(elapsed.real)}."
       self
-    # ensure
+      # ensure
       # destroy if destroy_mode == :always
-    end
-
-    def code2doc
-      if source_file.nil?
-        warn "No code sample available for #{slug}, no documentation will be generated."
-        return
-      end
-
-      display_file = relativize(absolute_source_file, Dir.pwd)
-      banner "Generating documentation for #{slug} from #{display_file}"
-      target_dir = Polytrix.configuration.documentation_dir
-      format = Polytrix.configuration.documentation_format
-      target_file_name = File.basename(source_file, File.extname(source_file)) + ".#{format}"
-      target_file = File.join(target_dir, target_file_name)
-      doc = Polytrix::DocumentationGenerator.new.code2doc(absolute_source_file)
-      FileUtils.mkdir_p File.dirname(target_file)
-      File.write(target_file, doc)
-      info "Documentated saved to #{target_file}"
-    rescue Polytrix::Documentation::CommentStyles::UnknownStyleError => e
-      abort "Unknown file extension: #{e.extension}, please use --lang to set the language manually"
     end
 
     def destroy_action
@@ -172,13 +148,13 @@ module Polytrix
       raise e
     rescue ActionFailed => e
       log_failure(what, e)
-      fail(ChallengeFailure, failure_message(what) +
+      raise(ChallengeFailure, failure_message(what) +
         "  Please see .polytrix/logs/#{name}.log for more details",
-           e.backtrace)
+            e.backtrace)
     rescue Exception => e # rubocop:disable RescueException
       log_failure(what, e)
-      fail ActionFailed,
-           "Failed to complete ##{what} action: [#{e.message}]", e.backtrace
+      raise ActionFailed,
+            "Failed to complete ##{what} action: [#{e.message}]", e.backtrace
     ensure
       KEYS_TO_PERSIST.each do |key|
         @state[key] = public_send(key)
@@ -265,13 +241,15 @@ module Polytrix
       rescue Polytrix::FeatureNotImplementedError
         warn("#{slug} is not implemented")
       rescue ActionFailed => e
-        error("#{slug} failed: #{e}")
-        fail(ChallengeFailure, e.message, e.backtrace)
+        # Need to use with_friendly_errors again somewhere, since errors don't bubble up
+        # without fast-fail?
+        Polytrix.handle_error(e)
+        raise(ChallengeFailure, e.message, e.backtrace)
       end
       transition_result
     end
 
-    def log_failure(what, e)
+    def log_failure(what, _e)
       return if logger.logdev.nil?
 
       logger.logdev.error(failure_message(what))

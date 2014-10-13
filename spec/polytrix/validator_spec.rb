@@ -6,14 +6,14 @@ module Polytrix
       let(:global_matcher) { Validator::UNIVERSAL_MATCHER }
 
       it 'accepts scope options and callback' do
-        validator = Validator.new 'dummy', suite: 'java', sample: 'hello world' do |challenge|
+        validator = Validator.new 'dummy', suite: 'java', sample: 'hello world' do |_challenge|
           # Validate the challenge
         end
         expect(validator.suite).to eq('java')
       end
 
       it 'defaults suite and sample to the universal matcher' do
-        validator = Validator.new 'dummy' do |challenge|
+        validator = Validator.new 'dummy' do |_challenge|
           # Validate
         end
         expect(validator.suite).to eq(Validator::UNIVERSAL_MATCHER)
@@ -40,11 +40,11 @@ module Polytrix
     end
 
     describe '#validate' do
-      let(:challenge) { Fabricate(:challenge) }
+      let(:challenge) { Fabricate(:challenge, result: Result.new) }
 
-      xit 'calls the validation callback' do
+      it 'calls the validation callback' do
         called = false
-        validator = Validator.new 'dummy' do |challenge|
+        validator = Validator.new 'dummy' do |_challenge|
           called = true
         end
         expect { validator.validate challenge }.to change { called }.from(false).to(true)
@@ -55,7 +55,7 @@ module Polytrix
       scope = {}
       scope[:suite] = args[0]
       scope[:sample] = args[1] if args[1]
-      Validator.new 'dummy', scope do |challenge|
+      Validator.new 'dummy', scope do |_challenge|
         # Dummy validator
       end
     end

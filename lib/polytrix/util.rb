@@ -59,14 +59,12 @@ module Polytrix
     # @return [Object] a converted hash with all keys as symbols
     def self.symbolized_hash(obj)
       if obj.is_a?(Hash)
-        obj.reduce({}) do |h, (k, v)|
+        obj.each_with_object({}) do |(k, v), h|
           h[k.to_sym] = symbolized_hash(v)
-          h
         end
       elsif obj.is_a?(Array)
-        obj.reduce([]) do |a, e|
+        obj.each_with_object([]) do |e, a|
           a << symbolized_hash(e)
-          a
         end
       else
         obj
@@ -82,14 +80,12 @@ module Polytrix
     # @return [Object] a converted hash with all keys as strings
     def self.stringified_hash(obj)
       if obj.is_a?(Hash)
-        obj.reduce({}) do |h, (k, v)|
+        obj.each_with_object({}) do |(k, v), h|
           h[k.to_s] = stringified_hash(v)
-          h
         end
       elsif obj.is_a?(Array)
-        obj.reduce([]) do |a, e|
+        obj.each_with_object([]) do |e, a|
           a << stringified_hash(e)
-          a
         end
       else
         obj
@@ -148,7 +144,7 @@ module Polytrix
     # @return [String] a string representation of useful helper functions
     def self.shell_helpers
       IO.read(File.join(
-        File.dirname(__FILE__), %w[.. .. support download_helpers.sh]
+        File.dirname(__FILE__), %w(.. .. support download_helpers.sh)
       ))
     end
   end

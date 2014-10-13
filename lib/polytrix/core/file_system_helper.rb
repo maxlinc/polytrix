@@ -31,7 +31,7 @@ module Polytrix
         elsif file_name
           file = File.expand_path(file_name, path)
           logger.debug "Checking for #{file}"
-          found = File.exists? file
+          found = File.exist? file
         else
           fail ArgumentError, 'Provide either a file_name to search for, or a block to check directories'
         end

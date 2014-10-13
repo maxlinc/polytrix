@@ -1,28 +1,14 @@
-require 'middleware'
-require 'rspec'
+
+require 'rspec/support'
+require 'rspec/expectations'
 
 module Polytrix
   RESOURCES_DIR = File.expand_path '../../../resources', __FILE__
-  # Autoload pool
-  module Runners
-    module Middleware
-      autoload :FeatureExecutor, 'polytrix/runners/middleware/feature_executor'
-      autoload :SetupEnvVars,    'polytrix/runners/middleware/setup_env_vars'
-      autoload :ChangeDirectory, 'polytrix/runners/middleware/change_directory'
-
-      STANDARD_MIDDLEWARE = ::Middleware::Builder.new do
-        use Polytrix::Runners::Middleware::ChangeDirectory
-        use Polytrix::Runners::Middleware::SetupEnvVars
-        use Polytrix::Runners::Middleware::FeatureExecutor
-      end
-    end
-  end
 
   class Configuration < Polytrix::ManifestSection
     property :dry_run,      default: false
     property :log_root,     default: '.polytrix/logs'
     property :log_level,    default: :info
-    property :middleware,   default: Polytrix::Runners::Middleware::STANDARD_MIDDLEWARE
     property :implementors, default: []
     # coerce_key :implementors, Polytrix::Implementor
     property :suppress_output, default: false
@@ -30,10 +16,13 @@ module Polytrix
     property :template_dir, default: "#{RESOURCES_DIR}"
     property :documentation_dir, default: 'docs/'
     property :documentation_format, default: 'md'
-    # Extra options for rspec
-    property :rspec_options, default: ''
 
-    ::RSpec.configuration.color = true
+    # TODO: This should probably be configurable, or tied to Thor color options.
+    if RSpec.respond_to?(:configuration)
+      RSpec.configuration.color = true
+    else
+      RSpec::Expectations.configuration.color = true
+    end
 
     def default_logger
       @default_logger ||= Logger.new(stdout: $stdout, level: env_log)
@@ -71,7 +60,6 @@ module Polytrix
 
     def register_spy(spy)
       Polytrix::Spies.register_spy(spy)
-      middleware.insert 0, spy, {}
     end
 
     private

@@ -15,13 +15,13 @@ module Polytrix
     end
 
     def should_validate?(challenge)
-      !!(@suite.match(challenge.suite.to_s) && @sample.match(challenge.name.to_s))
+      !!(@suite.match(challenge.suite.to_s) && @sample.match(challenge.name.to_s)) # rubocop:disable Style/DoubleNegation
     end
 
     def validate(challenge)
       instance_exec(challenge, &@callback) if should_validate?(challenge)
       challenge.result.validations[description] = Validation.new(result: :passed)
-    rescue StandardError, ::RSpec::Expectations::ExpectationNotMetError => e
+    rescue StandardError, RSpec::Expectations::ExpectationNotMetError => e
       validation = Validation.new(result: :failed)
       validation.error = e
       challenge.result.validations[description] = validation

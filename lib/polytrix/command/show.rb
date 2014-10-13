@@ -100,7 +100,7 @@ module Polytrix
 
         status 'Data from spies'
         indent do
-          test.spy_data.each do |spy, data|
+          test.spy_data.each do |_spy, data|
             indent do
               data.each_pair do |k, v|
                 status(k, v)
@@ -119,7 +119,7 @@ module Polytrix
         shell.say(indent)
         status = shell.set_color("#{status}:", color, true)
         # The built-in say_status is right-aligned, we want left-aligned
-        shell.say sprintf("%-#{colwidth}s %s", status, msg).rstrip
+        shell.say format("%-#{colwidth}s %s", status, msg).rstrip
       end
 
       def print_table(*args)

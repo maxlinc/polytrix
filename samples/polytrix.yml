@@ -14,8 +14,11 @@
     LOCALE: <%= ENV['LANG'] %>         # templating is allowed
   suites:
     Katas:                             # "Katas" is the name of the first test suite
-      env:                             # Unlike global_env, these variables are only for the Katas suite
-        COLOR: red
       samples:                         # Test scenarios within Katas
         - hello world
         - quine
+    Environment:
+      env:                             # Unlike global_env, these variables are only for the Katas suite
+        COLOR: red
+      samples:
+        - echo_color

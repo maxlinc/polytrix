@@ -30,10 +30,6 @@ module Polytrix
         str_const = Thor::Util.camel_case(command)
         klass = ::Polytrix::Command.const_get(str_const)
         klass.new(args, options, command_options).call
-      rescue ArgumentError => e
-        # This was hiding too many exceptions!
-        # abort e.message
-        raise e
       end
     end
 
@@ -47,6 +43,7 @@ module Polytrix
     # Constructs a new instance.
     def initialize(*args)
       super
+      Polytrix.logger = Polytrix.default_file_logger
       $stdout.sync = true
     end
 
@@ -68,7 +65,7 @@ module Polytrix
                   default: 'tests/polytrix'
     method_option :solo,
                   desc: 'Enable solo mode - Polytrix will auto-configure a single implementor and its scenarios'
-                  # , default: 'polytrix.yml'
+    # , default: 'polytrix.yml'
     method_option :solo_glob,
                   desc: 'The globbing pattern to find code samples in solo mode'
     def list(*args)
@@ -94,7 +91,7 @@ module Polytrix
                   default: 'tests/polytrix'
     method_option :solo,
                   desc: 'Enable solo mode - Polytrix will auto-configure a single implementor and its scenarios'
-                  # , default: 'polytrix.yml'
+    # , default: 'polytrix.yml'
     method_option :solo_glob,
                   desc: 'The globbing pattern to find code samples in solo mode'
     method_option :failed,
@@ -112,18 +109,18 @@ module Polytrix
     end
 
     {
-      clone: "Change scenario state to cloned. " \
-                    "Clone the code sample from git",
-      bootstrap: "Change scenario state to bootstraped. " \
-                    "Running bootstrap scripts for the implementor",
-      detect: "Find sample code that matches a test scenario. " \
-                    "Attempts to locate a code sample with a filename that the test scenario name.",
-      exec: "Change instance state to executed. " \
-                    "Execute the code sample and capture the results.",
-      verify: "Change instance state to verified. " \
-                    "Assert that the captured results match the expectations for the scenario.",
-      destroy: "Change scenario state to destroyed. " \
-                   "Delete all information for one or more scenarios"
+      clone: 'Change scenario state to cloned. ' \
+                    'Clone the code sample from git',
+      bootstrap: 'Change scenario state to bootstraped. ' \
+                    'Running bootstrap scripts for the implementor',
+      detect: 'Find sample code that matches a test scenario. ' \
+                    'Attempts to locate a code sample with a filename that the test scenario name.',
+      exec: 'Change instance state to executed. ' \
+                    'Execute the code sample and capture the results.',
+      verify: 'Change instance state to verified. ' \
+                    'Assert that the captured results match the expectations for the scenario.',
+      destroy: 'Change scenario state to destroyed. ' \
+                   'Delete all information for one or more scenarios'
     }.each do |action, short_desc|
       desc(
         "#{action} [INSTANCE|REGEXP|all]",
@@ -193,7 +190,7 @@ module Polytrix
                   default: 'tests/polytrix'
     method_option :solo,
                   desc: 'Enable solo mode - Polytrix will auto-configure a single implementor and its scenarios'
-                  # , default: 'polytrix.yml'
+    # , default: 'polytrix.yml'
     method_option :solo_glob,
                   desc: 'The globbing pattern to find code samples in solo mode'
     def test(*args)
@@ -202,44 +199,11 @@ module Polytrix
       perform('test', 'test', args, action_options)
     end
 
-    desc 'code2doc [INSTANCE|REGEXP|all]',
-         'Generates documenation from sample code for one or more scenarios'
-    long_desc <<-DESC
-      This task will convert annotated sample code to documentation. Markdown or
-      reStructureText are supported.
-    DESC
-    method_option :log_level,
-                  aliases: '-l',
-                  desc: 'Set the log level (debug, info, warn, error, fatal)'
-    method_option :manifest,
-                  aliases: '-m',
-                  desc: 'The Polytrix test manifest file location',
-                  default: 'polytrix.yml'
-    method_option :solo,
-                  desc: 'Enable solo mode - Polytrix will auto-configure a single implementor and its scenarios'
-                  # , default: 'polytrix.yml'
-    method_option :solo_glob,
-                  desc: 'The globbing pattern to find code samples in solo mode'
-    method_option :format,
-                  aliases: '-f',
-                  enum: %w(md rst),
-                  default: 'md',
-                  desc: 'Target documentation format'
-    method_option :target_dir,
-                  aliases: '-d',
-                  default: 'docs/',
-                  desc: 'The target directory where documentation for generated documentation.'
-    def code2doc(*args)
-      update_config!
-      action_options = options.dup
-      perform('code2doc', 'action', args, action_options)
-    end
-
     desc 'version', "Print Polytrix's version information"
     def version
       puts "Polytrix version #{Polytrix::VERSION}"
     end
-    map %w[-v --version] => :version
+    map %w(-v --version) => :version
 
     desc 'report', 'Generate reports'
     subcommand 'report', Polytrix::Command::Report

@@ -20,23 +20,19 @@ module Polytrix
     end
 
     def process(challenges)
+      return nil unless File.readable? @template_file
+
       @challenges = challenges
-      if File.readable? @template_file
-        # @template_file ||= find_file @search_path, scenario, ""
-        erb = ERB.new File.read(@template_file)
-        @result = erb.result(binding) || ''
-      end
+      erb = ERB.new File.read(@template_file)
+      @result = erb.result(binding) || ''
     end
 
     def save(target_file)
-      fail 'No results to write, please call process before save' if @result.nil?
-      if @result.empty?
-        # Warn: skip creating empty file
-      else
-        FileUtils.mkdir_p File.dirname(target_file)
-        File.open(target_file, 'wb') do |f|
-          f.write @result
-        end
+      fail 'No results to write, please call process before save' if @result.nil? || @result.empty?
+
+      FileUtils.mkdir_p File.dirname(target_file)
+      File.open(target_file, 'wb') do |f|
+        f.write @result
       end
     end
 

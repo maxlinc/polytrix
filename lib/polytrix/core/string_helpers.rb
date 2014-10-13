@@ -70,11 +70,11 @@ module Polytrix
       html = StringIO.new
       until ansi.eos?
         if ansi.scan(/\e\[0?m/)
-          html.print(%{</span>})
+          html.print(%(</span>))
         elsif ansi.scan(/\e\[0?(\d+)m/)
           # use class instead of style?
           style = ANSICODES[ansi[1]] || 'text-reset'
-          html.print(%{<span class="#{style}">})
+          html.print(%(<span class="#{style}">))
         else
           html.print(ansi.scan(/./m))
         end

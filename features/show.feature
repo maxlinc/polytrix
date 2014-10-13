@@ -5,7 +5,6 @@ Feature: Show
     And the java SDK
     And the python SDK
     And the hello_world polytrix config
-    And the standard rspec setup
     When I run `bundle exec polytrix show katas-hello_world-ruby`
     Then the output should contain:
     """

@@ -5,7 +5,6 @@ Feature: States
     And the java SDK
     And the python SDK
     And the hello_world polytrix config
-    And the standard rspec setup
     When I run `bundle exec polytrix list`
     Then the output should contain:
     """

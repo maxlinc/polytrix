@@ -21,27 +21,6 @@ module Polytrix
           expect(suite).to be_an_instance_of Polytrix::Manifest::Suite
         end
       end
-
-      describe '#find_suite' do
-        before(:each) do
-          Polytrix.configuration.manifest = 'samples/polytrix.yml'
-        end
-        it 'returns nil if no suite matches' do
-          suite = subject.find_suite('none')
-          expect(suite).to be_nil
-        end
-
-        it 'returns the suite if one is found' do
-          suite = subject.find_suite('Katas')
-          expect(suite).to be_an_instance_of Polytrix::Manifest::Suite
-        end
-
-        it 'is not case sensitive' do
-          suite = subject.find_suite('katas')
-          expect(suite).to be_an_instance_of Polytrix::Manifest::Suite
-        end
-      end
-
     end
   end
 end

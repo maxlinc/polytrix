@@ -1,12 +1,6 @@
 require 'hashie/mash'
 
 # Fabricates test manifests (.polytrix.yml files)
-LANGUAGES = %w(java ruby python nodejs c# golang php)
-SAMPLE_NAMES = [
-  'hello world',
-  'quine',
-  'my_kata'
-]
 
 Fabricator(:manifest, from: Polytrix::Manifest) do
   initialize_with { @_klass.new to_hash } # Hash based initialization
@@ -24,10 +18,9 @@ Fabricator(:manifest, from: Polytrix::Manifest) do
   suites do |attr|
     suite_count = attr[:suite_count]
     if suite_count
-      suites = attr[:suite_count].times.reduce({}) do |h, i|
+      suites = attr[:suite_count].times.each_with_object({}) do |i, h|
         name = LANGUAGES[i] ||= "suite_#{i}"
         h[name] = Fabricate(:suite, name: name, sample_count: attr[:samples_per_suite])
-        h
       end
       suites
     else

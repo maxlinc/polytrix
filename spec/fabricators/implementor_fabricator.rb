@@ -1,12 +1,4 @@
-require 'hashie/mash'
-
 # Fabricates test manifests (.polytrix.yml files)
-LANGUAGES = %w(java ruby python nodejs c# golang php)
-SAMPLE_NAMES = [
-  'hello world',
-  'quine',
-  'my_kata'
-]
 
 Fabricator(:implementor, from: Polytrix::Implementor) do
   initialize_with { @_klass.new to_hash } # Hash based initialization
