@@ -1,5 +1,3 @@
-require 'hashie/mash'
-
 Fabricator(:validator, from: Polytrix::Validator) do
   initialize_with do
     callback = @_transient_attributes.delete :callback

@@ -1,4 +1,5 @@
 require 'hashie/dash'
+require 'hashie/extensions/coercion'
 
 module Polytrix
   class Result < Hashie::Dash

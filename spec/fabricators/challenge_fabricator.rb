@@ -1,5 +1,3 @@
-require 'hashie/mash'
-
 # Fabricates test manifests (.polytrix_tests.yml files)
 
 Fabricator(:challenge, from: Polytrix::Challenge) do

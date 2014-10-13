@@ -1,5 +1,3 @@
-require 'hashie/mash'
-
 # Fabricates test manifests (.polytrix.yml files)
 
 Fabricator(:implementor, from: Polytrix::Implementor) do

@@ -1,5 +1,4 @@
 require 'yaml'
-require 'hashie/dash'
 require 'hashie/mash'
 require 'hashie/extensions/coercion'
 require 'hashie/extensions/deep_merge'

@@ -1,5 +1,4 @@
 require 'hashie/dash'
-require 'hashie/mash'
 require 'hashie/extensions/coercion'
 
 module Polytrix
@@ -7,8 +6,7 @@ module Polytrix
     include Hashie::Extensions::Coercion
 
     def initialize(hash = {})
-      mash = Hashie::Mash.new(hash)
-      super mash.to_hash(symbolize_keys: true)
+      super Polytrix::Util.symbolized_hash(hash)
     end
   end
 end
