@@ -89,38 +89,6 @@ module Polytrix
       nil
     end
 
-    # Invokes the clone action for each SDK.
-    # @see Polytrix::Implementor#clone
-    def clone(*sdks)
-      select_implementors(sdks).each(&:clone)
-    end
-
-    # Invokes the bootstrap  action for each SDK.
-    # @see Polytrix::Implementor#bootstrap
-    def bootstrap(*sdks)
-      select_implementors(sdks).each(&:bootstrap)
-    end
-
-    def exec(*files)
-      # files.map do | file |
-      #   Dir.glob file
-      # end.flatten
-
-      files.each do | file |
-        implementor = find_implementor(file) # || exec_options[:default_implementor]
-
-        extension = File.extname(file)
-        name = File.basename(file, extension)
-        challenge_data = {
-          name: name,
-          # language: extension,
-          source_file: File.expand_path(file, Dir.pwd)
-        }
-        challenge = implementor.build_challenge challenge_data
-        challenge.exec
-      end
-    end
-
     # Registers a {Polytrix::Validator} that will be used during test
     # execution on matching {Polytrix::Challenge}s.
     def validate(desc, scope = { suite: //, sample: // }, &block)
@@ -129,10 +97,6 @@ module Polytrix
 
       Polytrix::ValidatorRegistry.register validator
       validator
-    end
-
-    def reset
-      @configuration = nil
     end
 
     # @see Polytrix::Configuration
@@ -152,23 +116,6 @@ module Polytrix
     # @return [true,false] is there a tty?
     def tty?
       $stdout.tty?
-    end
-
-    protected
-
-    def select_implementors(sdks)
-      return implementors if sdks.empty?
-
-      sdks.map do |sdk|
-        if File.directory? sdk
-          sdk_dir = File.absolute_path(sdk)
-          implementors.find { |i| File.absolute_path(i.basedir) == sdk_dir } || configuration.implementor(sdk_dir)
-        else
-          implementor = implementors.find { |i| i.name.to_s.downcase == sdk.to_s.downcase }
-          fail ArgumentError, "SDK #{sdk} not found" if implementor.nil?
-          implementor
-        end
-      end
     end
   end
 end

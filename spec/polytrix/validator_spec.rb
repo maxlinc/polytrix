@@ -40,9 +40,9 @@ module Polytrix
     end
 
     describe '#validate' do
-      let(:challenge) { Fabricate(:challenge) }
+      let(:challenge) { Fabricate(:challenge, result: Result.new) }
 
-      xit 'calls the validation callback' do
+      it 'calls the validation callback' do
         called = false
         validator = Validator.new 'dummy' do |_challenge|
           called = true
