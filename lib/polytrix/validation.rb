@@ -7,7 +7,6 @@ module Polytrix
 
     property :result, required: true
     property :error
-    property :error_source
 
     def result=(state)
       state = state.to_s
@@ -15,15 +14,16 @@ module Polytrix
       super
     end
 
-    def error=(e)
-      self[:error_source] = source_from_error(e)
-      self[:error] = e.message
-    end
-
     ALLOWABLE_STATES.each do |state|
       define_method "#{state}?" do
         result == state?
       end
+    end
+
+    # Gets the source of the validation code block where a ValidationFailure occurred.
+    def error_source
+      return nil if error.nil?
+      source_from_error(error)
     end
 
     protected

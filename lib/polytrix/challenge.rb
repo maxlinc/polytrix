@@ -126,6 +126,7 @@ module Polytrix
                      Polytrix::Color.colorize('✓ Passed', :green)
                    when :failed
                      Polytrix::Color.colorize('x Failed', :red)
+                     Polytrix.handle_validation_failure(validation.error)
                    else
                      Polytrix::Color.colorize(validation.result, :yellow)
                    end

@@ -23,8 +23,7 @@ module Polytrix
       instance_exec(challenge, &@callback) if should_validate?(challenge)
       challenge.result.validations[description] = Validation.new(result: :passed)
     rescue StandardError, RSpec::Expectations::ExpectationNotMetError => e
-      validation = Validation.new(result: :failed)
-      validation.error = e
+      validation = Validation.new(result: :failed, error: ValidationFailure.new(e.message, e))
       challenge.result.validations[description] = validation
     end
 
