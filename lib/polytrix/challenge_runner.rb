@@ -8,7 +8,7 @@ module Polytrix
   end
 
   class ChallengeRunner < Thor::Shell::Color
-    include Polytrix::Core::FileSystemHelper
+    include Polytrix::Util::FileSystem
     include Executor
 
     def self.create_runner

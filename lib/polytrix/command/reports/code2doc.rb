@@ -8,7 +8,7 @@ module Polytrix
         include Polytrix::DefaultLogger
         include Polytrix::Logging
         include Thor::Actions
-        include Polytrix::Core::FileSystemHelper
+        include Polytrix::Util::FileSystem
 
         class_option :log_level,
                      aliases: '-l',

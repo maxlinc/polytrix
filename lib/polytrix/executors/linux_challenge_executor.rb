@@ -1,7 +1,7 @@
 module Polytrix
   module Executors
     class LinuxChallengeRunner < ChallengeRunner
-      include Polytrix::Core::FileSystemHelper
+      include Polytrix::Util::FileSystem
 
       def challenge_command(challenge_script, basedir = Dir.pwd)
         challenge_script = "./#{challenge_script}" unless challenge_script.to_s.start_with? '/'

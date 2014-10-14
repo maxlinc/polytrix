@@ -10,17 +10,17 @@ module Polytrix
         end
 
         expect(registry.validators).to be_empty
-        registry.register(Validator.new('dummy', suite: 'java', sample: 'hello world', &callback))
+        registry.register(Validator.new('dummy', suite: 'java', scenario: 'hello world', &callback))
         validator = registry.validators.first
         expect(validator.suite).to eql('java')
-        expect(validator.sample).to eql('hello world')
+        expect(validator.scenario).to eql('hello world')
         expect(validator.instance_variable_get('@callback')).to eql(callback)
       end
     end
 
     describe '#validators_for' do
-      let(:java_hello_world_validator) { Fabricate(:validator, suite: 'java', sample: 'hello world') }
-      let(:java_validator) { Fabricate(:validator, suite: 'java', sample: //) }
+      let(:java_hello_world_validator) { Fabricate(:validator, suite: 'java', scenario: 'hello world') }
+      let(:java_validator) { Fabricate(:validator, suite: 'java', scenario: //) }
       let(:ruby_validator) { Fabricate(:validator, suite: 'ruby') }
 
       before do

@@ -20,7 +20,7 @@ module Polytrix
     end
 
     include Polytrix::Logging
-    include Polytrix::Core::FileSystemHelper
+    include Polytrix::Util::FileSystem
     include Executor
     property :name
     property :basedir, required: true
@@ -76,7 +76,7 @@ module Polytrix
       begin
         challenge_data[:source_file] ||= find_file basedir, challenge_data[:name]
         challenge_data[:source_file] = relativize(challenge_data[:source_file], challenge_data[:basedir])
-      rescue Polytrix::Core::FileSystemHelper::FileNotFound
+      rescue Errno::ENOENT
         challenge_data[:source_file] = nil
       end
       Challenge.new challenge_data

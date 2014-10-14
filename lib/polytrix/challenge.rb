@@ -3,9 +3,9 @@ require 'polytrix/documentation/helpers/code_helper'
 
 module Polytrix
   class Challenge < Polytrix::Dash # rubocop:disable ClassLength
-    include Polytrix::Core::FileSystemHelper
+    include Polytrix::Util::FileSystem
     include Polytrix::Logging
-    include Polytrix::StringHelpers
+    include Polytrix::Util::String
     # View helpers
     include Polytrix::Documentation::Helpers::CodeHelper
 
@@ -14,14 +14,14 @@ module Polytrix
     coerce_key :implementor, Polytrix::Implementor
     property :suite, required: true
     property :vars, default: {}
+    # coerce_key :vars, Polytrix::Manifest::Environment
     property :source_file
     coerce_key :source_file, Pathname
     property :basedir
     coerce_key :basedir, Pathname
     property :challenge_runner, default: ChallengeRunner.create_runner
     property :result
-    # coerce_key :results, Array[ChallengeResult]
-    # coerce_key :vars, Polytrix::Manifest::Environment
+    coerce_key :results, ChallengeResult
     property :spy_data, default: {}
     property :verification_level, default: 0
 
@@ -120,7 +120,16 @@ module Polytrix
     def verify_action
       perform_action(:verify, 'Verifying') do
         validators.each do |validator|
-          validator.validate(self)
+          validation = validator.validate(self)
+          status = case validation.result
+                   when :passed
+                     Polytrix::Color.colorize('✓ Passed', :green)
+                   when :failed
+                     Polytrix::Color.colorize('x Failed', :red)
+                   else
+                     Polytrix::Color.colorize(validation.result, :yellow)
+                   end
+          info format('%-50s %s', validator.description, status)
         end
       end
     end

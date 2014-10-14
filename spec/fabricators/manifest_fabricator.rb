@@ -37,7 +37,7 @@ Fabricator(:suite, from: Hashie::Mash) do
     sample_count = attr[:sample_count]
     if sample_count
       attr[:sample_count].times.map do |i|
-        SAMPLE_NAMES[i] ||= "sample_#{i}"
+        SCENARIO_NAMES[i] ||= "sample_#{i}"
       end
     else
       nil

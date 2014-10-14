@@ -1,21 +1,18 @@
 require 'thor'
 require 'pathname'
-require 'polytrix/error'
-require 'polytrix/core/hashie'
-require 'polytrix/core/string_helpers'
 require 'polytrix/version'
-require 'polytrix/util'
-require 'polytrix/color'
 require 'polytrix/logger'
 require 'polytrix/logging'
+require 'polytrix/error'
+require 'polytrix/dash'
+require 'polytrix/util'
+require 'polytrix/color'
 require 'polytrix/state_file'
-require 'polytrix/core/file_system_helper'
 require 'polytrix/spies'
 # TODO: Merge these two classes?
 require 'polytrix/executor'
 require 'polytrix/challenge_runner'
-require 'polytrix/core/manifest_section'
-require 'polytrix/core/implementor'
+require 'polytrix/implementor'
 require 'polytrix/challenge_result'
 require 'polytrix/challenge'
 require 'polytrix/challenges'
@@ -32,7 +29,7 @@ module Polytrix
   include Polytrix::Logging
 
   class << self
-    include Polytrix::Core::FileSystemHelper
+    include Polytrix::Util::FileSystem
 
     # @return [Mutex] a common mutex for global coordination
     attr_accessor :mutex
@@ -78,20 +75,9 @@ module Polytrix
       manifest.implementors.values
     end
 
-    def find_implementor(file)
-      existing_implementor = recursive_parent_search(File.dirname(file)) do |path|
-        implementors.find do |implementor|
-          File.absolute_path(implementor.basedir) == File.absolute_path(path)
-        end
-      end
-      return existing_implementor if existing_implementor
-
-      nil
-    end
-
     # Registers a {Polytrix::Validator} that will be used during test
     # execution on matching {Polytrix::Challenge}s.
-    def validate(desc, scope = { suite: //, sample: // }, &block)
+    def validate(desc, scope = { suite: //, scenario: // }, &block)
       fail ArgumentError 'You must pass block' unless block_given?
       validator = Polytrix::Validator.new(desc, scope, &block)
 

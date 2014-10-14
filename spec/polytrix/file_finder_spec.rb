@@ -1,8 +1,8 @@
 module Polytrix
-  module Core
-    describe FileSystemHelper do
+  module Util
+    describe FileSystem do
       subject(:finder) do
-        Object.new.extend(Polytrix::Core::FileSystemHelper)
+        Object.new.extend(Polytrix::Util::FileSystem)
       end
 
       it 'finds files within the search path' do
@@ -11,8 +11,8 @@ module Polytrix
         expect(file.relative_path_from path(search_path)).to eq(path('quine.md.erb'))
       end
 
-      it 'raises FileNotFound except if a file is not found' do
-        expect { finder.find_file 'spec/fixtures/src-doc', 'quinez' }.to raise_error FileSystemHelper::FileNotFound
+      it 'raises Errno::ENOENT if no file is found' do
+        expect { finder.find_file 'spec/fixtures/src-doc', 'quinez' }.to raise_error Errno::ENOENT
       end
 
       private

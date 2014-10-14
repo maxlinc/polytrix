@@ -7,6 +7,6 @@ Fabricator(:validator, from: Polytrix::Validator) do
   end # Hash based initialization
   transient description: 'Sample validator'
   transient suite: LANGUAGES.sample
-  transient sample: SAMPLE_NAMES.sample
+  transient scenario: SCENARIO_NAMES.sample
   transient callback: Proc.new { Proc.new { |_challenge| } } # rubocop:disable Proc
 end

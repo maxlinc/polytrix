@@ -5,7 +5,7 @@ module Polytrix
     class Base # rubocop:disable ClassLength
       include Polytrix::DefaultLogger
       include Polytrix::Logging
-      include Polytrix::Core::FileSystemHelper
+      include Polytrix::Util::FileSystem
 
       # Need standard executor...
       SUPPORTED_EXTENSIONS = %w(py rb js)

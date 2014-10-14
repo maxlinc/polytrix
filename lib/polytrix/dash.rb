@@ -9,4 +9,7 @@ module Polytrix
       super Polytrix::Util.symbolized_hash(hash)
     end
   end
+
+  class ManifestSection < Polytrix::Dash
+  end
 end

@@ -4,8 +4,8 @@ module Polytrix
   module Command
     class Show < Polytrix::Command::Base
       include Polytrix::Reporters
-      include Polytrix::StringHelpers
-      include Polytrix::Core::FileSystemHelper
+      include Polytrix::Util::String
+      include Polytrix::Util::FileSystem
 
       def initialize(cmd_args, cmd_options, options = {})
         @indent_level = 0

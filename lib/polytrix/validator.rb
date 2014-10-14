@@ -5,17 +5,18 @@ module Polytrix
     include RSpec::Matchers
 
     UNIVERSAL_MATCHER = //
-    attr_reader :description, :suite, :sample, :level, :callback
+    attr_reader :description, :suite, :scenario, :level, :callback
 
     def initialize(description, scope = {}, &validator)
       @description = description
       @suite = scope[:suite] ||= UNIVERSAL_MATCHER
-      @sample = scope[:sample] ||= UNIVERSAL_MATCHER
+      @scenario = scope[:scenario] ||= UNIVERSAL_MATCHER
       @callback = validator
     end
 
     def should_validate?(challenge)
-      !!(@suite.match(challenge.suite.to_s) && @sample.match(challenge.name.to_s)) # rubocop:disable Style/DoubleNegation
+      # TODO: Case-insensitive matching?
+      !!(@suite.match(challenge.suite.to_s) && @scenario.match(challenge.name.to_s)) # rubocop:disable Style/DoubleNegation
     end
 
     def validate(challenge)

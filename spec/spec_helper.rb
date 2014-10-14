@@ -20,7 +20,7 @@ end
 
 # For Fabricators
 LANGUAGES = %w(java ruby python nodejs c# golang php)
-SAMPLE_NAMES = [
+SCENARIO_NAMES = [
   'hello world',
   'quine',
   'my_kata'

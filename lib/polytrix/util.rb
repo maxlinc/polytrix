@@ -1,20 +1,7 @@
 # -*- encoding: utf-8 -*-
 #
-# Author:: Fletcher Nichol (<fnichol@nichol.ca>)
-#
-# Copyright (C) 2012, 2013, 2014, Fletcher Nichol
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Much of this code has been adapted from Fletcher Nichol (<fnichol@nichol.ca>)
+# work on test-kitchen.
 
 module Polytrix
   # Stateless utility methods used in different contexts. Essentially a mini
@@ -103,49 +90,159 @@ module Polytrix
       format('(%dm%.2fs)', minutes, seconds)
     end
 
-    # Generates a command (or series of commands) wrapped so that it can be
-    # invoked on a remote instance or locally.
-    #
-    # This method uses the Bourne shell (/bin/sh) to maximize the chance of
-    # cross platform portability on Unixlike systems.
-    #
-    # @param [String] the command
-    # @return [String] a wrapped command string
-    def self.wrap_command(cmd)
-      cmd = 'false' if cmd.nil?
-      cmd = 'true' if cmd.to_s.empty?
-      cmd = cmd.sub(/\n\Z/, '') if cmd =~ /\n\Z/
+    module String
+      module ClassMethods
+        def slugify(*labels)
+          labels.map do |label|
+            label.downcase.gsub(/[\.\s-]/, '_')
+          end.join('-')
+        end
 
-      "sh -c '\n#{cmd}\n'"
+        def ansi2html(text)
+          HTML.from_ansi(text)
+        end
+
+        def escape_html(text)
+          HTML.escape_html(text)
+        end
+        alias_method :h, :escape_html
+
+        def highlight(source, opts = {})
+          opts[:language] ||= 'ruby'
+          opts[:formatter] ||= 'terminal256'
+          Highlight.new(opts).highlight(source)
+        end
+      end
+
+      def self.included(base)
+        base.extend(ClassMethods)
+      end
+
+      include ClassMethods
     end
 
-    # Modifes the given string to strip leading whitespace on each line, the
-    # amount which is calculated by using the first line of text.
-    #
-    # @example
-    #
-    #   string = <<-STRING
-    #     a
-    #       b
-    #   c
-    #   STRING
-    #   Util.outdent!(string) # => "a\n  b\nc\n"
-    #
-    # @param string [String] the string that will be modified
-    # @return [String] the modified string
-    def self.outdent!(string)
-      string.gsub!(/^ {#{string.index(/[^ ]/)}}/, '')
+    class Highlight
+      def initialize(opts)
+        @lexer = Rouge::Lexer.find(opts[:language]) || Rouge::Lexer.guess_by_filename(opts[:filename])
+        @formatter = opts[:formatter]
+      end
+
+      def highlight(source)
+        Rouge.highlight(source, @lexer, @formatter)
+      end
     end
 
-    # Returns a set of Bourne Shell (AKA /bin/sh) compatible helper
-    # functions. This function is usually called inline in a string that
-    # will be executed remotely on a test instance.
-    #
-    # @return [String] a string representation of useful helper functions
-    def self.shell_helpers
-      IO.read(File.join(
-        File.dirname(__FILE__), %w(.. .. support download_helpers.sh)
-      ))
+    class HTML
+      ANSICODES = {
+        '1' => 'bold',
+        '4' => 'underline',
+        '30' => 'black',
+        '31' => 'red',
+        '32' => 'green',
+        '33' => 'yellow',
+        '34' => 'blue',
+        '35' => 'magenta',
+        '36' => 'cyan',
+        '37' => 'white',
+        '40' => 'bg-black',
+        '41' => 'bg-red',
+        '42' => 'bg-green',
+        '43' => 'bg-yellow',
+        '44' => 'bg-blue',
+        '45' => 'bg-magenta',
+        '46' => 'bg-cyan',
+        '47' => 'bg-white'
+      }
+
+      def self.from_ansi(text)
+        ansi = StringScanner.new(text)
+        html = StringIO.new
+        until ansi.eos?
+          if ansi.scan(/\e\[0?m/)
+            html.print(%(</span>))
+          elsif ansi.scan(/\e\[0?(\d+)m/)
+            # use class instead of style?
+            style = ANSICODES[ansi[1]] || 'text-reset'
+            html.print(%(<span class="#{style}">))
+          else
+            html.print(ansi.scan(/./m))
+          end
+        end
+        html.string
+      end
+
+      # From Rack
+
+      ESCAPE_HTML = {
+        '&' => '&amp;',
+        '<' => '&lt;',
+        '>' => '&gt;',
+        "'" => '&#x27;',
+        '"' => '&quot;',
+        '/' => '&#x2F;'
+      }
+      ESCAPE_HTML_PATTERN = Regexp.union(*ESCAPE_HTML.keys)
+
+      # Escape ampersands, brackets and quotes to their HTML/XML entities.
+      def self.escape_html(string)
+        string.to_s.gsub(ESCAPE_HTML_PATTERN) { |c| ESCAPE_HTML[c] }
+      end
+    end
+
+    module FileSystem
+      include Polytrix::Logging
+      include Polytrix::Util::String
+
+      # Finds a file by loosely matching the file name to a scenario name
+      def find_file(search_path, scenario_name, ignored_patterns = nil)
+        ignored_patterns ||= read_gitignore(search_path)
+        glob_string = "#{search_path}/**/*#{slugify(scenario_name)}.*"
+        potential_files = Dir.glob(glob_string, File::FNM_CASEFOLD)
+        potential_files.concat Dir.glob(glob_string.gsub('_', '-'), File::FNM_CASEFOLD)
+        potential_files.concat Dir.glob(glob_string.gsub('_', ''), File::FNM_CASEFOLD)
+
+        # Filter out ignored filesFind the first file, not including generated files
+        files = potential_files.select do |f|
+          !ignored? ignored_patterns, search_path, f
+        end
+
+        # Select the shortest path, likely the best match
+        file = files.min_by(&:length)
+
+        fail Errno::ENOENT, "No file was found for #{scenario_name} within #{search_path}" if file.nil?
+        Pathname.new file
+      end
+
+      def relativize(file, base_path)
+        absolute_file = File.absolute_path(file)
+        absolute_base_path = File.absolute_path(base_path)
+        Pathname.new(absolute_file).relative_path_from Pathname.new(absolute_base_path)
+      end
+
+      private
+
+      # @api private
+      def read_gitignore(dir)
+        gitignore_file = "#{dir}/.gitignore"
+        File.read(gitignore_file)
+      rescue
+        ''
+      end
+
+      # @api private
+      def ignored?(ignored_patterns, base_path, target_file)
+        # Trying to match the git ignore rules but there's some discrepencies.
+        ignored_patterns.split.find do |pattern|
+          # if git ignores a folder, we should ignore all files it contains
+          pattern = "#{pattern}**" if pattern[-1] == '/'
+          started_with_slash = pattern.start_with? '/'
+
+          pattern.gsub!(/\A\//, '') # remove leading slashes since we're searching from root
+          file = relativize(target_file, base_path)
+          ignored = file.fnmatch? pattern
+          ignored || (file.fnmatch? "**/#{pattern}" unless started_with_slash)
+        end
+      end
     end
   end
 end

@@ -7,6 +7,7 @@ module Polytrix
       property :exitstatus, require: true
       property :stdout, required: true
       property :stderr, required: true
+      coerce_value String, ->(v) { v.force_encoding('utf-8') }
     end
   end
 
