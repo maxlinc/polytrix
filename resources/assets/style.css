@@ -1,16 +1,33 @@
+.passed {
+  background-color: green;
+}
+.partial {
+  background-color: #FF9900;
+}
+.failed {
+  background-color: red;
+}
+.pending {
+  background-color: LightGrey;
+}
+
 .bold { font-weight: bold; }
 .underline { text-decoration: underline; }
+.black { color: black; }
 .red { color: red; }
 .green { color: green; }
 .yellow { color: yellow; }
 .blue { color: blue; }
 .magenta { color: magenta; }
+.cyan { color: cyan; }
 .white { color: white; }
+.bg-black { background-color: black; }
 .bg-red { background-color: red; }
 .bg-green { background-color: green; }
 .bg-yellow { background-color: yellow; }
 .bg-blue { background-color: blue; }
 .bg-magenta { background-color: magenta; }
+.bg-cyan { background-color: cyan; }
 .bg-white { background-color: white; }
 .text-reset {
   color: white;

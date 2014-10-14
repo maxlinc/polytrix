@@ -1,5 +1,6 @@
 <html>
 <head>
+  <meta charset="UTF-8"/>
   <link data-require="bootstrap-css@*" data-semver="3.0.0" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
         <!-- <link href="style.css" rel="stylesheet"> -->
 <style type="text/css">

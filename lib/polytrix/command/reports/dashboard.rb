@@ -6,9 +6,9 @@ module Polytrix
     class Report
       class Dashboard < Thor::Group
         include Thor::Actions
-        include Polytrix::Core::FileSystemHelper
+        include Polytrix::Util::FileSystem
         module Helpers
-          include Polytrix::StringHelpers
+          include Polytrix::Util::String
           include Padrino::Helpers::TagHelpers
           include Padrino::Helpers::OutputHelpers
           include Padrino::Helpers::AssetTagHelpers
@@ -43,9 +43,7 @@ module Polytrix
           end
 
           def status(status, msg = nil, _color = :cyan)
-            # color = bootstrap_color(color)
-            # "<h3><span class=\"label label-#{color.to_s}\">#{status}</span>#{msg}</h3>"
-            "<h3>#{status} <em>#{msg}</em></h3>"
+            "<strong>#{status}</strong> <em>#{msg}</em>"
           end
 
           def bootstrap_color(color)
