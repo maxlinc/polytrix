@@ -1,10 +1,10 @@
 require 'polytrix'
 
-Polytrix.validate 'Hello world validator', suite: 'Katas', sample: 'hello world' do |challenge|
+Polytrix.validate 'Hello world validator', suite: 'Katas', scenario: 'hello world' do |challenge|
   expect(challenge.result.stdout).to eq "Hello, world!\n"
 end
 
-Polytrix.validate 'Quine output matches source code', suite: 'Katas', sample: 'quine' do |challenge|
+Polytrix.validate 'Quine output matches source code', suite: 'Katas', scenario: 'quine' do |challenge|
   expect(challenge.result.stdout).to eq(challenge.source)
 end
 

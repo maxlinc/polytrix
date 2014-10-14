@@ -1,7 +1,0 @@
-#!/bin/bash
-if [[ "$1" == *.rb ]]
-then
-  bundle exec ruby "$@"
-else
-  bundle exec "$@"
-fi
