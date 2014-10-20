@@ -4,41 +4,27 @@ Polytrix is a polyglot test runner and documentation generator. It aims to let y
 
 Polytrix was influenced by a number of polyglot projects, including [Travis-CI](travis-ci.org), [Docco](https://github.com/jashkenas/docco), [Slate](https://github.com/tripit/slate), and polyglot test-suites like the [JSON Schema Test Suite](https://github.com/json-schema/JSON-Schema-Test-Suite) and the [JSON-LD Test Suite](http://json-ld.org/test-suite/).
 
-The user-experience was heavily influenced by [test-kitchen](http://kitchen.ci/). Polytrix aims to do for multi-language development of command-line applications what test-kitchen has done for multi-platform development of infrastructure.
+A lot of Polytrix was influenced by and based on [test-kitchen](http://kitchen.ci/). Polytrix is attempting to do for multi-language testing of code samples what test-kitchen does for multi-platform testing of infrastructure code.
 
 ## Features
 
-### Stages
-
-The stages involved in testing a code sample are:
-- **clone**: Polytrix fetches the code samples from Git (if they aren't already present)
-- **bootstrap**: Polytrix makes sure the necessary dependencies are installed
-- **exec**: Polytrix executes the code sample and captures information with [Spies](http://tbd)
-- **verify**: Polytrix checks the execution results against [Validators](http://tbd)
-
-You can run each of these stages individually with `polytrix <stage>`. You can also run `polytrix test` which will clean up old results and then run all of the stages.
-
-### Reports
-
-Polytrix can generate several reports, including reports that group similar code samples across different implementors to create report for compliance testing.
-
-You can run `polytrix list` to see a list of the known tests and their statuses. It will print a table to the terminal by default, but you can use the `--format` option to choose JSON, YAML, or Markdown output.
-
-TODO: Include screenshot
-
-You can also run `polytrix dashboard` to generate a more complete HTML report.
-
-### Spies
-
-
-
-
-
-The In order to test a code sample, Polytrix:Polytrix tests code samples.
+- Validate sample code by running it through a series of stages:
+  *  Clone: Fetch existing code samples from other git repos
+  * Detect: Match code samples for specific implementors to shared test scenarios
+  * Bootstrap: Install runtime dependencies for each implementor
+  * Exec: Invoke each test sample and capture the results (with built-in or custom spies)
+  * Validate: Ensure execution results (and data captured by spies) matches expectations
+- Generate reports or documentation:
+  - A feature matrix comparing several implementations
+  - Detailed test reports showing validation results and data captured by spies
+  - Custom reports from custom spies
+  - Convert code samples to documentation
+  - Inject code samples and/or captured execution data into documentation templates
+  - Generate to-do lists for pending features
 
 ## Installing Polytrix
 
-Polytrix is distributed as a Ruby Gem. It should be installed using Bundler by adding this line to your Gemfile:
+Polytrix is distributed as a Ruby Gem. It is ideally installed using Bundler by adding this line to your Gemfile:
 
 ```shell
 gem 'polytrix', '~> 0.1'
@@ -48,258 +34,160 @@ And then running `bundle install`.
 
 It can also be installed without Bundler by running `gem install polytrix`.
 
-## Getting Help
+**Note**: If installed with bundler it's best to always run `bundle exec polytrix ...` rather than just `polytrix ...`. The bundler documentation explains:
 
-Polytrix is primarily intended to be run as a standalone utility, though it does have an API for integrating with RSpec or other Ruby-based test frameworks.
-
-Note: You may need to prefix commands with `bundle exec` if you installed Polytrix using Bundler.
-
-If you need a quick reminder of what the `polytrix` command gives you, then use the **help** subcommand:
-
-```
-$ bundle exec polytrix help
-Commands:s
-  polytrix bootstrap [(all|<REGEX>)] [opts] # Bootstraps the code samples for one or more tests
-  polytrix code2doc [(all|<REGEX>)] [opts]  # Converts annotated code samples to Markdown or reStructuredText
-  polytrix clean [(all|<REGEX>)] [opts]     # Removes test results for one or more tests
-  polytrix clone [(all|<REGEX>)] [opts]     # Clones the code samples from git for one or more tests
-  polytrix exec [(all|<REGEX>)] [opts]      # Executes code samples for one or more tests
-  polytrix help [COMMAND]                   # Describe available commands or one specific command
-  polytrix list [(all|<REGEX>)] [opts]      # List all tests
-  polytrix test [all|<REGEX>)] [opts]       # Test one or more tests
-  polytrix verify [(all|<REGEX>)] [opts]    # Verify the execution results of one or more tests
-  polytrix version                          # Print Polytrix's version information
-```
-
-## Solo mode
-
-Although Polytrix is designed for compliance testing multiple implementations, you can also use Polytrix to run tests (and create documentation) for a single implementor. Polytrix has a `--solo` mode to make this easier. This mode let's you skip a lot of configuration that would be necessary for a polyglot suite. This may be useful if you're starting out with a "reference implementation" that you plan to port to other languages in the future.
-
-In solo mode Polytrix:
-- Will detect and configure a single implementor
-- Will try to choose appropriate tools to install dependencies, compile, and/or run the code samples
-- Will detect code samples and configure tests for them
-- Code samples must not require input (stdin or environment variables)
-- Code samples will be run in alphabetical order
-
-If you need to control the order or add input then you should create a [test manifest]](http://tbd).
-If you need to customize the tools used for dependencies, compilation and/or running samples, you can add [wrapper scripts](http://tbd)
-
-In order to run tests in solo mode you just tell the directory that contains samples via the `--solo` option:
-
-```bash
-$ bundle exec polytrix test --solo=samples/sdks/python/
------> Starting Polytrix (v0.1.2)
------> Cleaning up any prior instances of challenges-hello_world-python
------> Destroying challenges-hello_world-python...
-       Finished destroying challenges-hello_world-python (0m0.00s).
------> Testing challenges-hello_world-python
------> Executing challenges-hello_world-python...
-polytrix:execute  scripts/wrapper ./challenges/hello_world.py
-       Hello, world!
-       Finished executing challenges-hello_world-python (0m0.20s).
------> Verifying challenges-hello_world-python...
-       Finished verifying challenges-hello_world-python (0m0.00s).
-       Finished testing challenges-hello_world-python (0m0.21s).
------> Cleaning up any prior instances of challenges-quine-python
------> Destroying challenges-quine-python...
-       Finished destroying challenges-quine-python (0m0.00s).
------> Testing challenges-quine-python
------> Executing challenges-quine-python...
-polytrix:execute  scripts/wrapper ./challenges/quine.py
-       s = 's = %r\nprint(s%%s)'
-       print(s%s)
-       Finished executing challenges-quine-python (0m0.04s).
------> Verifying challenges-quine-python...
-       Finished verifying challenges-quine-python (0m0.00s).
-       Finished testing challenges-quine-python (0m0.05s).
------> Polytrix is finished. (0m0.26s)
-```
-
-## The test manifest - polytrix.yml
-
-The test manifest, polytrix.yml, defines the implementations you plan to test, and the test suite you want to run. A basic test manifest looks like this:
-
-```yaml
-polytrix:
-  implementors:
-    ruby_samples:
-      language: ruby
-      bootstrap_cmd: bundle install
-      exec_cmd: bundle exec ruby
-      git:
-        repo: https://github.com/polytrix/ruby_samples
-    python_samples:
-      language: python
-      bootstrap_script: scripts/pip_install
-      exec_script: scripts/pip_install
-      git:
-        repo: https://github.com/polytrix/python_samples
-    java_samples:
-      language: java
-      # The default is to look for scripts/bootstrap and scripts/exec
-      # or try to use the default bootstrap/exec behavior for the language
-      git:
-        repo: 'https://github.com/polytrix/java_samples'
-
-  suites:
-    katas:
-      code_samples:
-        hello_world:
-          - validate:
-              stdout: Hello, World!
-        quine:
-          - validate:
-              quine_validator: true
-    utilities:
-      code_samples:
-        word_count:
-          - name: short text
-            input: |
-              I am a word count utility
-            validate:
-              stdout: 6 words
-          - name: small file
-            input_file: fixtures/small_file.txt
-            validate:
-              stdout: 10 words
-          - name: large file
-            input_file: fixtures/large_file.txt
-            validate:
-              stdout: 1000 words
-```
-
-### Defining Implementors
-
-Polytrix tests scenarios across one or more implementors. The implementors may each be in a different
-language, but you can also have multiple implementors for the same langauge. The structure used to define implementors within polytrix.yml is described below.
-
-#### Implementor Object
-
-Field Name | Type | Description
----|:---:|---
-<a name="implementor_name"/>name | `string` | The name of the implementor. (*If omitted, this attribute’s value defaults to the key name associated with this object.*)
-<a name="implementor_directory"/>directory | `string` | The location of the implementor project containing code samples.
-<a name="implementor_language"/>language | `string` | The primary programming language of the code samples in this implementor.
-<a name="implementor_git"/>git | [Git Object](#git_object) | Defines how to clone the project via Git.
-<a name="implementor_scripts"/>scripts | [Scripts Object](#scripts_object) | Defines scripts to bootstrap, compile, and execute the samples.
-
-#### Git Object
-<a name="git_object"/>Field Name | Type | Description
----|:---:|---
-<a name="git_repo"/>repo | `string` | **Required.** The git repo to clone.
-<a name="git_branch"/>branch | `string` | The git branch to clone.
-<a name="git_to"/>to | `string` | The local directory to clone into.
-
-#### Scripts Object
-<a name="scripts_object"/>Field Name | Type | Description
----|:---:|---
-<a name="directory"/>directory | `directory` | The directory that contains the script files. **Default**: `scripts/`.
-<a name="bootstrap_script"/>bootstrap_script | `file` | The file to execute to bootstrap the samples. **Default**: `bootstrap`
-<a name="compile_script"/>compile_script | `file` | The file to execute to compile the samples. **Default**: `compile`
-<a name="exec_script"/>exec_script | `file` | The file to use as an execute wrapper script for running samples. **Default**: `exec`
-<a name="bootstrap_cmd"/>bootstrap_cmd | `string` | An inline script to execute instead of executing *bootstrap_file*.
-<a name="compile_cmd"/>compile_cmd | `string` | An inline script to execute instead of executing *bootstrap_file*.
-<a name="exec_cmd"/>exec_cmd | `string` | An inline script to use as an execution wrapper, instead of searching for a `exec` script.
-
-#### Example Implementor Definition
-
-```yaml
-implementors:
-  ruby_samples:
-    directory: samples/ruby
-    language: ruby
-    git:
-      repo: https://github.com/polytrix/ruby_samples
-      branch: master
-      to: samples/ruby
-    scripts:
-      bootstrap_cmd: bundle install
-      exec_cmd: bundle exec ruby "$@"
-```
-
-### Attaching Code Samples
-
-Polytrix tests are divided into suites, code samples, and scenarios. Each tuple (suite, code sample, scenario) is a test.
-
-The structure used to define tests is:
-
-#### Suite Object
-
-Field Name | Type | Description
----|:---:|---
-<a name="suite_name"/>name | `string` | The name of the suite. (*If omitted, this attribute’s value defaults to hash key associated with this object.*)
-<a name="suite_input"/>input | `string` | The content to send to the code sample as standard input.
-<a name="suite_input_file"/>input_file | `file` | Reads the specified file and sets *input*.
-<a name="code_samples"/>code_samples | Hash of [Code Samples](#code_samples) | Defines the code samples to test
-
-#### Code Sample Object
-
-The code sample object determines which scenario to runwhich determines which code sample will be run. It can also
-override the default values set in the Suite Object.
-
-If the Scenario Object is a list, it will be automatically split into distinct but related scenarios. This is useful
-for testing the same code sample with a variety of different input values.
-
-Field Name | Type | Description
----|:---:|---
-<a name="code_sample_name"/>name | `string` | The name of the suite. (*If omitted, this attribute’s value defaults to hash key associated with this object.*)
-<a name="scenarios"/>scenarios | List of [Scenario Objects](#scenario_object) | Defines the scenarios to test for the code sample. **Default**: An scenario named default with no input.
-
-
-#### Scenario Object
-
-Field Name | Type | Description
----|:---:|---
-<a name="scenario_name"/>name | `string` | **Required.** The scenario name.
-<a name="scenario_input"/>input | `string` | The content to send to the code sample as standard input.
-<a name="scenario_input_file"/>input_file | `file` | Reads the specified file and sets *input*.
-<a name="scenarios"/>language | Hash of [Scenario Objects](#scenario_object) | Defines the scenarios within the suite
-
-#### Example Suite Definition
-
-```yaml
-  suites:
-    katas:
-      scenarios:
-        hello_world:
-          validate:
-            stdout: Hello, World!
-        quine:
-          validate:
-            quine_validator: true
-    utilities:
-      scenarios:
-        word_count:
-          - name: short text
-            input: |
-              I am a word count utility
-            validate:
-              stdout: 6 words
-          - name: small file
-            input_file: fixtures/small_file.txt
-            validate:
-              stdout: 10 words
-          - name: large file
-            input_file: fixtures/large_file.txt
-            validate:
-              stdout: 1000 words
-```
-
-## Plugins
-
-TBD
-
-## Custom Validators
-
-TBD
+> In some cases, running executables without `bundle exec` may work, if the executable happens to be installed in your system and does not pull in any gems that conflict with your bundle.
+>
+> However, this is unreliable and is the source of considerable pain. Even if it looks like it works, it may not work in the future or on another machine.
 
 ## Usage
 
-### Cloning implementors
-### Bootstrapping implementors
-### Executing scenarios
-### Verifying scenario results
-### Full test
+### Setup
 
+The Polytrix test suites are defined by `polytrix.yml`. This file defines the implementors you want to test and the test scenarios that they share. A simple Polytrix setup looks like this:
+
+```yaml
+---
+  implementors:
+    ruby_samples:
+      language: 'ruby'
+      basedir: 'sdks/ruby'
+    java_samples:
+      language: 'java'
+      basedir: 'sdks/java'
+    python_samples:
+      language: 'python'
+      basedir: 'sdks/python'
+
+  global_env:                          # global_env defines input available for all scenarios
+    LOCALE: <%= ENV['LANG'] %>         # templating is allowed
+  suites:
+    Katas:                             # "Katas" is the name of the first test suite
+      samples:                         # Test scenarios within Katas
+        - hello world
+        - quine
+    Environment:
+      env:                             # Unlike global_env, these variables are only for the Katas suite
+        COLOR: red
+      samples:
+        - echo_color
 ```
+
+The `implementors` defines the projects you want to test, and `suites` defines the test scenarios.
+
+### CLI - Testing
+
+Polytrix provides a CLI for driving tests, quickly viewing test results, or to generate test reports.
+
+In order to see all available commands, simply run `bundle exec polytrix`:
+
+```bash
+$ bundle exec polytrix
+
+  Commands:
+  polytrix bootstrap [INSTANCE|REGEXP|all]  # Change scenario state to bootstraped. Running bootstrap scripts for the implementor
+  polytrix clone [INSTANCE|REGEXP|all]      # Change scenario state to cloned. Clone the code sample from git
+  polytrix destroy [INSTANCE|REGEXP|all]    # Change scenario state to destroyed. Delete all information for one or more scenarios
+  polytrix detect [INSTANCE|REGEXP|all]     # Find sample code that matches a test scenario. Attempts to locate a code sample with a filename that the test scenario name.
+  polytrix exec [INSTANCE|REGEXP|all]       # Change instance state to executed. Execute the code sample and capture the results.
+  polytrix help [COMMAND]                   # Describe available commands or one specific command
+  polytrix list [INSTANCE|REGEXP|all]       # Lists one or more scenarios
+  polytrix report                           # Generate reports
+  polytrix show [INSTANCE|REGEXP|all]       # Show detailed status for one or more scenarios
+  polytrix test [INSTANCE|REGEXP|all]       # Test (clone, bootstrap, exec, and verify) one or more scenarios
+  polytrix verify [INSTANCE|REGEXP|all]     # Change instance state to verified. Assert that the captured results match the expectations for the scenario.
+  polytrix version                          # Print Polytrix's version information
+```
+
+The `INSTANCE` or `REGEXP` used in commands is matched against `Test ID`, which is an unique ID derived from the suite, scenario, and implementor names for a test. You can see the `Test ID`s via `polytrix show`.
+
+#### List and Show
+
+The command `polytrix list [INSTANCE|REGEXP|all]` or `polytrix show [INSTANCE|REGEXP|all]` can be used to give you an overview (list) or detailed information (show) about all tests or a subset of tests.
+
+Initially the tests will have a status of "<Not Found>", but the status will change and details will become available as you run the commands below.
+
+#### Cloning
+
+The command `polytrix clone [INSTANCE|REGEXP|all]` will fetch code samples for an implementor from a git repo. This step is skipped if no git repo is specified for the implementor, or if it already appears to be cloned.
+
+#### Bootstrapping
+
+The command `polytrix clone [INSTANCE|REGEXP|all]` will "bootstrap" the implementors.
+
+Bootstrapping ensures the implementor has the resources it needs to run samples, especially third-party libraries. Bootstrapping behavior is controlled by:
+
+- The presence of a [bootstrap script](http://wynnnetherland.com/linked/2013012801/bootstrapping-consistency) in `script/bootstrap`
+- A bootstrap command defined within the implementor in the `polytrix.yml`
+- Default behavior for the implementors language
+
+#### Detecting
+
+The command `polytrix clone [INSTANCE|REGEXP|all]` will search each implementor for code samples that correspond with test scenarios.
+
+Polytrix searches for samples by:
+
+- Checking the implementor definition (in `polytrix.yml`) a static mapping of test scenarios to files.
+- Searching files matching the scenario name, using a rather lax search pattern
+  - Search for a partial name match
+  - Case-insensitive
+  - Ignore ' ', '_', '-' and '.'
+  - Do not search files or directories that are .gitignore'd.
+
+This search pattern achieves a good hit rate while still letting implementors follow language or pattern conventions. For example, if the scenario is called "create server", the following file names will all match:
+
+- src/java/com/foo/bar/CreateServer.java
+- lib/foo/bar/create_server.rb
+- samples/04-create-server.go
+
+In order to avoid matching compiled files with similar names (like `CreateServer.class` or `create_server.pyc`) make sure they are gitignore'd.
+
+Successfully completing this stage will set a test's status to `Sample Found`.
+
+#### Executing
+
+The command `polytrix exec [INSTANCE|REGEXP|all]` will execute a code sample while capturing data via spies.
+
+If the code sample is executable (e.g. many Bash, Ruby, or Python scripts) then Polytrix can execute it directly. If it is not direclty executable you can create a `script/wrapper`. Polytrix will execute the wrapper script with the first argument set to the path to the code sample. You can use this to defer to `bundle exec`, `node`, `java`, or any other program or script necessary to run the code sample.
+
+Polytrix has a built-in spy to capture the processes exit status, stdout, and stderr. You can register custom spies to capture additional information. For example, a [Pacto](https://github.com/thoughtworks/pacto) spy has been used to capture HTTP requests that are made by code samples and match them to known services defined via [Swagger](http://swagger.io/).
+
+TODO: Documentation on custom spies.
+
+Successfully completing this stage will set a test's status to `Executed`.
+
+#### Validating
+
+The command `polytrix verify [INSTANCE|REGEXP|all]` will check the captured data from executing a code sample against the validators for that test scenario.
+
+The validators are shared across all implementors, acting as a compliance test suite. A default validator is used if a test does not have any specific validators. A scenario can have more than one validator.
+
+TODO: Documentation on writing validators.
+
+This stage will set the test's status to `Partially Verified (n of m)` or `Fully Verified (n of n)`, where `n` is the number of validators that succeeded and `m` is the number of validators registered for the test scenario.
+
+#### Cleaning
+
+The command `polytrix destroy [INSTANCE|REGEXP|all]` clears out the saved test status and captured data.
+
+This will set the status back to `<Not Found>`.
+
+#### Testing
+
+The command `polytrix test [INSTANCE|REGEXP|all]` combines the commands above into a single command. It runs in order:
+
+destroy->detect->exec->verify
+
+### Reports
+
+#### Dashboard
+
+The command `polytrix report dashboard` will generate an HTML feature matrix where each result is a link to more information about the test execution.
+
+#### Code2doc
+
+The command `polytrix report code2doc [INSTANCE|REGEXP|all]` will convert annotated code samples to documentation. It is similar to projects like [docco](https://github.com/jashkenas/docco), except that it generates Markdown or reStructuredText rather than fully-styled HTML. The idea is that you can more easily drop these files into static site generators like [middlemanapp](http://middlemanapp.com/), documentation tools like [slate](https://github.com/tripit/slate), or services like [viewdocs](http://progrium.viewdocs.io/viewdocs) or [readthedocs](https://readthedocs.org/), which already handle styling and syntax highlighting.
+
+## Solo mode
+
+TODO: Polytrix' experimental solo mode for running samples w/out a `polytrix.yml`.
