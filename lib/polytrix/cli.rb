@@ -47,6 +47,18 @@ module Polytrix
       $stdout.sync = true
     end
 
+    def self.filter_options
+      method_option :failed,
+                    type: :boolean,
+                    desc: 'Only list tests that failed / passed'
+      method_option :skipped,
+                    type: :boolean,
+                    desc: 'Only list tests that were skipped / executed'
+      method_option :samples,
+                    type: :boolean,
+                    desc: 'Only list tests that have sample code / do not have sample code'
+    end
+
     desc 'list [INSTANCE|REGEXP|all]', 'Lists one or more scenarios'
     method_option :log_level,
                   aliases: '-l',
@@ -68,6 +80,10 @@ module Polytrix
     # , default: 'polytrix.yml'
     method_option :solo_glob,
                   desc: 'The globbing pattern to find code samples in solo mode'
+    method_option :source,
+                  type: :boolean,
+                  desc: 'Include source file in listing'
+    filter_options
     def list(*args)
       update_config!
       perform('list', 'list', args, options)
@@ -94,15 +110,7 @@ module Polytrix
     # , default: 'polytrix.yml'
     method_option :solo_glob,
                   desc: 'The globbing pattern to find code samples in solo mode'
-    method_option :failed,
-                  type: :boolean,
-                  desc: 'Display results for tests that failed'
-    method_option :skipped,
-                  type: :boolean,
-                  desc: 'Display results for tests that were skipped (e.g. no code sample found)'
-    method_option :source,
-                  type: :boolean,
-                  desc: 'Print the source code for the code sample'
+    filter_options
     def show(*args)
       update_config!
       perform('show', 'show', args, options)
@@ -157,7 +165,6 @@ module Polytrix
       define_method(action) do |*args|
         update_config!
         action_options = options.dup
-        action_options['on'] = :implementor if [:clone, :bootstrap].include? action
         perform(action, 'action', args, action_options)
       end
     end

@@ -7,9 +7,6 @@ module Polytrix
       include Polytrix::Logging
       include Polytrix::Util::FileSystem
 
-      # Need standard executor...
-      SUPPORTED_EXTENSIONS = %w(py rb js)
-
       # Contstructs a new Command object.
       #
       # @param cmd_args [Array] remainder of the arguments from processed ARGV
@@ -28,7 +25,6 @@ module Polytrix
         @action = options.fetch(:action, nil)
         @help = options.fetch(:help, -> { 'No help provided' })
         @manifest_file = options.fetch('manifest', nil)
-        @test_dir = options.fetch('test_dir', nil)
         @loader = options.fetch(:loader, nil)
         @shell = options.fetch(:shell)
         @queue = Queue.new
@@ -48,10 +44,6 @@ module Polytrix
       # @api private
       attr_reader :help
 
-      # @return [Config] a Config object
-      # @api private
-      attr_reader :test_dir
-
       # @return [Thor::Shell] a Thor shell object
       # @api private
       attr_reader :shell
@@ -61,50 +53,7 @@ module Polytrix
       attr_reader :action
 
       def setup
-        manifest_file = File.expand_path @manifest_file
-        if File.exist? manifest_file
-          logger.debug "Loading manifest file: #{manifest_file}"
-          Polytrix.configuration.manifest = @manifest_file
-        elsif @options.solo
-          solo_setup
-        else
-          fail StandardError, "No manifest found at #{manifest_file} and not using --solo mode"
-        end
-
-        Polytrix.configuration.documentation_dir = options[:target_dir]
-        Polytrix.configuration.documentation_format = options[:format]
-
-        manifest.build_challenges
-
-        test_dir = @test_dir.nil? ? nil : File.expand_path(@test_dir)
-        return nil unless test_dir && File.directory?(test_dir)
-
-        $LOAD_PATH.unshift test_dir
-        Dir["#{test_dir}/**/*.rb"].each do | file_to_require |
-          require relativize(file_to_require, test_dir).to_s.gsub('.rb', '')
-        end
-      end
-
-      def solo_setup
-        suites = {}
-        solo_basedir = @options.solo
-        solo_glob = @options.fetch('solo_glob', "**/*.{#{SUPPORTED_EXTENSIONS.join(',')}}")
-        Dir[File.join(solo_basedir, solo_glob)].sort.each do | code_sample |
-          code_sample = Pathname.new(code_sample)
-          suite_name = relativize(code_sample.dirname, solo_basedir).to_s
-          suite_name = solo_basedir if suite_name == '.'
-          scenario_name = code_sample.basename(code_sample.extname).to_s
-          suite = suites[suite_name] ||= Polytrix::Manifest::Suite.new(samples: [])
-          suite.samples << scenario_name
-        end
-        @manifest = Polytrix.configuration.manifest = Polytrix::Manifest.new(
-          implementors: {
-            File.basename(solo_basedir) => {
-              basedir: solo_basedir
-            }
-          },
-          suites: suites
-        )
+        Polytrix.setup(options, @manifest_file)
       end
 
       def manifest
@@ -125,44 +74,6 @@ module Polytrix
         exit 1
       end
 
-      # @return [Array<Scenario>] an array of scenarios
-      # @raise [SystemExit] if no scenario are returned
-      # @api private
-      def all_scenarios
-        result = manifest.challenges.values
-
-        if result.empty?
-          die 'No scenarios defined'
-        else
-          result
-        end
-      end
-
-      # Return an array on scenarios whos name matches the regular expression.
-      #
-      # @param regexp [Regexp] a regular expression matching on instance names
-      # @return [Array<Instance>] an array of scenarios
-      # @raise [SystemExit] if no scenarios are returned or the regular
-      #   expression is invalid
-      # @api private
-      def filtered_scenarios(regexp)
-        result = begin
-          manifest.challenges.get(regexp) ||
-            manifest.challenges.get_all(/#{regexp}/)
-        rescue RegexpError => e
-          die 'Invalid Ruby regular expression, ' \
-            'you may need to single quote the argument. ' \
-            "Please try again or consult http://rubular.com/ (#{e.message})"
-        end
-        result = [result] unless result.is_a? Array
-
-        if result.empty?
-          die "No scenarios for regex `#{regexp}', try running `polytrix list'"
-        else
-          result
-        end
-      end
-
       # Return an array on scenarios whos name matches the regular expression,
       # the full instance name, or  the `"all"` literal.
       #
@@ -170,9 +81,14 @@ module Polytrix
       #   `"all"`, or `nil`
       # @return [Array<Instance>] an array of scenarios
       # @api private
-      def parse_subcommand(arg = nil)
-        arg ||= 'all'
-        arg == 'all' ? all_scenarios : filtered_scenarios(arg)
+      def parse_subcommand(regexp = nil)
+        scenarios = Polytrix.filter_scenarios(regexp, options)
+        die "No scenarios for regex `#{regexp}', try running `polytrix list'" if scenarios.empty?
+        scenarios
+      rescue RegexpError => e
+        die 'Invalid Ruby regular expression, ' \
+          'you may need to single quote the argument. ' \
+          "Please try again or consult http://rubular.com/ (#{e.message})"
       end
     end
 

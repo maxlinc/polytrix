@@ -5,6 +5,8 @@ module Polytrix
     class Action < Polytrix::Command::Base
       include RunAction
 
+      IMPLEMENTOR_ACTIONS = [:clone, :bootstrap] # These are run once per implementor, not per test
+
       # Invoke the command.
       def call
         banner "Starting Polytrix (v#{Polytrix::VERSION})"
@@ -12,7 +14,7 @@ module Polytrix
           setup
           tests = parse_subcommand(args.pop)
           implementors = tests.map(&:implementor).uniq
-          if [:clone, :bootstrap].include? action # actions on implementors
+          if IMPLEMENTOR_ACTIONS.include? action # actions on implementors
             run_action(action, implementors)
           else # actions on tests
             run_action(action, tests)

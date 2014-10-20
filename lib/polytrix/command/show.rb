@@ -15,23 +15,21 @@ module Polytrix
       def call
         setup
         @reporter = Polytrix::Reporters.reporter(options[:format], shell)
-        tests = parse_subcommand(args.first)
-        tests.keep_if { |test| test.failed? == options[:failed] } unless options[:failed].nil?
-        tests.keep_if { |test| test.skipped? == options[:skipped] } unless options[:skipped].nil?
+        challenges = parse_subcommand(args.pop)
 
-        tests.each do | test |
-          status_color = test.status_color.to_sym
-          status(test.slug, colorize(test.status_description, status_color), status_color)
+        challenges.each do | challenge |
+          status_color = challenge.status_color.to_sym
+          status(challenge.slug, colorize(challenge.status_description, status_color), status_color)
           indent do
-            status('Test suite', test.suite)
-            status('Test scenario', test.name)
-            status('Implementor', test.implementor.name)
-            source_file = test.absolute_source_file ? relativize(test.absolute_source_file, Dir.pwd) : colorize('<No code sample>', :red)
+            status('Test suite', challenge.suite)
+            status('Test scenario', challenge.name)
+            status('Implementor', challenge.implementor.name)
+            source_file = challenge.absolute_source_file ? relativize(challenge.absolute_source_file, Dir.pwd) : colorize('<No code sample>', :red)
             status('Source', source_file)
-            display_source(test)
-            display_execution_result(test)
-            display_validations(test)
-            display_spy_data(test)
+            display_source(challenge)
+            display_execution_result(challenge)
+            display_validations(challenge)
+            display_spy_data(challenge)
           end
         end
       end

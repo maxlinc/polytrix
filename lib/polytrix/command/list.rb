@@ -7,27 +7,41 @@ module Polytrix
       def call
         setup
         @reporter = Polytrix::Reporters.reporter(options[:format], shell)
-        tests = parse_subcommand(args.first)
+        tests = parse_subcommand(args.pop)
 
-        table = [
-          [
-            colorize('Test ID', :green), colorize('Suite', :green), colorize('Scenario', :green),
-            colorize('Implementor', :green), colorize('Status', :green)
-          ]
-        ]
+        table = [header_row]
         table += tests.map do | challenge |
-          [
-            color_pad(challenge.slug),
-            color_pad(challenge.suite),
-            color_pad(challenge.name),
-            color_pad(challenge.implementor.name),
-            format_status(challenge)
-          ]
+          row(challenge)
         end
         print_table(table)
       end
 
       private
+
+      def header_row
+        row = []
+        row << colorize('Test ID', :green)
+        row << colorize('Suite', :green)
+        row << colorize('Scenario', :green)
+        row << colorize('Implementor', :green)
+        row << colorize('Status', :green)
+        row << colorize('Source', :green) if options[:source]
+        row
+      end
+
+      def row(challenge)
+        row = []
+        row << color_pad(challenge.slug)
+        row << color_pad(challenge.suite)
+        row << color_pad(challenge.name)
+        row << color_pad(challenge.implementor.name)
+        row << format_status(challenge)
+        if options[:source]
+          source_file = challenge.absolute_source_file ? relativize(challenge.absolute_source_file, Dir.pwd) : colorize('<No code sample>', :red)
+          row << source_file
+        end
+        row
+      end
 
       def print_table(*args)
         @reporter.print_table(*args)

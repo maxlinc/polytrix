@@ -180,6 +180,10 @@ module Polytrix
       result.nil?
     end
 
+    def sample?
+      !source_file.nil?
+    end
+
     def status
       status = last_attempted_action
       failed? ? "#{status}_failed" : status

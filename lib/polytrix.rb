@@ -28,14 +28,88 @@ module Polytrix
   include Polytrix::DefaultLogger
   include Polytrix::Logging
 
+  # File extensions that Polytrix can automatically detect/execute
+  SUPPORTED_EXTENSIONS = %w(py rb js)
+
   class << self
     include Polytrix::Util::FileSystem
+
+    DEFAULT_MANIFEST_FILE = 'polytrix.yml'
 
     # @return [Mutex] a common mutex for global coordination
     attr_accessor :mutex
 
     # @return [Logger] the common Polytrix logger
     attr_accessor :logger
+
+    def setup(options, manifest_file = DEFAULT_MANIFEST_FILE)
+      # manifest_file = File.expand_path manifest
+      if File.exist? manifest_file
+        logger.debug "Loading manifest file: #{manifest_file}"
+        Polytrix.configuration.manifest = manifest_file
+      elsif options[:solo]
+        solo_setup(options)
+      else
+        fail StandardError, "No manifest found at #{manifest_file} and not using --solo mode"
+      end
+
+      Polytrix.configuration.documentation_dir = options[:target_dir]
+      Polytrix.configuration.documentation_format = options[:format]
+
+      manifest.build_challenges
+
+      test_dir = options[:test_dir].nil? ? nil : File.expand_path(options[:test_dir])
+      return nil unless test_dir && File.directory?(test_dir)
+
+      $LOAD_PATH.unshift test_dir
+      Dir["#{test_dir}/**/*.rb"].each do | file_to_require |
+        require relativize(file_to_require, test_dir).to_s.gsub('.rb', '')
+      end
+    end
+
+    def solo_setup(options)
+      suites = {}
+      solo_basedir = options[:solo]
+      solo_glob = options.fetch('solo_glob', "**/*.{#{SUPPORTED_EXTENSIONS.join(',')}}")
+      Dir[File.join(solo_basedir, solo_glob)].sort.each do | code_sample |
+        code_sample = Pathname.new(code_sample)
+        suite_name = relativize(code_sample.dirname, solo_basedir).to_s
+        suite_name = solo_basedir if suite_name == '.'
+        scenario_name = code_sample.basename(code_sample.extname).to_s
+        suite = suites[suite_name] ||= Polytrix::Manifest::Suite.new(samples: [])
+        suite.samples << scenario_name
+      end
+      @manifest = Polytrix.configuration.manifest = Polytrix::Manifest.new(
+        implementors: {
+          File.basename(solo_basedir) => {
+            basedir: solo_basedir
+          }
+        },
+        suites: suites
+      )
+    end
+
+    def select_scenarios(regexp)
+      regexp ||= 'all'
+      scenarios = if regexp == 'all'
+                    manifest.challenges.values
+                  else
+                    manifest.challenges.get(regexp) || manifest.challenges.get_all(/#{regexp}/)
+                  end
+      if scenarios.is_a? Array
+        scenarios
+      else
+        [scenarios]
+      end
+    end
+
+    def filter_scenarios(regexp, options = {})
+      select_scenarios(regexp).tap do |scenarios|
+        scenarios.keep_if { |scenario| scenario.failed? == options[:failed] } unless options[:failed].nil?
+        scenarios.keep_if { |scenario| scenario.skipped? == options[:skipped] } unless options[:skipped].nil?
+        scenarios.keep_if { |scenario| scenario.sample? == options[:samples] } unless options[:samples].nil?
+      end
+    end
 
     # Returns a default file logger which emits on standard output and to a
     # log file.
