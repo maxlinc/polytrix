@@ -14,7 +14,7 @@ module Polytrix
         @buffer.puts header_line.gsub(/[^|]/, '-')
 
         table[1..-1].each do |data_line|
-          @buffer.puts data_line.map{|line| escape_html(line)}.join(' | ')
+          @buffer.puts data_line.map { |line| escape_html(line) }.join(' | ')
         end
       end
 
