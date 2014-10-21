@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rspec-expectations", "~> 3.0"
   spec.add_dependency "hashie", "~> 3.0"
   spec.add_dependency "padrino-helpers", "~> 0.12"
+  spec.add_dependency "erubis", "~> 2.7"
   spec.add_dependency "cause", "~> 0.1"
   spec.add_dependency "rouge", "~> 1.7"
   spec.add_development_dependency "rspec", "~> 3.0"

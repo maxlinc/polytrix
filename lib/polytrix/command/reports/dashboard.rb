@@ -109,7 +109,7 @@ module Polytrix
         def create_test_reports
           Polytrix.manifest.challenges.values.each do |challenge|
             @challenge = challenge
-            template 'templates/_test_report.html.tt', "#{challenge.slug}.html"
+            template 'templates/_test_report.html.tt', "details/#{challenge.slug}.html"
           end
         end
 

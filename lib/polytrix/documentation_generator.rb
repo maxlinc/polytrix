@@ -1,4 +1,5 @@
-require 'tilt' # seems to be a bug where padrino-helpers should require tilt
+require 'tilt' # padrino-helpers wants you to pre-require tilt/erubis
+require 'erubis'
 require 'padrino-helpers'
 
 module Polytrix

@@ -72,7 +72,7 @@
         </td>
         <% implementors.each do |implementor| %>
         <td data-title="'<%= implementor %>'" ng-class="{'passed': results.<%= implementor %>.indexOf('Fully Verified') != -1, 'partial': results.<%= implementor %>.indexOf('Partially Verified') != -1, 'failed': results.<%= implementor %>.indexOf('Failed') != -1 }" sortable="<%= implementor %>">
-          <a href="{{results.slug_prefix}}-<%= implementor %>.html">{{results.<%= implementor %>}}</a>
+          <a href="details/{{results.slug_prefix}}-<%= implementor %>.html">{{results.<%= implementor %>}}</a>
         </td>
         <% end %>
       </tr>

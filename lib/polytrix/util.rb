@@ -108,6 +108,8 @@ module Polytrix
         alias_method :h, :escape_html
 
         def highlight(source, opts = {})
+          return nil if source.nil?
+
           opts[:language] ||= 'ruby'
           opts[:formatter] ||= 'terminal256'
           Highlight.new(opts).highlight(source)
