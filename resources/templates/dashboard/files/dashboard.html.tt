@@ -2,8 +2,7 @@
 <head>
   <meta charset="UTF-8"/>
   <link data-require="bootstrap-css@*" data-semver="3.0.0" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
-        <!-- <link href="style.css" rel="stylesheet"> -->
-<link href="assets/style.css" rel="stylesheet" type="text/css">
+  <link href="assets/style.css" rel="stylesheet" type="text/css">
 </head>
 <body ng-app="main" ng-controller="DemoCtrl">
   <script data-require="angular.js@*" data-semver="1.2.26" src="https://code.angularjs.org/1.2.26/angular.min.js"></script>
@@ -26,19 +25,19 @@
           {{results.scenario}}
         </td>
         <% implementors.each do |implementor| %>
-        <td data-title="'<%= implementor %>'" ng-class="{'passed': results.<%= implementor %>.indexOf('Fully Verified') != -1, 'partial': results.<%= implementor %>.indexOf('Partially Verified') != -1, 'failed': results.<%= implementor %>.indexOf('Failed') != -1 }" sortable="<%= implementor %>" filter="{ '<%= implementor %>': 'text' }">
+        <td data-title="'<%= implementor %>'" ng-class="{'passed': results.<%= implementor %>.indexOf('Fully Verified') != -1, 'partial': results.<%= implementor %>.indexOf('Partially Verified') != -1, 'failed': results.<%= implementor %>.indexOf('Failed') != -1 }" sortable="<%= implementor %>" filter="{ '<%= implementor %>': 'implementor' }">
           <a href="details/{{results.slug_prefix}}-<%= implementor %>.html">{{results.<%= implementor %>}}</a>
         </td>
         <% end %>
       </tr>
     </tbody>
   </table>
-  <% implementors.each do |implementor| %>
-  <script type="text/ng-template" id="ng-table/filters/<%= implementor %>.html">
-      <input type="radio" ng-model="params.filter()[name]" name="filter-<%=implementor%>" value="" /> None
-      <br />
-      <input type="radio" ng-model="params.filter()[name]" name="filter-<%=implementor%>" value="50" /> 50 years
+  <script type="text/ng-template" id="ng-table/filters/implementor.html">
+      <select ng-model="params.filter()[name]" name="filter-implementor">
+        <option value="">None</option>
+        <option value="Fully Verified">Fully Verified</option>
+        <option value="Partially Verified">Partially Verified</option>
+      </select>
   </script>
-  <% end %>
 </body>
 </html>
