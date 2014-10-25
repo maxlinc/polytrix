@@ -2,8 +2,8 @@
 <head>
   <meta charset="UTF-8"/>
   <link data-require="bootstrap-css@*" data-semver="3.0.0" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="assets/pygments/<%= options[:code_style] %>.css" rel="stylesheet" type="text/css">
-  <link href="assets/style.css" rel="stylesheet" type="text/css">
+  <link href="../assets/pygments/<%= options[:code_style] %>.css" rel="stylesheet" type="text/css">
+  <link href="../assets/style.css" rel="stylesheet" type="text/css">
   </head>
   <body>
     <div class="panel panel-<%= bootstrap_color(@challenge.status_color) %>">

@@ -1,3 +1,18 @@
+.table td {
+  padding: 7px 10px;
+  vertical-align: top;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.table a:visited {
+  color: #000000;
+}
+
+.table a:link {
+  color: #000000;
+}
+
 .passed {
   background-color: green;
 }

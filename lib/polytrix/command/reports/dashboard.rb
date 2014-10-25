@@ -106,6 +106,10 @@ module Polytrix
           directory 'files', '.'
         end
 
+        def create_results_json
+          create_file 'matrix.json', as_json(results)
+        end
+
         def create_test_reports
           Polytrix.manifest.challenges.values.each do |challenge|
             @challenge = challenge

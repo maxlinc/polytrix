@@ -3,63 +3,18 @@
   <meta charset="UTF-8"/>
   <link data-require="bootstrap-css@*" data-semver="3.0.0" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
         <!-- <link href="style.css" rel="stylesheet"> -->
-<style type="text/css">
-  td {
-    padding: 7px 10px;
-    vertical-align: top;
-    text-align: left;
-    border: 1px solid #ddd;
-  }
-  .passed {
-    background-color: green;
-  }
-  .partial {
-    background-color: #FF9900;
-  }
-  .failed {
-    background-color: red;
-  }
-  .pending {
-    background-color: LightGrey;
-  }
-
-  a:link {
-      color: #000000;
-  }
-
-  /* visited link */
-  a:visited {
-      color: #000000;
-  }
-</style>
+<link href="assets/style.css" rel="stylesheet" type="text/css">
 </head>
 <body ng-app="main" ng-controller="DemoCtrl">
   <script data-require="angular.js@*" data-semver="1.2.26" src="https://code.angularjs.org/1.2.26/angular.min.js"></script>
   <script data-require="ng-table@*" data-semver="0.3.3" src="http://bazalt-cms.com/assets/ng-table/0.3.0/ng-table.js"></script>
   <link data-require="ng-table@*" data-semver="0.3.3" href="http://bazalt-cms.com/assets/ng-table/0.3.3/ng-table.css" rel="stylesheet">
-  <script type="text/javascript">
-    var app = angular.module('main', ['ngTable']).
-    controller('DemoCtrl', function($scope, $filter, ngTableParams) {
-        var data = <%= as_json(results) %>;
-
-        $scope.tableParams = new ngTableParams({
-            page: 1,            // show first page
-            count: data.length  // count per page
-        }, {
-            counts: [],
-            groupBy: 'suite',
-            total: data.length,
-            getData: function($defer, params) {
-                var orderedData = params.sorting() ?
-                        $filter('orderBy')(data, $scope.tableParams.orderBy()) :
-                        data;
-
-                $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-            }
-        });
-    })
-  </script>
-  <table class="table" ng-table="tableParams">
+  <script type="text/javascript" src="dashboard.js"></script>
+  <button ng-click="tableParams.sorting({})" class="btn btn-default pull-right">Clear sorting</button>
+  <button ng-click="tableParams.filter({})" class="btn btn-default pull-right">Clear filter</button>
+  <p><strong>Sorting:</strong> {{tableParams.sorting()|json}}
+  <p><strong>Filter:</strong> {{tableParams.filter()|json}}
+  <table class="table" ng-table="tableParams" show-filter="true">
     <tbody ng-repeat="group in $groups">
       <tr class="ng-table-group">
         <td colspan="{{$columns.length}}">
@@ -67,16 +22,23 @@
         </td>
       </tr>
       <tr ng-hide="group.$hideRows" ng-repeat="results in group.data">
-        <td data-title="'Scenario'" sortable="scenario">
+        <td data-title="'Scenario'" sortable="scenario" filter="{ 'scenario': 'text' }">
           {{results.scenario}}
         </td>
         <% implementors.each do |implementor| %>
-        <td data-title="'<%= implementor %>'" ng-class="{'passed': results.<%= implementor %>.indexOf('Fully Verified') != -1, 'partial': results.<%= implementor %>.indexOf('Partially Verified') != -1, 'failed': results.<%= implementor %>.indexOf('Failed') != -1 }" sortable="<%= implementor %>">
+        <td data-title="'<%= implementor %>'" ng-class="{'passed': results.<%= implementor %>.indexOf('Fully Verified') != -1, 'partial': results.<%= implementor %>.indexOf('Partially Verified') != -1, 'failed': results.<%= implementor %>.indexOf('Failed') != -1 }" sortable="<%= implementor %>" filter="{ '<%= implementor %>': 'text' }">
           <a href="details/{{results.slug_prefix}}-<%= implementor %>.html">{{results.<%= implementor %>}}</a>
         </td>
         <% end %>
       </tr>
     </tbody>
   </table>
+  <% implementors.each do |implementor| %>
+  <script type="text/ng-template" id="ng-table/filters/<%= implementor %>.html">
+      <input type="radio" ng-model="params.filter()[name]" name="filter-<%=implementor%>" value="" /> None
+      <br />
+      <input type="radio" ng-model="params.filter()[name]" name="filter-<%=implementor%>" value="50" /> 50 years
+  </script>
+  <% end %>
 </body>
 </html>
