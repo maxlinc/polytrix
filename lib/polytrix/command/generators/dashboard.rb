@@ -3,7 +3,7 @@ require 'polytrix/reporters'
 
 module Polytrix
   module Command
-    class Report
+    class Generate
       class Dashboard < Thor::Group
         include Thor::Actions
         include Polytrix::Util::FileSystem

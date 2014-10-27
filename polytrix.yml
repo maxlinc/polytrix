@@ -24,5 +24,6 @@ suites:
     samples:                         # samples defines the individual tests in a suite
       - show
       - dashboard
+      - code2doc
       - custom spy report
 

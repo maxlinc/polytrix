@@ -3,7 +3,7 @@ require 'polytrix/reporters'
 
 module Polytrix
   module Command
-    class Report
+    class Generate
       class Code2Doc < Thor::Group
         include Polytrix::DefaultLogger
         include Polytrix::Logging

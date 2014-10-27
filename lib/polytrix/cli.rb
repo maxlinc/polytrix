@@ -2,7 +2,7 @@ require 'thor'
 
 require 'polytrix'
 require 'polytrix/command'
-require 'polytrix/command/report'
+require 'polytrix/command/generate'
 
 module Polytrix
   class CLI < Thor # rubocop:disable ClassLength
@@ -212,14 +212,8 @@ module Polytrix
     end
     map %w(-v --version) => :version
 
-    desc 'report', 'Generate reports'
-    subcommand 'report', Polytrix::Command::Report
-    # register Polytrix::Command::Report, 'report',
-    #          'report', 'Generates a report'
-    # long_desc <<-D, for: 'report'
-    #   Polytrix will generate an HTML report.
-    # D
-    # tasks['report'].options = Polytrix::Command::Report.class_options
+    desc 'generate', 'Generate reports, documentation, etc.'
+    subcommand 'generate', Polytrix::Command::Generate
 
     private
 
