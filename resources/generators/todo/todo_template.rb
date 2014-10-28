@@ -1,3 +1,1 @@
-Polytrix.implementors.each do |implementor|
-  say implementor
-end
+template 'templates/todo.md', 'todo.md'

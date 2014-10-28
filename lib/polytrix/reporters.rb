@@ -6,7 +6,7 @@ module Polytrix
     autoload :YAMLReporter, 'polytrix/reporters/yaml_reporter'
 
     RESOURCES_DIR = File.expand_path '../../../resources/', __FILE__
-    GENERATORS_DIR = File.expand_path 'templates/', RESOURCES_DIR
+    GENERATORS_DIR = File.expand_path 'generators/', RESOURCES_DIR
     ASSETS_DIR = File.expand_path 'assets/', RESOURCES_DIR
 
     def self.reporter(format, shell)

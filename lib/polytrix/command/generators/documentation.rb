@@ -9,56 +9,50 @@ module Polytrix
         include Polytrix::Util::FileSystem
         include Polytrix::Util::FileSystem
         include Polytrix::Documentation::Helpers::CodeHelper
-        class_option :template, default: 'summary', desc: 'The generator template name or directory'
-        class_option :destination, default: 'docs/', desc: 'Destination for generated documentation'
 
         BUILTIN_GENERATORS = Dir["#{Polytrix::Reporters::GENERATORS_DIR}/*"].select { |f| File.directory? f }
 
-        def self.add_generator_to_source_root
-          File.expand_path('tests/polytrix/generators', Dir.pwd)
+        class << self
+          def generators
+            BUILTIN_GENERATORS + Dir['tests/polytrix/generators/*'].select { |f| File.directory? f }
+          end
+
+          def generator_names
+            generators.map { |d| File.basename d }
+          end
+
+          def generator_not_found(generator)
+            s = "ERROR: No generator named #{generator}, available generators: "
+            s << generator_names.join(', ')
+          end
         end
 
-        def self.generators
-          BUILTIN_GENERATORS + Dir['tests/polytrix/generators/*'].select { |f| File.directory? f }
-        end
-
-        def self.generator_names
-          generators.map { |d| File.basename d }
-        end
-
-        def add_generators_to_source_root
-          generator_dir = self.class.generator_dirs.find { |d| File.basename(d) == options[:template] }
-          abort generators_not_found if generators_dir.nil?
-
-          source_paths << generator_dir
-        end
-
-        def set_destination_root
-          self.destination_root = options[:destination]
-        end
+        argument :regexp, default: 'all'
+        class_option :template, default: 'summary', desc: 'The generator template name or directory'
+        class_option :destination, default: 'docs/', desc: 'Destination for generated documentation'
+        class_option :failed, type: :boolean, desc: 'Only list tests that failed / passed'
+        class_option :skipped, type: :boolean, desc: 'Only list tests that were skipped / executed'
+        class_option :samples, type: :boolean, desc: 'Only list tests that have sample code / do not have sample code'
 
         def setup
           Polytrix.setup(options)
         end
 
+        def select_challenges
+          @challenges = Polytrix.filter_scenarios(regexp, options)
+        end
+
+        def set_source_and_destination
+          generator = self.class.generators.find { |d| File.basename(d) == options[:template] }
+          abort self.class.generator_not_found(generator) if generator.nil?
+          source_paths << generator
+
+          self.destination_root = options[:destination]
+        end
+
         def apply_template
           generator_script = "#{options[:template]}_template.rb"
           apply(generator_script)
-        end
-
-        def copy_base_structure
-          directory 'files', '.'
-        rescue Thor::Error => e
-          # It's okay if it the template doesn't have static files, it can be
-          # template files only.
-          raise e unless e.message.match(/Could not find "files"/)
-        end
-
-        protected
-
-        def generators_not_found
-          s = "ERROR: No generator named #{options[:template].inspect}, available generators: "
-          s << self.class.generator_names.join(', ')
         end
       end
     end

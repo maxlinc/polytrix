@@ -1,0 +1,6 @@
+<%- Polytrix.implementors.each do |implementor| -%>
+<%= implementor.name %>:
+<%- @challenges.select{|c| c.implementor == implementor}.each do |challenge| -%>
+  - [<%= challenge.source? ? 'x' : ' ' %>] <%= challenge.name %>
+<% end %>
+<%- end -%>
