@@ -1,0 +1,3 @@
+[submodule "samples/tests/polytrix/generators/slate/files"]
+	path = samples/tests/polytrix/generators/slate/files
+	url = git@github.com:polytrix/slate_generator.git

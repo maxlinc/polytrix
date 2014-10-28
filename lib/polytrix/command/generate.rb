@@ -11,10 +11,6 @@ module Polytrix
       register Code2Doc, 'code2doc', 'code2doc [INSTANCE|REGEXP|all]', 'Generates documenation from sample code for one or more scenarios'
       tasks['code2doc'].options = Code2Doc.class_options
 
-      autoload :Documentation, 'polytrix/command/generators/documentation'
-      register Documentation, 'docs', 'docs', 'Generate documentation from a template, using data from Polytrix'
-      tasks['docs'].options = Documentation.class_options
-
       # FIXME: Help shows unwanted usage, e.g. "polytrix polytrix:command:report:code2_doc"
     end
   end
