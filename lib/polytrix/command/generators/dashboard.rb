@@ -63,7 +63,7 @@ module Polytrix
         class_option :code_style, default: 'github'
 
         def self.source_root
-          Polytrix::Reporters::TEMPLATE_DIR
+          Polytrix::Reporters::GENERATORS_DIR
         end
 
         def report_name
@@ -88,14 +88,7 @@ module Polytrix
         # end
 
         def setup
-          Polytrix.manifest.build_challenges
-          test_dir = 'tests/polytrix' # @test_dir.nil? ? nil : File.expand_path(@test_dir)
-          return nil unless test_dir && File.directory?(test_dir)
-
-          $LOAD_PATH.unshift test_dir
-          Dir["#{test_dir}/**/*.rb"].each do | file_to_require |
-            require relativize(file_to_require, test_dir).to_s.gsub('.rb', '')
-          end
+          Polytrix.setup(options)
         end
 
         def copy_assets

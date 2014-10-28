@@ -61,10 +61,7 @@ module Polytrix
       test_dir = options[:test_dir].nil? ? nil : File.expand_path(options[:test_dir])
       return nil unless test_dir && File.directory?(test_dir)
 
-      $LOAD_PATH.unshift test_dir
-      Dir["#{test_dir}/**/*.rb"].each do | file_to_require |
-        require relativize(file_to_require, test_dir).to_s.gsub('.rb', '')
-      end
+      autoload_polytrix_files(test_dir)
     end
 
     def solo_setup(options)
@@ -176,6 +173,17 @@ module Polytrix
     # @return [true,false] is there a tty?
     def tty?
       $stdout.tty?
+    end
+
+    protected
+
+    def autoload_polytrix_files(dir)
+      $LOAD_PATH.unshift dir
+      Dir["#{dir}/**/*.rb"].each do | file_to_require |
+        # TODO: Need a better way to skip generators or only load validators
+        next if file_to_require.match %r{generators/.*/files/}
+        require relativize(file_to_require, dir).to_s.gsub('.rb', '')
+      end
     end
   end
 end

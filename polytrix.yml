@@ -26,4 +26,6 @@ suites:
       - dashboard
       - code2doc
       - custom spy report
-
+  Generate:
+    samples:
+      - slate docs
