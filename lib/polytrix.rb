@@ -53,9 +53,6 @@ module Polytrix
         fail StandardError, "No manifest found at #{manifest_file} and not using --solo mode"
       end
 
-      Polytrix.configuration.documentation_dir = options[:target_dir]
-      Polytrix.configuration.documentation_format = options[:format]
-
       manifest.build_challenges
 
       test_dir = options[:test_dir].nil? ? nil : File.expand_path(options[:test_dir])

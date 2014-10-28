@@ -11,11 +11,6 @@ module Polytrix
     property :log_level,    default: :info
     property :implementors, default: []
     # coerce_key :implementors, Polytrix::Implementor
-    property :suppress_output, default: false
-    property :default_doc_template
-    property :template_dir, default: "#{RESOURCES_DIR}"
-    property :documentation_dir, default: 'docs/'
-    property :documentation_format, default: 'md'
 
     # TODO: This should probably be configurable, or tied to Thor color options.
     if RSpec.respond_to?(:configuration)

@@ -20,7 +20,7 @@ module Polytrix
       when 'yaml'
         YAMLReporter.new
       else
-        fail "Unknown report format #{options[:format]}"
+        fail "Unknown report format #{format}"
       end
     end
   end

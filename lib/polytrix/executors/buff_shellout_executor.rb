@@ -9,7 +9,7 @@ module Polytrix
         Dir.chdir(cwd) do
           shell = Buff::ShellOut.shell_out(command)
           # Buff doesn't have a live_stream like Mixlib
-          puts shell.stdout unless Polytrix.configuration.suppress_output
+          puts shell.stdout if Polytrix.configuration.log_level == :debug
           execution_result = ExecutionResult.new exitstatus: shell.exitstatus, stdout: shell.stdout, stderr: shell.stderr
         end
         execution_result
