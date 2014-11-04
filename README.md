@@ -9,18 +9,18 @@ A lot of Polytrix was influenced by and based on [test-kitchen](http://kitchen.c
 ## Features
 
 - Validate sample code by running it through a series of stages:
-  *  Clone: Fetch existing code samples from other git repos
+  * Clone: Fetch existing code samples from other git repos
   * Detect: Match code samples for specific implementors to shared test scenarios
   * Bootstrap: Install runtime dependencies for each implementor
   * Exec: Invoke each test sample and capture the results (with built-in or custom spies)
   * Validate: Ensure execution results (and data captured by spies) matches expectations
+- Use spies to capture data on how each code sample behaves when executed
 - Generate reports or documentation:
   - A feature matrix comparing several implementations
-  - Detailed test reports showing validation results and data captured by spies
-  - Custom reports from custom spies
+  - A test dashboard with detailed results and captured data for each code sample that was tested
   - Convert code samples to documentation
-  - Inject code samples and/or captured execution data into documentation templates
   - Generate to-do lists for pending features
+  - Custom reports or documentation generation for anything else
 
 ## Installing Polytrix
 
