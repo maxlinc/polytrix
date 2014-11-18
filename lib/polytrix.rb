@@ -1,3 +1,4 @@
+require 'cause'
 require 'thor'
 require 'pathname'
 require 'polytrix/version'

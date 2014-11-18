@@ -136,7 +136,7 @@ module Polytrix
       def indicator(validation)
         case validation.result
         when :passed
-          colorize('✓ Passed', :green)
+          colorize("\u2713 Passed", :green)
         when :failed
           colorize('x Failed', :red)
         else

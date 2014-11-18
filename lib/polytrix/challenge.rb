@@ -123,7 +123,7 @@ module Polytrix
           validation = validator.validate(self)
           status = case validation.result
                    when :passed
-                     Polytrix::Color.colorize('✓ Passed', :green)
+                     Polytrix::Color.colorize("\u2713 Passed", :green)
                    when :failed
                      Polytrix::Color.colorize('x Failed', :red)
                      Polytrix.handle_validation_failure(validation.error)
