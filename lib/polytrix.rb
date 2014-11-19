@@ -56,10 +56,9 @@ module Polytrix
 
       manifest.build_challenges
 
-      test_dir = options[:test_dir].nil? ? nil : File.expand_path(options[:test_dir])
-      return nil unless test_dir && File.directory?(test_dir)
-
-      autoload_polytrix_files(test_dir)
+      test_dir = options[:test_dir] || File.expand_path('tests/polytrix/', Dir.pwd)
+      autoload_polytrix_files(test_dir) unless (test_dir.nil? || !File.directory?(test_dir))
+      manifest
     end
 
     def solo_setup(options)
