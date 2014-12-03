@@ -4,11 +4,11 @@ module Polytrix
   describe Implementor do
     subject(:implementor) { described_class.new(name: 'test', language: 'ruby', basedir: expected_sdk_dir) }
     let(:expected_sdk_dir) { 'samples/sdks/foo' }
-    let(:executor) { double('executor') }
+    let(:runner) { double('runner') }
     let(:expected_sdk_path) { Pathname.new(File.absolute_path(expected_sdk_dir)) }
 
     before do
-      subject.executor = executor
+      subject.runner = runner
     end
 
     describe '#bootstrap' do
@@ -16,14 +16,14 @@ module Polytrix
       let(:expected_sdk_dir) { 'samples/sdks/ruby' }
 
       it 'executes script/bootstrap' do
-        expect(executor).to receive(:execute).with('./scripts/bootstrap',  cwd: expected_sdk_path, prefix: 'test')
+        expect(runner).to receive(:execute_task).with('bootstrap')
         implementor.bootstrap
       end
     end
 
     describe '#clone' do
       it 'does nothing if there is no clone option' do
-        expect(executor).to_not receive(:execute)
+        expect(runner).to_not receive(:execute)
         implementor.clone
 
         implementor.clone
@@ -32,7 +32,7 @@ module Polytrix
       context 'with git as a simple string' do
         it 'clones the repo specified by the string' do
           implementor.git = 'git@github.com/foo/bar'
-          expect(executor).to receive(:execute).with("git clone git@github.com/foo/bar -b master #{expected_sdk_path}", {})
+          expect(runner).to receive(:execute).with("git clone git@github.com/foo/bar -b master #{expected_sdk_path}")
           implementor.clone
         end
       end
@@ -40,19 +40,19 @@ module Polytrix
       context 'with git as a hash' do
         it 'clones the repo specified by the repo parameter' do
           implementor.git = { repo: 'git@github.com/foo/bar' }
-          expect(executor).to receive(:execute).with("git clone git@github.com/foo/bar -b master #{expected_sdk_path}", {})
+          expect(runner).to receive(:execute).with("git clone git@github.com/foo/bar -b master #{expected_sdk_path}")
           implementor.clone
         end
 
         it 'clones the repo on the branch specified by the brach parameter' do
           implementor.git = { repo: 'git@github.com/foo/bar', branch: 'quuz' }
-          expect(executor).to receive(:execute).with("git clone git@github.com/foo/bar -b quuz #{expected_sdk_path}", {})
+          expect(runner).to receive(:execute).with("git clone git@github.com/foo/bar -b quuz #{expected_sdk_path}")
           implementor.clone
         end
 
         it 'clones the repo to the location specified by the to parameter' do
           implementor.git = { repo: 'git@github.com/foo/bar', to: 'sdks/foo' }
-          expect(executor).to receive(:execute).with('git clone git@github.com/foo/bar -b master sdks/foo', {})
+          expect(runner).to receive(:execute).with('git clone git@github.com/foo/bar -b master sdks/foo')
           implementor.clone
         end
       end

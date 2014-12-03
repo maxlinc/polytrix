@@ -21,7 +21,6 @@ module Polytrix
 
     include Polytrix::Logging
     include Polytrix::Util::FileSystem
-    include Executor
     property :name
     property :basedir, required: true
     property :language
@@ -56,22 +55,16 @@ module Polytrix
       else
         clone_cmd = "git clone #{git.repo} -b #{branch} #{target_dir}"
         logger.info "Cloning: #{clone_cmd}"
-        execute clone_cmd
+        runner.execute clone_cmd
       end
     end
 
     def bootstrap
-      # Logging.mdc['implementor'] = name
       banner "Bootstrapping #{name}"
       fail "Implementor #{name} has not been cloned" unless cloned?
-
-      execute('./scripts/bootstrap', cwd: basedir, prefix: name)
-    rescue ExecutionError => e
-      if e.cause.is_a? Errno::ENOENT
-        logger.warn "Skipping bootstrapping for #{name}, no script/bootstrap exists"
-      else
-        raise e
-      end
+      runner.execute_task('bootstrap')
+    rescue Psychic::Runner::TaskNotImplementedError
+      logger.warn "Skipping bootstrapping for #{name}, no bootstrap task exists"
     end
 
     def build_challenge(challenge_data)

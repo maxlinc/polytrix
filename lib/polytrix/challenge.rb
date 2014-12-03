@@ -19,7 +19,6 @@ module Polytrix
     coerce_key :source_file, Pathname
     property :basedir
     coerce_key :basedir, Pathname
-    property :challenge_runner, default: ChallengeRunner.create_runner
     property :result
     coerce_key :results, ChallengeResult
     property :spy_data, default: {}
@@ -29,7 +28,21 @@ module Polytrix
 
     def initialize(hash)
       super
+      self.basedir ||= implementor.basedir
       refresh
+    end
+
+    def runner
+      @runner ||= Psychic::Runner.new(cwd: basedir, logger: logger, env: environment_variables)
+    end
+
+    def environment_variables
+      global_vars = begin
+        Polytrix.manifest[:global_env].dup
+      rescue
+        {}
+      end
+      global_vars.merge(vars.dup)
     end
 
     def state_file
@@ -65,11 +78,15 @@ module Polytrix
       transition_to :detect
     end
 
+    def detect!
+      fail FeatureNotImplementedError, "Implementor #{name} has not been cloned" unless implementor.cloned?
+      fail FeatureNotImplementedError, name if source_file.nil?
+      fail FeatureNotImplementedError, name unless File.exist?(absolute_source_file)
+    end
+
     def detect_action
       perform_action(:detect, 'Detecting code sample') do
-        fail FeatureNotImplementedError, "Implementor #{name} has not been cloned" unless implementor.cloned?
-        fail FeatureNotImplementedError, name if source_file.nil?
-        fail FeatureNotImplementedError, name unless File.exist?(absolute_source_file)
+        detect!
       end
     end
 
@@ -79,11 +96,21 @@ module Polytrix
 
     def exec_action
       perform_action(:exec, 'Executing') do
-        fail FeatureNotImplementedError, "Implementor #{name} has not been cloned" unless implementor.cloned?
-        fail FeatureNotImplementedError, name if source_file.nil?
-        fail FeatureNotImplementedError, name unless File.exist?(absolute_source_file)
-        self.result = challenge_runner.run_challenge self
+        detect!
+        self.result = run_challenge
       end
+    end
+
+    def run_challenge(spies = Polytrix::Spies)
+      spies.observe(self) do
+        execution_result = runner.run_sample(source_file.to_s)
+        self.result = Result.new(execution_result: execution_result, source_file: source_file.to_s)
+      end
+      result
+    rescue Psychic::Shell::ExecutionError => e
+      execution_error = ExecutionError.new(e)
+      execution_error.execution_result = e.execution_result
+      raise execution_error
     end
 
     def verify

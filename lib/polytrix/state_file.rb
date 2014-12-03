@@ -19,7 +19,7 @@ module Polytrix
 
     def write(state)
       dir = File.dirname(file_name)
-      serialized_string = serialize_hash(Util.stringified_hash(state))
+      serialized_string = serialize_hash(Util.stringified_hash(state.to_hash))
 
       FileUtils.mkdir_p(dir)
       File.open(file_name, 'wb') { |f| f.write(serialized_string) }
