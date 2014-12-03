@@ -19,12 +19,13 @@ module Polytrix
     coerce_key :source_file, Pathname
     property :basedir
     coerce_key :basedir, Pathname
+    property :error
     property :result
     coerce_key :results, ChallengeResult
     property :spy_data, default: {}
     property :verification_level, default: 0
 
-    KEYS_TO_PERSIST = [:result, :spy_data]
+    KEYS_TO_PERSIST = [:result, :spy_data, :error]
 
     def initialize(hash)
       super
@@ -110,6 +111,7 @@ module Polytrix
     rescue Psychic::Shell::ExecutionError => e
       execution_error = ExecutionError.new(e)
       execution_error.execution_result = e.execution_result
+      self.error = execution_error.formatted_trace
       raise execution_error
     end
 

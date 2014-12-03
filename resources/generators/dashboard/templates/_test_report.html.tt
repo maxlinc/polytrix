@@ -77,6 +77,18 @@
                 <% end %>
                 </p>
               </li>
+              <% if @challenge.error %>
+              <li class="list-group-item">
+                <strong class="list-group-item-heading">Framework Errors</strong>
+                <pre class="list-group-item-text console">
+
+                  <code>
+<%#= ansi2html(@challenge.error) # I don't think there's any ANSI colors %>
+<%= @challenge.error %>
+                  </code>
+                </pre>
+              </li>
+              <% end %>
             </ul>
           </li>
           <% end %>
