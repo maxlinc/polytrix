@@ -29,9 +29,15 @@ module Polytrix
     property :git
     coerce_key :git, GitOptions
 
+    attr_accessor :runner
+
     def initialize(data)
       data[:basedir] = File.absolute_path(data[:basedir])
       super
+    end
+
+    def runner
+      @runner ||= Psychic::Runner.new(cwd: basedir, logger: logger)
     end
 
     def logger
@@ -39,7 +45,6 @@ module Polytrix
     end
 
     def clone
-      # Logging.mdc['implementor'] = name
       if git.nil? || git.repo.nil?
         logger.info 'Skipping clone because there are no git options'
         return

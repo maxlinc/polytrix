@@ -43,6 +43,10 @@ module Polytrix
     # @return [Logger] the common Polytrix logger
     attr_accessor :logger
 
+    def logger
+      @logger ||= Polytrix.default_file_logger
+    end
+
     def setup(options, manifest_file = DEFAULT_MANIFEST_FILE)
       # manifest_file = File.expand_path manifest
       if File.exist? manifest_file
@@ -57,7 +61,7 @@ module Polytrix
       manifest.build_challenges
 
       test_dir = options[:test_dir] || File.expand_path('tests/polytrix/', Dir.pwd)
-      autoload_polytrix_files(test_dir) unless (test_dir.nil? || !File.directory?(test_dir))
+      autoload_polytrix_files(test_dir) unless test_dir.nil? || !File.directory?(test_dir)
       manifest
     end
 

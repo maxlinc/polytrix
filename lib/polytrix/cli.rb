@@ -43,7 +43,6 @@ module Polytrix
     # Constructs a new instance.
     def initialize(*args)
       super
-      Polytrix.logger = Polytrix.default_file_logger
       $stdout.sync = true
     end
 
