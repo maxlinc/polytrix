@@ -9,6 +9,7 @@ module Polytrix
         include Polytrix::Util::FileSystem
         module Helpers
           include Polytrix::Util::String
+          # include Padrino::Helpers::RenderHelpers # requires sinatra-compatible render method
           include Padrino::Helpers::TagHelpers
           include Padrino::Helpers::OutputHelpers
           include Padrino::Helpers::AssetTagHelpers
@@ -80,15 +81,24 @@ module Polytrix
           self.destination_root = options[:destination]
         end
 
-        # def load_helpers
-        #   framework_root = source_paths.first
-        #   Dir["#{report_name}/helpers/**/*.rb"].each do |helper|
-        #     load helper
-        #   end
-        # end
-
         def setup
+          @tabs = {}
+          @tabs['Dashboard'] = 'dashboard.html'
           Polytrix.setup(options)
+        end
+
+        def create_spy_reports
+          reports = Polytrix::Spies.reports[:dashboard]
+          reports.each do | report_class |
+            if report_class.respond_to? :tab_name
+              @active_tab = report_class.tab_name
+              @tabs[@active_tab] = report_class.tab_target
+            else
+              @active_tab = nil
+            end
+            report_class.tabs = @tabs
+            invoke report_class, args, options
+          end if reports
         end
 
         def copy_assets
@@ -96,6 +106,7 @@ module Polytrix
         end
 
         def copy_base_structure
+          @active_tab = 'Dashboard'
           directory 'files', '.'
         end
 
@@ -108,13 +119,6 @@ module Polytrix
             @challenge = challenge
             template 'templates/_test_report.html.tt', "details/#{challenge.slug}.html"
           end
-        end
-
-        def create_spy_reports
-          reports = Polytrix::Spies.reports[:dashboard]
-          reports.each do | report_class |
-            invoke report_class, args, options
-          end if reports
         end
       end
     end

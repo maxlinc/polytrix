@@ -56,11 +56,11 @@ module Polytrix
     end
 
     property :implementors, required: true
-    coerce_key :implementors, Hash[String => Polytrix::Implementor]
+    coerce_key :implementors, Hashie::Hash[String => Polytrix::Implementor]
     property :global_env
     coerce_key :global_env, Environment
     property :suites
-    coerce_key :suites, Hash[String => Suite]
+    coerce_key :suites, Hashie::Hash[String => Suite]
 
     attr_accessor :challenges
 
