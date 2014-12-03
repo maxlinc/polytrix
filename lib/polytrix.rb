@@ -45,10 +45,15 @@ module Polytrix
       @logger ||= Polytrix.default_file_logger
     end
 
+    def basedir
+      @basedir ||= Dir.pwd
+    end
+
     def setup(options, manifest_file = DEFAULT_MANIFEST_FILE)
       # manifest_file = File.expand_path manifest
       if File.exist? manifest_file
         logger.debug "Loading manifest file: #{manifest_file}"
+        @basedir = File.dirname manifest_file
         Polytrix.configuration.manifest = manifest_file
       elsif options[:solo]
         solo_setup(options)

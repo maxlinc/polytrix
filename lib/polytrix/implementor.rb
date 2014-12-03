@@ -55,7 +55,7 @@ module Polytrix
       else
         clone_cmd = "git clone #{git.repo} -b #{branch} #{target_dir}"
         logger.info "Cloning: #{clone_cmd}"
-        runner.execute clone_cmd
+        Psychic::Runner.new(cwd: Polytrix.basedir, logger: logger).execute(clone_cmd)
       end
     end
 
