@@ -4,8 +4,15 @@
   <link data-require="bootstrap-css@*" data-semver="3.0.0" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="../assets/pygments/<%= options[:code_style] %>.css" rel="stylesheet" type="text/css">
   <link href="../assets/style.css" rel="stylesheet" type="text/css">
+  <link href="../assets/angular/json-formatter.min.css" rel="stylesheet" type="text/css">
+  <script data-require="angular.js@*" data-semver="1.2.27" src="../assets/angular/angular.min.js"></script>
+  <script src="../assets/angular/ui-bootstrap-tpls.min.js"></script>
+  <script src="../assets/angular/json-formatter.min.js"></script>
+  <script>
+  angular.module('details', ['jsonFormatter', 'ui.bootstrap']);
+  </script>
   </head>
-  <body>
+  <body ng-app="details">
     <div class="panel panel-<%= bootstrap_color(@challenge.status_color) %>">
       <div class="panel-heading">
         <div class="panel-title">
@@ -20,6 +27,7 @@
           <li class="list-group-item"><%= status('Test suite:', @challenge.suite) %></li>
           <li class="list-group-item"><%= status('Test scenario:', @challenge.name) %></li>
           <li class="list-group-item"><%= status('Implementor:', @challenge.implementor.name) %></li>
+          <li class="list-group-item"><%= status('Duration:', Polytrix::Util.duration(@challenge.duration)) %></li>
           <% source_file = @challenge.absolute_source_file ? relativize(@challenge.absolute_source_file, Dir.pwd) : '<No code sample>' %>
           <div class="list-group-item">
             <strong class="list-group-item-heading">Code sample</strong>
@@ -92,11 +100,18 @@
               <% if @challenge.spy_data %>
               <li class="list-group-item">
                 <strong class="list-group-item-heading">Spy data</strong>
-                <pre class="list-group-item-text console">
-                  <code>
+                <tabset>
+                  <tab heading="Object">
+                    <json-formatter json='<%= as_json(@challenge.spy_data) %>' open="5"></json-formatter>
+                  </tab>
+                  <tab heading="Raw">
+                    <pre class="list-group-item-text console">
+                      <code>
 <%= highlight(@challenge.spy_data.to_hash.to_yaml, language: 'yaml', formatter: 'html') %>
-                  </code>
-                </pre>
+                      </code>
+                    </pre>
+                  </tab>
+                </tabset>
               </li>
               <% end %>
             </ul>
