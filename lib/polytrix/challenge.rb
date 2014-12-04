@@ -20,12 +20,13 @@ module Polytrix
     property :basedir
     coerce_key :basedir, Pathname
     property :error
+    property :duration
     property :result
     coerce_key :results, ChallengeResult
     property :spy_data, default: {}
     property :verification_level, default: 0
 
-    KEYS_TO_PERSIST = [:result, :spy_data, :error]
+    KEYS_TO_PERSIST = [:result, :spy_data, :error, :vars, :duration]
 
     def initialize(hash)
       super
@@ -111,7 +112,7 @@ module Polytrix
     rescue Psychic::Shell::ExecutionError => e
       execution_error = ExecutionError.new(e)
       execution_error.execution_result = e.execution_result
-      self.error = execution_error.formatted_trace
+      self.error = Polytrix::Error.formatted_trace(e)
       raise execution_error
     end
 
@@ -132,6 +133,7 @@ module Polytrix
         # destroy if destroy_mode == :passing
       end
       info "Finished testing #{slug} #{Util.duration(elapsed.real)}."
+      self.duration = elapsed.real
       self
       # ensure
       # destroy if destroy_mode == :always
@@ -142,7 +144,7 @@ module Polytrix
         @state_file.destroy
         @state_file = nil
         @state = {}
-        refresh
+        # refresh
       end
     end
 

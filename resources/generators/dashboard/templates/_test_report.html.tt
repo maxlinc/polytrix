@@ -89,6 +89,16 @@
                 </pre>
               </li>
               <% end %>
+              <% if @challenge.spy_data %>
+              <li class="list-group-item">
+                <strong class="list-group-item-heading">Spy data</strong>
+                <pre class="list-group-item-text console">
+                  <code>
+<%= highlight(@challenge.spy_data.to_hash.to_yaml, language: 'yaml', formatter: 'html') %>
+                  </code>
+                </pre>
+              </li>
+              <% end %>
             </ul>
           </li>
           <% end %>
