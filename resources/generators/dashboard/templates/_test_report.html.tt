@@ -28,15 +28,33 @@
           <li class="list-group-item"><%= status('Test scenario:', @challenge.name) %></li>
           <li class="list-group-item"><%= status('Implementor:', @challenge.implementor.name) %></li>
           <li class="list-group-item"><%= status('Duration:', Polytrix::Util.duration(@challenge.duration)) %></li>
-          <% source_file = @challenge.absolute_source_file ? relativize(@challenge.absolute_source_file, Dir.pwd) : '<No code sample>' %>
-          <div class="list-group-item">
-            <strong class="list-group-item-heading">Code sample</strong>
-            <p class="list-group-item-text">
-              <% if @challenge.absolute_source_file %>
+          <li class="list-group-item">
+            <strong class="list-group-item-heading">Test Input</strong>
+            <% source_file = @challenge.absolute_source_file ? relativize(@challenge.absolute_source_file, Dir.pwd) : '<No code sample>' %>
+            <ul class="list-group-item">
+              <strong class="list-group-item-heading">Code sample</strong>
+              <p class="list-group-item-text">
+                <% if @challenge.absolute_source_file %>
 <%= @challenge.highlighted_code('html') %>
-              <% end %>
-            </p>
-          </div>
+                <% end %>
+              </p>
+            </ul>
+            <ul class="list-group-item">
+              <strong class="list-group-item-heading">Test parameters</strong>
+              <tabset>
+                <tab heading="Tree">
+                  <json-formatter json='<%= as_json(@challenge.vars) %>' open="5"></json-formatter>
+                </tab>
+                <tab heading="Raw">
+                  <pre class="list-group-item-text console">
+                    <code>
+<%= highlight(@challenge.vars.to_hash.to_yaml, language: 'yaml', formatter: 'html') %>
+                    </code>
+                  </pre>
+                </tab>
+              </tabset>
+            </ul>
+          </li>
           <% if @challenge.result %>
           <li class="list-group-item">
             <strong class="list-group-item-heading">Execution Results</strong>
@@ -101,7 +119,7 @@
               <li class="list-group-item">
                 <strong class="list-group-item-heading">Spy data</strong>
                 <tabset>
-                  <tab heading="Object">
+                  <tab heading="Tree">
                     <json-formatter json='<%= as_json(@challenge.spy_data) %>' open="5"></json-formatter>
                   </tab>
                   <tab heading="Raw">
