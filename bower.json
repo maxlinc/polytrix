@@ -1,0 +1,21 @@
+{
+  "name": "polytrix",
+  "version": "0.1.4",
+  "homepage": "https://github.com/rackerlabs/polytrix",
+  "authors": [
+    "Max Lincoln <max@devopsy.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "json-formatter": "~0.2.5",
+    "angular-bootstrap": "~0.12.0",
+    "pygments": "~2.0.1",
+    "bootstrap": "~3.3.1",
+    "angular": "~1.3.5",
+    "ng-table": "~0.3.3"
+  },
+  "resolutions": {
+    "angular": "~1.3.5"
+  }
+}
