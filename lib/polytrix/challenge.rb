@@ -1,6 +1,23 @@
 require 'benchmark'
 require 'polytrix/documentation/helpers/code_helper'
 
+# TODO: This class really needs to be split-up - and probably renamed.
+#
+# There's a few things happening here:
+#   There's the "Challenge" - probably better named "Scenario" - this
+#   is *what* we want to test, i.e. "Fog - Upload Directory". It should
+#   only rely on parsing polytrix.yml.
+#
+#   Then there's the "Code Sample" - the code to be tested to verify the
+#   scenario. This can probably be moved to Psychic, since Psychic finds
+#   and executes the code samples.
+#
+#   And the result or "State File" - this stores and persists the test
+#   results and data captured by spies during test.
+#
+#   Finally, there's the driver, including the FSM class at the bottom of
+#   this file. It's responsible for managing the test lifecycle.
+
 module Polytrix
   class Challenge < Polytrix::Dash # rubocop:disable ClassLength
     include Polytrix::Util::FileSystem
@@ -134,6 +151,7 @@ module Polytrix
       end
       info "Finished testing #{slug} #{Util.duration(elapsed.real)}."
       self.duration = elapsed.real
+      save
       self
       # ensure
       # destroy if destroy_mode == :always
@@ -197,10 +215,7 @@ module Polytrix
       raise ActionFailed,
             "Failed to complete ##{what} action: [#{e.message}]", e.backtrace
     ensure
-      KEYS_TO_PERSIST.each do |key|
-        @state[key] = public_send(key)
-      end
-      state_file.write(@state) unless what == :destroy
+      save unless what == :destroy
     end
 
     def failed?
@@ -213,6 +228,13 @@ module Polytrix
 
     def sample?
       !source_file.nil?
+    end
+
+    def save
+      KEYS_TO_PERSIST.each do |key|
+        @state[key] = public_send(key)
+      end
+      state_file.write(@state)
     end
 
     def status
