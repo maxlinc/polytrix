@@ -99,8 +99,11 @@ module Polytrix
 
     def detect!
       fail FeatureNotImplementedError, "Implementor #{name} has not been cloned" unless implementor.cloned?
+      self.source_file = runner.find_sample(name)
       fail FeatureNotImplementedError, name if source_file.nil?
       fail FeatureNotImplementedError, name unless File.exist?(absolute_source_file)
+    rescue Errno::ENOENT
+      fail FeatureNotImplementedError, name
     end
 
     def detect_action
