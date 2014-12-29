@@ -13,7 +13,7 @@ module Polytrix
         banner "Starting Polytrix (v#{Polytrix::VERSION})"
         elapsed = Benchmark.measure do
           setup
-          results = parse_subcommand(args.join('|'))
+          results = parse_subcommand(args.shift, args.shift)
 
           run_action(:test, results)
         end

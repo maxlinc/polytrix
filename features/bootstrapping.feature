@@ -27,7 +27,7 @@ Feature: Boostrapping
     And the java SDK
     And the python SDK
     And the hello_world polytrix config
-    When I run `bundle exec polytrix bootstrap hello`
+    When I run `bundle exec polytrix bootstrap all hello`
     Then the output should contain "-----> Bootstrapping java"
     Then the output should contain "-----> Bootstrapping python"
     Then the output should contain "-----> Bootstrapping ruby"

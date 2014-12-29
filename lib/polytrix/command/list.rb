@@ -7,7 +7,7 @@ module Polytrix
       def call
         setup
         @reporter = Polytrix::Reporters.reporter(options[:format], shell)
-        tests = parse_subcommand(args.pop)
+        tests = parse_subcommand(args.shift, args.shift)
 
         table = [header_row]
         table += tests.map do | challenge |

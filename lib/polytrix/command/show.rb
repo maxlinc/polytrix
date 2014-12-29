@@ -15,7 +15,7 @@ module Polytrix
       def call
         setup
         @reporter = Polytrix::Reporters.reporter(options[:format], shell)
-        challenges = parse_subcommand(args.pop)
+        challenges = parse_subcommand(args.shift, args.shift)
 
         challenges.each do | challenge |
           status_color = challenge.status_color.to_sym

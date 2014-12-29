@@ -28,7 +28,7 @@ module Polytrix
         it 'fails' do
           expect(kernel).to receive(:exit).with(1)
           subject.bootstrap('missing')
-          expect(subject.stdout.string).to include('No scenarios for regex')
+          expect(subject.stdout.string).to include('No SDKs matching regex `missing\'')
         end
       end
     end

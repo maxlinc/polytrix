@@ -5,7 +5,7 @@ Feature: Show
     And the java SDK
     And the python SDK
     And the hello_world polytrix config
-    When I run `bundle exec polytrix show katas-hello_world-ruby`
+    When I run `bundle exec polytrix show ruby 'hello world'`
     Then the output should contain:
     """
     katas-hello_world-ruby:                            <Not Found>
@@ -19,7 +19,7 @@ Feature: Show
   @no-clobber
   Scenario: State after testing
     Given I run `bundle exec polytrix test ruby`
-    When I run `bundle exec polytrix show katas-hello_world-ruby`
+    When I run `bundle exec polytrix show ruby 'hello world'`
     Then the output should contain:
     """
     katas-hello_world-ruby:                            Fully Verified (1 of 1)

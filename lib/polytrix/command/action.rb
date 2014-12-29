@@ -12,7 +12,7 @@ module Polytrix
         banner "Starting Polytrix (v#{Polytrix::VERSION})"
         elapsed = Benchmark.measure do
           setup
-          tests = parse_subcommand(args.pop)
+          tests = parse_subcommand(args.shift, args.shift)
           implementors = tests.map(&:implementor).uniq
           if IMPLEMENTOR_ACTIONS.include? action # actions on implementors
             run_action(action, implementors)

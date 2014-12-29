@@ -41,7 +41,7 @@ module Polytrix
           }.merge(options)
           command = Polytrix::Command::Base.new(args, options, command_options)
           command.send(:setup)
-          @scenarios = command.send(:parse_subcommand, args.pop)
+          @scenarios = command.send(:parse_subcommand, args.shift, args.shift)
         end
 
         def set_destination_root

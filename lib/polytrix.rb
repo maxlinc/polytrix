@@ -41,6 +41,8 @@ module Polytrix
     # @return [Logger] the common Polytrix logger
     attr_accessor :logger
 
+    attr_accessor :global_runner
+
     def logger
       @logger ||= Polytrix.default_file_logger
     end
@@ -92,11 +94,14 @@ module Polytrix
 
     def select_scenarios(regexp)
       regexp ||= 'all'
-      scenarios = if regexp == 'all'
-                    manifest.challenges.values
-                  else
-                    manifest.challenges.get(regexp) || manifest.challenges.get_all(/#{regexp}/)
-                  end
+      scenarios = manifest.challenges.values
+      if regexp == 'all'
+        return scenarios
+      else
+        scenarios = scenarios.find { |c| c.name == regexp } ||
+                     scenarios.select { |c| c.name =~ /#{regexp}/ }
+      end
+
       if scenarios.is_a? Array
         scenarios
       else
@@ -109,6 +114,21 @@ module Polytrix
         scenarios.keep_if { |scenario| scenario.failed? == options[:failed] } unless options[:failed].nil?
         scenarios.keep_if { |scenario| scenario.skipped? == options[:skipped] } unless options[:skipped].nil?
         scenarios.keep_if { |scenario| scenario.sample? == options[:samples] } unless options[:samples].nil?
+      end
+    end
+
+    def filter_sdks(regexp, _options = {})
+      regexp ||= 'all'
+      sdks = if regexp == 'all'
+               Polytrix.implementors
+             else
+               Polytrix.implementors.find { |s| s.name == regexp } ||
+               Polytrix.implementors.select { |s| s.name =~ /#{regexp}/ }
+             end
+      if sdks.is_a? Array
+        sdks
+      else
+        [sdks]
       end
     end
 
@@ -158,6 +178,11 @@ module Polytrix
 
       Polytrix::ValidatorRegistry.register validator
       validator
+    end
+
+    # @api private
+    def global_runner
+      @global_runner ||= Psychic::Runner.new(cwd: Polytrix.basedir, logger: logger)
     end
 
     # @see Polytrix::Configuration

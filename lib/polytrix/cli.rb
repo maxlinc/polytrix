@@ -58,7 +58,7 @@ module Polytrix
                     desc: 'Only list tests that have sample code / do not have sample code'
     end
 
-    desc 'list [INSTANCE|REGEXP|all]', 'Lists one or more scenarios'
+    desc 'list [SDK|REGEXP|all] [SCENARIO|REGEXP|all]', 'Lists one or more scenarios'
     method_option :log_level,
                   aliases: '-l',
                   desc: 'Set the log level (debug, info, warn, error, fatal)'
@@ -88,7 +88,7 @@ module Polytrix
       perform('list', 'list', args, options)
     end
 
-    desc 'show [INSTANCE|REGEXP|all]', 'Show detailed status for one or more scenarios'
+    desc 'show [SDK|REGEXP|all] [SCENARIO|REGEXP|all]', 'Show detailed status for one or more scenarios'
     method_option :log_level,
                   aliases: '-l',
                   desc: 'Set the log level (debug, info, warn, error, fatal)'
@@ -130,7 +130,7 @@ module Polytrix
                    'Delete all information for one or more scenarios'
     }.each do |action, short_desc|
       desc(
-        "#{action} [INSTANCE|REGEXP|all]",
+        "#{action} [SDK|REGEXP|all] [SCENARIO|REGEXP|all]",
         short_desc
       )
       long_desc <<-DESC
@@ -168,7 +168,7 @@ module Polytrix
       end
     end
 
-    desc 'test [INSTANCE|REGEXP|all]',
+    desc 'test [SDK|REGEXP|all] [SCENARIO|REGEXP|all]',
          'Test (clone, bootstrap, exec, and verify) one or more scenarios'
     long_desc <<-DESC
       The scenario states are in order: cloned, bootstrapped, executed, verified.
