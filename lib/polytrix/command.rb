@@ -86,9 +86,9 @@ module Polytrix
         die "No SDKs matching regex `#{sdk_regexp}', known SDKs: #{Polytrix.implementors.map(&:name)}" if sdks.empty?
         scenarios = Polytrix.filter_scenarios(scenario_regexp, options)
         die "No scenarios for regex `#{scenario_regexp}', try running `polytrix list'" if scenarios.empty?
-        scenarios.keep_if {|s|
+        scenarios.keep_if do |s|
           sdks.include? s.implementor
-        }
+        end
       rescue RegexpError => e
         die 'Invalid Ruby regular expression, ' \
           'you may need to single quote the argument. ' \

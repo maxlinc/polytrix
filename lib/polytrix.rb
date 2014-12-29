@@ -99,7 +99,7 @@ module Polytrix
         return scenarios
       else
         scenarios = scenarios.find { |c| c.full_name == regexp } ||
-                     scenarios.select { |c| c.full_name =~ /#{regexp}/i }
+                    scenarios.select { |c| c.full_name =~ /#{regexp}/i }
       end
 
       if scenarios.is_a? Array
