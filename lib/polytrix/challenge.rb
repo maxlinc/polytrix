@@ -83,6 +83,10 @@ module Polytrix
       implementor.logger
     end
 
+    def full_name
+      [suite, name].join ' :: '
+    end
+
     def slug
       slugify(suite, name, implementor.name)
     end

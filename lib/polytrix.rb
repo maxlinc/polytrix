@@ -98,8 +98,8 @@ module Polytrix
       if regexp == 'all'
         return scenarios
       else
-        scenarios = scenarios.find { |c| c.name == regexp } ||
-                     scenarios.select { |c| c.name =~ /#{regexp}/ }
+        scenarios = scenarios.find { |c| c.full_name == regexp } ||
+                     scenarios.select { |c| c.full_name =~ /#{regexp}/i }
       end
 
       if scenarios.is_a? Array
@@ -123,7 +123,7 @@ module Polytrix
                Polytrix.implementors
              else
                Polytrix.implementors.find { |s| s.name == regexp } ||
-               Polytrix.implementors.select { |s| s.name =~ /#{regexp}/ }
+               Polytrix.implementors.select { |s| s.name =~ /#{regexp}/i }
              end
       if sdks.is_a? Array
         sdks
