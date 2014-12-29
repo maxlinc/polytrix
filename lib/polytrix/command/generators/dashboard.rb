@@ -40,27 +40,24 @@ module Polytrix
           end
 
           def as_json(data)
-            begin
-              JSON.dump(data)
-            rescue => e
-              JSON.dump(to_utf(data))
-            end
+            JSON.dump(data)
+          rescue => e
+            JSON.dump(to_utf(data))
           end
 
           def to_utf(data)
             Hash[
               data.collect do |k, v|
-                if (v.respond_to?(:collect))
-                  [ k, to_utf(v) ]
-                elsif (v.respond_to?(:encoding))
-                  [ k, v.dup.encode('UTF-8') ]
+                if v.respond_to?(:collect)
+                  [k, to_utf(v)]
+                elsif v.respond_to?(:encoding)
+                  [k, v.dup.encode('UTF-8')]
                 else
-                  [ k, v ]
+                  [k, v]
                 end
               end
             ]
           end
-
 
           def status(status, msg = nil, _color = :cyan)
             "<strong>#{status}</strong> <em>#{msg}</em>"

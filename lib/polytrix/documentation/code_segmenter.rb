@@ -68,7 +68,7 @@ module Polytrix
             elsif block_comment_end_with && line.match(block_comment_end_with)
               in_comment_block = false
               docs << line.match(block_comment_end_with).captures.first
-                            .sub(block_comment_mid || '', '')
+                .sub(block_comment_mid || '', '')
             else
               docs << line.sub(block_comment_mid || '', '')
             end

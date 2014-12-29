@@ -103,7 +103,7 @@ module Polytrix
       fail FeatureNotImplementedError, name if source_file.nil?
       fail FeatureNotImplementedError, name unless File.exist?(absolute_source_file)
     rescue Errno::ENOENT
-      fail FeatureNotImplementedError, name
+      raise FeatureNotImplementedError, name
     end
 
     def detect_action
