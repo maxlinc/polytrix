@@ -167,6 +167,7 @@ module Polytrix
       info "Finished testing #{slug} #{Util.duration(elapsed.real)}."
       evidence.duration = elapsed.real
       save
+      evidence = nil # it's saved, free up memory...
       self
       # ensure
       # destroy if destroy_mode == :always
