@@ -57,6 +57,40 @@ module Polytrix
     end
   end
 
+  module ErrorSource
+    def error_source
+      if backtrace_locations
+        source_from_backtrace(backtrace_locations)
+      elsif original && original.backtrace_locations
+        source_from_backtrace(original.backtrace_locations)
+      end
+    end
+
+    def source_from_backtrace(backtrace_locations)
+      error_location = backtrace_locations.delete_if { |l| l.absolute_path =~ /gems\/rspec-/ }.first
+      error_source = File.read(error_location.absolute_path)
+      error_lineno = error_location.lineno - 1 # lineno counts from 1
+      get_dedented_block(error_source, error_lineno)
+    end
+
+    def get_dedented_block(source_text, target_lineno)
+      block = []
+      lines = source_text.lines
+      target_indent = lines[target_lineno][/\A */].size
+      lines[0...target_lineno].reverse.each do |line|
+        indent = line[/\A */].size
+        block.prepend line
+        break if indent < target_indent
+      end
+      lines[target_lineno..lines.size].each do |line|
+        indent = line[/\A */].size
+        block.push line
+        break if indent < target_indent
+      end
+      block.join
+    end
+  end
+
   # Base exception class from which all Polytrix exceptions derive. This class
   # nests an exception when this class is re-raised from a rescue block.
   class StandardError < ::StandardError
@@ -97,7 +131,9 @@ module Polytrix
   class ChallengeFailure < TransientFailure; end
 
   # Exception class capturing what caused a validation to fail.
-  class ValidationFailure < TransientFailure; end
+  class ValidationFailure < TransientFailure
+    include ErrorSource
+  end
 
   class ExecutionError < TransientFailure
     attr_accessor :execution_result

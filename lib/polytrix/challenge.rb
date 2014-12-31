@@ -27,28 +27,42 @@ module Polytrix
     include Polytrix::Documentation::Helpers::CodeHelper
 
     property :name
-    property :implementor
+    property :implementor, required: true
     coerce_key :implementor, Polytrix::Implementor
     property :suite, required: true
-    property :vars, default: {}
-    # coerce_key :vars, Polytrix::Manifest::Environment
     property :source_file
     coerce_key :source_file, Pathname
     property :basedir
     coerce_key :basedir, Pathname
-    property :error
-    property :duration
-    property :result
-    coerce_key :results, ChallengeResult
-    property :spy_data, default: {}
-    property :verification_level, default: 0
+    property :vars, default: {}
+    # coerce_key :vars, Polytrix::Manifest::Environment
 
-    KEYS_TO_PERSIST = [:result, :spy_data, :error, :vars, :duration]
+    extend Forwardable
+    def_delegators :evidence, :save
+    KEYS_TO_PERSIST = [:last_attempted_action, :last_completed_action, :result,
+                      :spy_data, :error, :duration]
+    KEYS_TO_PERSIST.each do |key|
+      def_delegators :evidence, key.to_sym, "#{key.to_s}=".to_sym
+    end
+
+    def [](key)
+      return evidence[key] if KEYS_TO_PERSIST.include?(key.to_sym)
+      super
+    end
+
+    def []=(key, value)
+      return evidence[key] = value if KEYS_TO_PERSIST.include?(key.to_sym)
+      super
+    end
 
     def initialize(hash)
+      evidence_hash = {}
+      KEYS_TO_PERSIST.each do |key|
+        evidence_hash[key] = hash.delete(key)
+      end
       super
+      evidence(evidence_hash)
       self.basedir ||= implementor.basedir
-      refresh
     end
 
     def runner
@@ -64,15 +78,9 @@ module Polytrix
       global_vars.merge(vars.dup)
     end
 
-    def state_file
-      @state_file ||= StateFile.new(Dir.pwd, slug)
-    end
-
-    def refresh
-      @state = state_file.read
-      KEYS_TO_PERSIST.each do |key|
-        public_send("#{key}=".to_sym, @state[key]) if @state[key]
-      end
+    def evidence(initial_data = {})
+      evidence_file = Pathname.new(Dir.pwd).join('.polytrix', "#{slug}.yml").expand_path
+      @evidence ||= Evidence.load(evidence_file, initial_data)
     end
 
     def validators
@@ -123,20 +131,20 @@ module Polytrix
     def exec_action
       perform_action(:exec, 'Executing') do
         detect!
-        self.result = run_challenge
+        evidence.result = run_challenge
       end
     end
 
     def run_challenge(spies = Polytrix::Spies)
       spies.observe(self) do
         execution_result = runner.run_sample(source_file.to_s)
-        self.result = Result.new(execution_result: execution_result, source_file: source_file.to_s)
+        evidence.result = Result.new(execution_result: execution_result, source_file: source_file.to_s)
       end
       result
     rescue Psychic::Shell::ExecutionError => e
       execution_error = ExecutionError.new(e)
       execution_error.execution_result = e.execution_result
-      self.error = Polytrix::Error.formatted_trace(e)
+      evidence.error = Polytrix::Error.formatted_trace(e)
       raise execution_error
     end
 
@@ -157,7 +165,7 @@ module Polytrix
         # destroy if destroy_mode == :passing
       end
       info "Finished testing #{slug} #{Util.duration(elapsed.real)}."
-      self.duration = elapsed.real
+      evidence.duration = elapsed.real
       save
       self
       # ensure
@@ -166,10 +174,8 @@ module Polytrix
 
     def destroy_action
       perform_action(:destroy, 'Destroying') do
-        @state_file.destroy
-        @state_file = nil
-        @state = {}
-        # refresh
+        @evidence.destroy
+        @evidence = nil
       end
     end
 
@@ -202,13 +208,11 @@ module Polytrix
     end
 
     def action(what, &block)
-      @state ||= state_file.read
-      @state['last_attempted_action'] = what.to_s
+      evidence.last_attempted_action = what.to_s
       elapsed = Benchmark.measure do
-        # synchronize_or_call(what, @state, &block)
         block.call(@state)
       end
-      @state['last_completed_action'] = what.to_s
+      evidence.last_completed_action = what.to_s
       elapsed
     rescue Polytrix::FeatureNotImplementedError => e
       raise e
@@ -226,7 +230,7 @@ module Polytrix
     end
 
     def failed?
-      last_attempted_action != last_completed_action
+      evidence.last_attempted_action != evidence.last_completed_action
     end
 
     def skipped?
@@ -235,13 +239,6 @@ module Polytrix
 
     def sample?
       !source_file.nil?
-    end
-
-    def save
-      KEYS_TO_PERSIST.each do |key|
-        @state[key] = public_send(key)
-      end
-      state_file.write(@state)
     end
 
     def status
@@ -262,7 +259,7 @@ module Polytrix
       when 'exec_failed' then 'Execution Failed'
       when 'verify', 'verify_failed'
         validator_count = validators.count
-        validation_count = validations.values.select { |v| v['result'] == :passed }.count
+        validation_count = validations.values.select { |v| v.result == :passed }.count
         if validator_count == validation_count
           "Fully Verified (#{validation_count} of #{validator_count})"
         else
@@ -288,17 +285,6 @@ module Polytrix
         end
       else :red
       end
-    end
-
-    # Returns the last successfully completed action state of the instance.
-    #
-    # @return [String] a named action which was last successfully completed
-    def last_attempted_action
-      state_file.read['last_attempted_action']
-    end
-
-    def last_completed_action
-      state_file.read['last_completed_action']
     end
 
     def validations

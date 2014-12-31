@@ -13,7 +13,6 @@ Feature: Show
       Test scenario:                                     hello world
       Implementor:                                       ruby
       Source:                                            sdks/ruby/challenges/hello_world.rb
-      Data from spies:
     """
 
   @no-clobber

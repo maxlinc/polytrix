@@ -12,7 +12,8 @@ module Polytrix
       end
 
       it 'stores the result' do
-        result = challenge.exec[:result]
+        evidence = challenge.exec
+        result = evidence[:result]
         expect(result).to be_an_instance_of Result
       end
     end

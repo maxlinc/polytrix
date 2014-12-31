@@ -7,6 +7,7 @@ module Polytrix
 
     property :result, required: true
     property :error
+    property :error_source
 
     def result=(state)
       state = state.to_s
@@ -20,40 +21,15 @@ module Polytrix
       end
     end
 
-    # Gets the source of the validation code block where a ValidationFailure occurred.
-    def error_source
-      return nil if error.nil?
-      source_from_error(error)
+    def to_hash(*args)
+      self.error_source = error.error_source if error.respond_to? :error_source
+      super
     end
 
     protected
 
     def invalidate_state_error(state)
       ArgumentError.new "Invalid result state: #{state}, should be one of #{ALLOWABLE_STATES.inspect}"
-    end
-
-    def source_from_error(e)
-      error_location = e.backtrace_locations.delete_if { |l| l.absolute_path =~ /gems\/rspec-/ }.first
-      error_source = File.read(error_location.absolute_path)
-      error_lineno = error_location.lineno - 1 # lineno counts from 1
-      get_dedented_block(error_source, error_lineno)
-    end
-
-    def get_dedented_block(source_text, target_lineno)
-      block = []
-      lines = source_text.lines
-      target_indent = lines[target_lineno][/\A */].size
-      lines[0...target_lineno].reverse.each do |line|
-        indent = line[/\A */].size
-        block.prepend line
-        break if indent < target_indent
-      end
-      lines[target_lineno..lines.size].each do |line|
-        indent = line[/\A */].size
-        block.push line
-        break if indent < target_indent
-      end
-      block.join
     end
   end
 end

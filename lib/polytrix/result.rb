@@ -7,6 +7,7 @@ module Polytrix
     include Hashie::Extensions::Coercion
 
     property :execution_result # , required: true
+    coerce_key :execution_result, Psychic::Shell::ExecutionResult
     def_delegators :execution_result, :stdout, :stderr, :exitstatus
     property :source_file # , required: true
     property :data
