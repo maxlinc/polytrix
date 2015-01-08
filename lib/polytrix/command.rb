@@ -1,4 +1,5 @@
 require 'thread'
+require 'English'
 
 module Polytrix
   module Command
@@ -119,11 +120,17 @@ module Polytrix
         threads.map do |t|
           begin
             t.join
-          rescue Polytrix::ExecutionError, Polytrix::ChallengeFailure
+          rescue Interrupt
+            raise
+          rescue => e # Polytrix::ExecutionError, Polytrix::ChallengeFailure
+            test_env_num = t[:test_env_number]
+            logger.warn("Thread for test_env_number: #{test_env_num} died because:")
+            logger.error(Polytrix::Error.formatted_trace(e).join("\n"))
+            logger.warn("Spawning a replacement...")
             # respawn thread
             t.kill
             threads.delete(t)
-            threads.push(spawn)
+            threads.push(spawn(test_env_num))
           end
         end while threads.any?(&:alive?)
       end
@@ -138,6 +145,10 @@ module Polytrix
               instance.public_send(action, *args)
             rescue Polytrix::ExecutionError, Polytrix::ChallengeFailure => e
               logger.error(e)
+            rescue => e
+              logger.warn("An unexpected error occurred")
+              logger.error(e)
+              raise
             end
           end
         end

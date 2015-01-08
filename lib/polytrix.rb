@@ -43,6 +43,8 @@ module Polytrix
 
     attr_accessor :global_runner
 
+    attr_accessor :wants_to_quit
+
     def logger
       @logger ||= Polytrix.default_file_logger
     end
@@ -51,7 +53,17 @@ module Polytrix
       @basedir ||= Dir.pwd
     end
 
+    # @private
+    def trap_interrupt
+      trap('INT') do
+        exit!(1) if Polytrix.wants_to_quit
+        Polytrix.wants_to_quit = true
+        STDERR.puts "\nInterrupt detected... Interrupt again to force quit."
+      end
+    end
+
     def setup(options, manifest_file = DEFAULT_MANIFEST_FILE)
+      trap_interrupt
       # manifest_file = File.expand_path manifest
       if File.exist? manifest_file
         logger.debug "Loading manifest file: #{manifest_file}"

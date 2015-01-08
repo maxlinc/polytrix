@@ -144,7 +144,7 @@ module Polytrix
     rescue Psychic::Shell::ExecutionError => e
       execution_error = ExecutionError.new(e)
       execution_error.execution_result = e.execution_result
-      evidence.error = Polytrix::Error.formatted_trace(e)
+      evidence.error = Polytrix::Error.formatted_trace(e).join("\n")
       raise execution_error
     end
 
@@ -314,6 +314,7 @@ module Polytrix
       return if logger.logdev.nil?
 
       logger.logdev.error(failure_message(what))
+      # TODO: Maybe this should be restored...
       # Error.formatted_trace(e).each { |line| logger.logdev.error(line) }
     end
 
