@@ -6,7 +6,7 @@ katas-hello_world-ruby:                            Fully Verified (2 of 2)
   Test suite:                                        Katas
   Test scenario:                                     hello world
   Implementor:                                       ruby
-  Source:                                            sdks/ruby/challenges/hello_world.rb
+  Source:                                            sdks/ruby/katas/hello_world.rb
   Execution result:
     Exit Status:                                       0
     Stdout:

@@ -12,7 +12,7 @@ Feature: Show
       Test suite:                                        Katas
       Test scenario:                                     hello world
       Implementor:                                       ruby
-      Source:                                            sdks/ruby/challenges/hello_world.rb
+      Source:                                            sdks/ruby/katas/hello_world.rb
     """
 
   @no-clobber
@@ -25,7 +25,7 @@ Feature: Show
       Test suite:                                        Katas
       Test scenario:                                     hello world
       Implementor:                                       ruby
-      Source:                                            sdks/ruby/challenges/hello_world.rb
+      Source:                                            sdks/ruby/katas/hello_world.rb
       Execution result:
         Exit Status:                                       0
         Stdout:

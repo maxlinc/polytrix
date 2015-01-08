@@ -9,4 +9,4 @@ Feature: Solo execution
   Scenario: Cloning all SDKs
     Given the ruby SDK
     When I run `bundle exec polytrix exec --solo=sdks/ruby`
-    Then the output should contain "Executing challenges-hello_world-ruby"
+    Then the output should contain "Executing katas-hello_world-ruby"
