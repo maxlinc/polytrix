@@ -59,10 +59,18 @@ module Polytrix
       end
     end
 
+    def task(task_name, custom_banner = nil)
+      if custom_banner
+        banner custom_banner
+      else
+        banner "Running task #{task_name} for #{name}"
+      end
+      fail "Implementor #{task_name} has not been cloned" unless cloned?
+      runner.execute_task(task_name)
+    end
+
     def bootstrap
-      banner "Bootstrapping #{name}"
-      fail "Implementor #{name} has not been cloned" unless cloned?
-      runner.execute_task('bootstrap')
+      task('bootstrap', "Bootstrapping #{name}")
     rescue Psychic::Runner::TaskNotImplementedError
       logger.warn "Skipping bootstrapping for #{name}, no bootstrap task exists"
     end

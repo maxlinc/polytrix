@@ -205,6 +205,32 @@ module Polytrix
       perform('test', 'test', args, action_options)
     end
 
+    desc 'task <task_name> [SDK|REGEXP|all]',
+         'Run a task in one or more projects'
+    long_desc <<-DESC
+      Runs the task in all projects or the projects specified.
+    DESC
+    method_option :concurrency,
+                  aliases: '-c',
+                  type: :numeric,
+                  lazy_default: MAX_CONCURRENCY,
+                  desc: <<-DESC.gsub(/^\s+/, '').gsub(/\n/, ' ')
+        Run the task concurrently. If a value is given, it will be used as the max number of threads.
+      DESC
+    method_option :log_level,
+                  aliases: '-l',
+                  desc: 'Set the log level (debug, info, warn, error, fatal)'
+    method_option :manifest,
+                  aliases: '-m',
+                  desc: 'The Polytrix test manifest file location',
+                  default: 'polytrix.yml'
+    def task(*args)
+      update_config!
+      action_options = options.dup
+      perform('task', 'implementor_action', args, action_options)
+    end
+
+
     desc 'version', "Print Polytrix's version information"
     def version
       puts "Polytrix version #{Polytrix::VERSION}"

@@ -106,7 +106,8 @@ module Polytrix
       #
       # @param action [String] action to perform
       # @param scenarios [Array<Instance>] an array of scenarios
-      def run_action(_action, scenarios, *_args)
+      def run_action(_action, scenarios, *args)
+        @args.concat args
         concurrency = 1
         if options[:concurrency]
           concurrency = options[:concurrency] || scenarios.size

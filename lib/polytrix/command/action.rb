@@ -5,7 +5,7 @@ module Polytrix
     class Action < Polytrix::Command::Base
       include RunAction
 
-      IMPLEMENTOR_ACTIONS = [:clone, :bootstrap] # These are run once per implementor, not per test
+      IMPLEMENTOR_ACTIONS = [:clone, :bootstrap, :task] # These are run once per implementor, not per test
 
       # Invoke the command.
       def call
