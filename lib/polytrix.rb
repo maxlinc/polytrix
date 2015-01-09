@@ -132,11 +132,11 @@ module Polytrix
     def filter_projects(regexp, _options = {})
       regexp ||= 'all'
       projects = if regexp == 'all'
-               Polytrix.projects
-             else
-               Polytrix.projects.find { |s| s.name == regexp } ||
-               Polytrix.projects.select { |s| s.name =~ /#{regexp}/i }
-             end
+                   Polytrix.projects
+                 else
+                   Polytrix.projects.find { |s| s.name == regexp } ||
+                   Polytrix.projects.select { |s| s.name =~ /#{regexp}/i }
+                 end
       if projects.is_a? Array
         projects
       else
