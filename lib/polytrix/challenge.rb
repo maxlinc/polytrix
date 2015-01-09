@@ -40,9 +40,9 @@ module Polytrix
     extend Forwardable
     def_delegators :evidence, :save
     KEYS_TO_PERSIST = [:last_attempted_action, :last_completed_action, :result,
-                      :spy_data, :error, :duration]
+                       :spy_data, :error, :duration]
     KEYS_TO_PERSIST.each do |key|
-      def_delegators :evidence, key.to_sym, "#{key.to_s}=".to_sym
+      def_delegators :evidence, key.to_sym, "#{key}=".to_sym
     end
 
     def [](key)

@@ -230,7 +230,6 @@ module Polytrix
       perform('task', 'implementor_action', args, action_options)
     end
 
-
     desc 'version', "Print Polytrix's version information"
     def version
       puts "Polytrix version #{Polytrix::VERSION}"

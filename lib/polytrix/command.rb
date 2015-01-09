@@ -132,7 +132,7 @@ module Polytrix
             test_env_num = t[:test_env_number]
             logger.warn("Thread for test_env_number: #{test_env_num} died because:")
             logger.error(Polytrix::Error.formatted_trace(e).join("\n"))
-            logger.warn("Spawning a replacement...")
+            logger.warn('Spawning a replacement...')
             # respawn thread
             t.kill
             threads.delete(t)
@@ -142,7 +142,7 @@ module Polytrix
 
         unless errors.empty?
           logger.error
-          logger.error("Error summary:")
+          logger.error('Error summary:')
           errors.each do | error |
             logger.error(error)
           end
@@ -161,7 +161,7 @@ module Polytrix
             rescue Polytrix::ExecutionError, Polytrix::ChallengeFailure => e
               logger.error(e)
             rescue => e
-              logger.warn("An unexpected error occurred")
+              logger.warn('An unexpected error occurred')
               logger.error(e)
               raise
             end
