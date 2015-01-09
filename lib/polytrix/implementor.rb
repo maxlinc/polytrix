@@ -67,6 +67,9 @@ module Polytrix
       end
       fail "Implementor #{task_name} has not been cloned" unless cloned?
       runner.execute_task(task_name)
+    rescue Psychic::Runner::TaskNotImplementedError => e
+      logger.error("Could not run task #{task_name} for #{name}: #{e.message}")
+      raise ActionFailed.new("Failed to run task #{task_name} for #{name}: #{e.message}", e)
     end
 
     def bootstrap

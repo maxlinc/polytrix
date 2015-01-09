@@ -117,12 +117,17 @@ module Polytrix
         scenarios.each { |i| @queue << i }
         concurrency.times { @queue << nil }
 
+        errors = []
+
         threads = concurrency.times.map { |i| spawn(i) }
         threads.map do |t|
           begin
             t.join
           rescue Interrupt
             raise
+          rescue Polytrix::ActionFailed => e
+            errors << e
+            # logger.error(e.message) # Should already be logged
           rescue => e # Polytrix::ExecutionError, Polytrix::ChallengeFailure
             test_env_num = t[:test_env_number]
             logger.warn("Thread for test_env_number: #{test_env_num} died because:")
@@ -134,6 +139,15 @@ module Polytrix
             threads.push(spawn(test_env_num))
           end
         end while threads.any?(&:alive?)
+
+        unless errors.empty?
+          logger.error
+          logger.error("Error summary:")
+          errors.each do | error |
+            logger.error(error)
+          end
+          exit 1
+        end
       end
 
       private
