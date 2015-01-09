@@ -60,17 +60,17 @@ module Polytrix
       end
     end
 
-    describe '#build_challenge' do
+    describe '#build_scenario' do
       subject(:project) { Polytrix::Project.new name: 'some_project', basedir: File.absolute_path('spec/fixtures') }
-      let(:challenge) { Fabricate(:challenge, name: 'factorial', vars: {}) }
+      let(:scenario) { Fabricate(:scenario, name: 'factorial', vars: {}) }
 
-      it 'builds a Challenge' do
-        expect(challenge).to be_an_instance_of Polytrix::Challenge
+      it 'builds a Scenario' do
+        expect(scenario).to be_an_instance_of Polytrix::Scenario
       end
 
       it 'finds the source' do
         expected_file = Pathname.new 'spec/fixtures/factorial.py'
-        expect(challenge.source_file).to eq(expected_file)
+        expect(scenario.source_file).to eq(expected_file)
       end
     end
   end

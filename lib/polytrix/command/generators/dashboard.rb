@@ -23,16 +23,16 @@ module Polytrix
           def results
             manifest = Polytrix.manifest
             rows = []
-            grouped_challenges = manifest.challenges.values.group_by { |challenge| [challenge.suite, challenge.name] }
-            grouped_challenges.each do |(suite, name), challenges|
+            grouped_scenarios = manifest.scenarios.values.group_by { |scenario| [scenario.suite, scenario.name] }
+            grouped_scenarios.each do |(suite, name), scenarios|
               row = {
                 slug_prefix: slugify(suite, name),
                 suite: suite,
                 scenario: name
               }
               Polytrix.projects.each do |project|
-                challenge = challenges.find { |c| c.project == project }
-                row[slugify(project.name)] = challenge.status_description
+                scenario = scenarios.find { |c| c.project == project }
+                row[slugify(project.name)] = scenario.status_description
               end
               rows << row
             end
@@ -131,9 +131,9 @@ module Polytrix
         end
 
         def create_test_reports
-          Polytrix.manifest.challenges.values.each do |challenge|
-            @challenge = challenge
-            template 'templates/_test_report.html.tt', "details/#{challenge.slug}.html"
+          Polytrix.manifest.scenarios.values.each do |scenario|
+            @scenario = scenario
+            template 'templates/_test_report.html.tt', "details/#{scenario.slug}.html"
           end
         end
       end

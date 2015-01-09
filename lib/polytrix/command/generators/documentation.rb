@@ -38,8 +38,8 @@ module Polytrix
           Polytrix.setup(options)
         end
 
-        def select_challenges
-          @challenges = Polytrix.filter_scenarios(regexp, options)
+        def select_scenarios
+          @scenarios = Polytrix.filter_scenarios(regexp, options)
         end
 
         def set_source_and_destination

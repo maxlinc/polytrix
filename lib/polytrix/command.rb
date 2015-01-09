@@ -128,7 +128,7 @@ module Polytrix
           rescue Polytrix::ActionFailed => e
             errors << e
             # logger.error(e.message) # Should already be logged
-          rescue => e # Polytrix::ExecutionError, Polytrix::ChallengeFailure
+          rescue => e # Polytrix::ExecutionError, Polytrix::ScenarioFailure
             test_env_num = t[:test_env_number]
             logger.warn("Thread for test_env_number: #{test_env_num} died because:")
             logger.error(Polytrix::Error.formatted_trace(e).join("\n"))
@@ -158,7 +158,7 @@ module Polytrix
           while (instance = @queue.pop)
             begin
               instance.public_send(action, *args)
-            rescue Polytrix::ExecutionError, Polytrix::ChallengeFailure => e
+            rescue Polytrix::ExecutionError, Polytrix::ScenarioFailure => e
               logger.error(e)
             rescue => e
               logger.warn('An unexpected error occurred')

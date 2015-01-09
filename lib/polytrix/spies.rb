@@ -8,7 +8,7 @@ module Polytrix
       @opts = opts
     end
 
-    def call(_challenge)
+    def call(_scenario)
       fail NotImplementedError, 'Subclass must implement #call'
     end
 
@@ -38,13 +38,13 @@ module Polytrix
         middleware.insert 0, spy, {}
       end
 
-      def observe(challenge, &blk)
+      def observe(scenario, &blk)
         middleware = Middleware::Builder.new
         spies.each do |spy|
           middleware.use spy
         end
         middleware.use blk
-        middleware.call(challenge)
+        middleware.call(scenario)
       end
 
       def reports

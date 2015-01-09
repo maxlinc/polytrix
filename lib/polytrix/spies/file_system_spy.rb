@@ -4,7 +4,7 @@ module Polytrix
       def initialize(_app, _server_options)
       end
 
-      def spy(_challenge)
+      def spy(_scenario)
       end
 
       report :summary, SummaryReport

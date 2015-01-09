@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
 
-Polytrix.validate 'Expected output for show', suite: 'Reports', scenario: 'show' do |challenge|
+Polytrix.validate 'Expected output for show', suite: 'Reports', scenario: 'show' do |scenario|
   expected_output = <<-eos
 katas-hello_world-ruby:                            Fully Verified (2 of 2)
   Test suite:                                        Katas
   Test scenario:                                     hello world
-  Project:                                       ruby
+  Project:                                           ruby
   Source:                                            sdks/ruby/katas/hello_world.rb
   Execution result:
     Exit Status:                                       0
@@ -17,6 +17,6 @@ katas-hello_world-ruby:                            Fully Verified (2 of 2)
     default validator:                                 ✓ Passed
   Data from spies:
 eos
-  cleaned_up = challenge.result.stdout.gsub(/\e\[(\d+)(;\d+)*m/, '').gsub("\r\n", "\n")
+  cleaned_up = scenario.result.stdout.gsub(/\e\[(\d+)(;\d+)*m/, '').gsub("\r\n", "\n")
   expect(cleaned_up).to include(expected_output)
 end

@@ -42,8 +42,8 @@ module Polytrix
     # don't have a custom validator.  The default
     # checks that the sample code runs successfully.
     def default_validator_callback
-      @default_validator_callback ||= proc do |challenge|
-        expect(challenge[:result].execution_result.exitstatus).to eq(0)
+      @default_validator_callback ||= proc do |scenario|
+        expect(scenario[:result].execution_result.exitstatus).to eq(0)
       end
     end
 

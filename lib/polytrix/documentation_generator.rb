@@ -20,10 +20,10 @@ module Polytrix
       @template_file = template_file
     end
 
-    def process(challenges)
+    def process(scenarios)
       return nil unless File.readable? @template_file
 
-      @challenges = challenges
+      @scenarios = scenarios
       erb = ERB.new File.read(@template_file)
       @result = erb.result(binding) || ''
     end

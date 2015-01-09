@@ -18,8 +18,8 @@ module Polytrix
         validators << validator
       end
 
-      def validators_for(challenge)
-        selected_validators = validators.select { |v| v.should_validate? challenge }
+      def validators_for(scenario)
+        selected_validators = validators.select { |v| v.should_validate? scenario }
         selected_validators.empty? ? [Polytrix.configuration.default_validator] : selected_validators
       end
 

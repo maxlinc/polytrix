@@ -123,12 +123,12 @@ module Polytrix
   # failures which may be temporary.
   class TransientFailure < StandardError; end
 
-  # Exception class for any exceptions raised when performing an challenge
+  # Exception class for any exceptions raised when performing an scenario
   # action.
   class ActionFailed < TransientFailure; end
 
-  # Exception class capturing what caused an challenge to die.
-  class ChallengeFailure < TransientFailure; end
+  # Exception class capturing what caused an scenario to die.
+  class ScenarioFailure < TransientFailure; end
 
   # Exception class capturing what caused a validation to fail.
   class ValidationFailure < TransientFailure
@@ -142,14 +142,14 @@ module Polytrix
   class << self
     # Yields to a code block in order to consistently emit a useful crash/error
     # message and exit appropriately. There are two primary failure conditions:
-    # an expected challenge failure, and any other unexpected failures.
+    # an expected scenario failure, and any other unexpected failures.
     #
     # **Note** This method may call `Kernel.exit` so may not return if the
     # yielded code block raises an exception.
     #
-    # ## Challenge Failure
+    # ## Scenario Failure
     #
-    # This is an expected failure scenario which could happen if an challenge
+    # This is an expected failure scenario which could happen if an scenario
     # couldn't be created, a Chef run didn't successfully converge, a
     # post-convergence test suite failed, etc. In other words, you can count on
     # encountering these failures all the time--this is Polytrix's worldview:
@@ -173,9 +173,9 @@ module Polytrix
     # @raise [SystemExit] if an exception is raised in the yielded block
     def with_friendly_errors
       yield
-    rescue Polytrix::ChallengeFailure => e
+    rescue Polytrix::ScenarioFailure => e
       Polytrix.mutex.synchronize do
-        handle_challenge_failure(e)
+        handle_scenario_failure(e)
       end
       exit 10
     rescue Polytrix::Error => e
@@ -185,19 +185,19 @@ module Polytrix
       exit 20
     end
 
-    # Handles an challenge failure exception.
+    # Handles an scenario failure exception.
     #
     # @param e [StandardError] an exception to handle
     # @see Polytrix.with_friendly_errors
     # @api private
-    def handle_challenge_failure(e)
+    def handle_scenario_failure(e)
       stderr_log(e.message.split(/\s{2,}/))
       stderr_log(Error.formatted_exception(e.original))
       file_log(:error, e.message.split(/\s{2,}/).first)
       debug_log(Error.formatted_trace(e))
     end
 
-    alias_method :handle_validation_failure, :handle_challenge_failure
+    alias_method :handle_validation_failure, :handle_scenario_failure
 
     # Handles an unexpected failure exception.
     #

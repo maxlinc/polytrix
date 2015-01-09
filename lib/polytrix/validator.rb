@@ -14,17 +14,17 @@ module Polytrix
       @callback = validator
     end
 
-    def should_validate?(challenge)
+    def should_validate?(scenario)
       # TODO: Case-insensitive matching?
-      !!(@suite.match(challenge.suite.to_s) && @scenario.match(challenge.name.to_s)) # rubocop:disable Style/DoubleNegation
+      !!(@suite.match(scenario.suite.to_s) && @scenario.match(scenario.name.to_s)) # rubocop:disable Style/DoubleNegation
     end
 
-    def validate(challenge)
-      instance_exec(challenge, &@callback) if should_validate?(challenge)
-      challenge.result.validations[description] = Validation.new(result: :passed)
+    def validate(scenario)
+      instance_exec(scenario, &@callback) if should_validate?(scenario)
+      scenario.result.validations[description] = Validation.new(result: :passed)
     rescue StandardError, RSpec::Expectations::ExpectationNotMetError => e
       validation = Validation.new(result: :failed, error: ValidationFailure.new(e.message, e))
-      challenge.result.validations[description] = validation
+      scenario.result.validations[description] = validation
     end
 
     def to_s

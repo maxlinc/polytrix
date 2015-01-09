@@ -4,7 +4,7 @@ require 'polytrix/documentation/helpers/code_helper'
 # TODO: This class really needs to be split-up - and probably renamed.
 #
 # There's a few things happening here:
-#   There's the "Challenge" - probably better named "Scenario" - this
+#   There's the "Scenario" - probably better named "Scenario" - this
 #   is *what* we want to test, i.e. "Fog - Upload Directory". It should
 #   only rely on parsing polytrix.yml.
 #
@@ -19,7 +19,7 @@ require 'polytrix/documentation/helpers/code_helper'
 #   this file. It's responsible for managing the test lifecycle.
 
 module Polytrix
-  class Challenge < Polytrix::Dash # rubocop:disable ClassLength
+  class Scenario < Polytrix::Dash # rubocop:disable ClassLength
     include Polytrix::Util::FileSystem
     include Polytrix::Logging
     include Polytrix::Util::String
@@ -131,11 +131,11 @@ module Polytrix
     def exec_action
       perform_action(:exec, 'Executing') do
         detect!
-        evidence.result = run_challenge
+        evidence.result = run_scenario
       end
     end
 
-    def run_challenge(spies = Polytrix::Spies)
+    def run_scenario(spies = Polytrix::Spies)
       spies.observe(self) do
         execution_result = runner.run_sample(source_file.to_s)
         evidence.result = Result.new(execution_result: execution_result, source_file: source_file.to_s)
@@ -219,7 +219,7 @@ module Polytrix
       raise e
     rescue ActionFailed => e
       log_failure(what, e)
-      raise(ChallengeFailure, failure_message(what) +
+      raise(ScenarioFailure, failure_message(what) +
         "  Please see .polytrix/logs/#{name}.log for more details",
             e.backtrace)
     rescue Exception => e # rubocop:disable RescueException
@@ -305,7 +305,7 @@ module Polytrix
         # Need to use with_friendly_errors again somewhere, since errors don't bubble up
         # without fast-fail?
         Polytrix.handle_error(e)
-        raise(ChallengeFailure, e.message, e.backtrace)
+        raise(ScenarioFailure, e.message, e.backtrace)
       end
       transition_result
     end

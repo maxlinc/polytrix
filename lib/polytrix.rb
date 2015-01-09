@@ -14,8 +14,8 @@ require 'polytrix/result'
 require 'polytrix/evidence'
 require 'polytrix/spies'
 require 'polytrix/project'
-require 'polytrix/challenge'
-require 'polytrix/challenges'
+require 'polytrix/scenario'
+require 'polytrix/scenarios'
 require 'polytrix/manifest'
 require 'polytrix/configuration'
 require 'polytrix/result'
@@ -75,7 +75,7 @@ module Polytrix
         fail StandardError, "No manifest found at #{manifest_file} and not using --solo mode"
       end
 
-      manifest.build_challenges
+      manifest.build_scenarios
 
       test_dir = options[:test_dir] || File.expand_path('tests/polytrix/', Dir.pwd)
       autoload_polytrix_files(test_dir) unless test_dir.nil? || !File.directory?(test_dir)
@@ -106,7 +106,7 @@ module Polytrix
 
     def select_scenarios(regexp)
       regexp ||= 'all'
-      scenarios = manifest.challenges.values
+      scenarios = manifest.scenarios.values
       if regexp == 'all'
         return scenarios
       else
@@ -183,7 +183,7 @@ module Polytrix
     end
 
     # Registers a {Polytrix::Validator} that will be used during test
-    # execution on matching {Polytrix::Challenge}s.
+    # execution on matching {Polytrix::Scenario}s.
     def validate(desc, scope = { suite: //, scenario: // }, &block)
       fail ArgumentError 'You must pass block' unless block_given?
       validator = Polytrix::Validator.new(desc, scope, &block)

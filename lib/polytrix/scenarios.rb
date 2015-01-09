@@ -1,5 +1,5 @@
 module Polytrix
-  class Challenges < Hash
+  class Scenarios < Hash
     def get(regex)
       _, v = find do |k, _|
         regex.match k

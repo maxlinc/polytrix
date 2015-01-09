@@ -10,8 +10,8 @@ module Polytrix
         tests = parse_subcommand(args.shift, args.shift)
 
         table = [header_row]
-        table += tests.map do | challenge |
-          row(challenge)
+        table += tests.map do | scenario |
+          row(scenario)
         end
         print_table(table)
       end
@@ -29,15 +29,15 @@ module Polytrix
         row
       end
 
-      def row(challenge)
+      def row(scenario)
         row = []
-        row << color_pad(challenge.slug)
-        row << color_pad(challenge.suite)
-        row << color_pad(challenge.name)
-        row << color_pad(challenge.project.name)
-        row << format_status(challenge)
+        row << color_pad(scenario.slug)
+        row << color_pad(scenario.suite)
+        row << color_pad(scenario.name)
+        row << color_pad(scenario.project.name)
+        row << format_status(scenario)
         if options[:source]
-          source_file = challenge.absolute_source_file ? relativize(challenge.absolute_source_file, Dir.pwd) : colorize('<No code sample>', :red)
+          source_file = scenario.absolute_source_file ? relativize(scenario.absolute_source_file, Dir.pwd) : colorize('<No code sample>', :red)
           row << source_file
         end
         row
@@ -56,8 +56,8 @@ module Polytrix
         string + colorize('', :white)
       end
 
-      def format_status(challenge)
-        colorize(challenge.status_description, challenge.status_color)
+      def format_status(scenario)
+        colorize(scenario.status_description, scenario.status_color)
       end
     end
   end

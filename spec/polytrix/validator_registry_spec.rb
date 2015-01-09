@@ -4,9 +4,9 @@ module Polytrix
 
     describe '#register' do
       it 'registers a validator' do
-        callback = proc do |challenge|
-          expect(challenge[:result]).to_not be_nil
-          expect(challenge[:result].execution_result.exitstatus).to eq(0)
+        callback = proc do |scenario|
+          expect(scenario[:result]).to_not be_nil
+          expect(scenario[:result].execution_result.exitstatus).to eq(0)
         end
 
         expect(registry.validators).to be_empty
@@ -29,9 +29,9 @@ module Polytrix
         registry.register(ruby_validator)
       end
 
-      it 'returns registered validators that match the scope of the challenge' do
-        challenge = Fabricate(:challenge, suite: 'java', name: 'hello world')
-        validators = registry.validators_for challenge
+      it 'returns registered validators that match the scope of the scenario' do
+        scenario = Fabricate(:scenario, suite: 'java', name: 'hello world')
+        validators = registry.validators_for scenario
         expect(validators).to include(java_hello_world_validator, java_validator)
         expect(validators).to_not include(ruby_validator)
       end

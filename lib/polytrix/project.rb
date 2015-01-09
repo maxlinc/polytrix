@@ -78,17 +78,17 @@ module Polytrix
       logger.warn "Skipping bootstrapping for #{name}, no bootstrap task exists"
     end
 
-    def build_challenge(challenge_data)
-      challenge_data[:basedir] ||= basedir
-      challenge_data[:project] ||= self
-      challenge_data[:suite] ||= ''
+    def build_scenario(scenario_data)
+      scenario_data[:basedir] ||= basedir
+      scenario_data[:project] ||= self
+      scenario_data[:suite] ||= ''
       begin
-        challenge_data[:source_file] ||= find_file basedir, challenge_data[:name]
-        challenge_data[:source_file] = relativize(challenge_data[:source_file], challenge_data[:basedir])
+        scenario_data[:source_file] ||= find_file basedir, scenario_data[:name]
+        scenario_data[:source_file] = relativize(scenario_data[:source_file], scenario_data[:basedir])
       rescue Errno::ENOENT
-        challenge_data[:source_file] = nil
+        scenario_data[:source_file] = nil
       end
-      Challenge.new challenge_data
+      Scenario.new scenario_data
     end
 
     def cloned?

@@ -2,7 +2,7 @@ module Polytrix
   module Documentation
     module Helpers
       describe CodeHelper do
-        let(:challenge) { Fabricate(:challenge, name: 'test', source_file: @source_file) }
+        let(:scenario) { Fabricate(:scenario, name: 'test', source_file: @source_file) }
         let(:source) do
           %q(
             # This snippet should not be in the output.
@@ -30,17 +30,17 @@ module Polytrix
 
         describe '#snippet_after' do
           it 'returns the code block after the match (string)' do
-            snippet = challenge.snippet_after 'Snippet: Hello, world!'
+            snippet = scenario.snippet_after 'Snippet: Hello, world!'
             expect(snippet.strip).to eq(expected_snippet.strip)
           end
 
           it 'returns the code block after the match (regex)' do
-            snippet = challenge.snippet_after(/Snippet: .*/)
+            snippet = scenario.snippet_after(/Snippet: .*/)
             expect(snippet.strip).to eq(expected_snippet.strip)
           end
 
           it 'returns nothing if no match is found' do
-            snippet = challenge.snippet_after 'Nothing matches'
+            snippet = scenario.snippet_after 'Nothing matches'
             expect(snippet).to be_empty
           end
         end
@@ -56,21 +56,21 @@ module Polytrix
           end
 
           it 'inserts all code blocks between the matching regexes' do
-            snippet = challenge.snippet_between 'This snippet should not be in the output', 'Nor should this snippet'
+            snippet = scenario.snippet_between 'This snippet should not be in the output', 'Nor should this snippet'
             expect(snippet.strip).to eq(expected_snippet.strip)
           end
 
           it 'inserts nothing unless both matches are found' do
             # Neither match
-            snippet = challenge.snippet_between 'foo', 'bar'
+            snippet = scenario.snippet_between 'foo', 'bar'
             expect(snippet.strip).to be_empty
 
             # First matches
-            snippet = challenge.snippet_between 'This snippet should not be in the output', 'foo'
+            snippet = scenario.snippet_between 'This snippet should not be in the output', 'foo'
             expect(snippet.strip).to be_empty
 
             # Last matches
-            snippet = challenge.snippet_between 'foo', 'Nor should this snippet'
+            snippet = scenario.snippet_between 'foo', 'Nor should this snippet'
             expect(snippet.strip).to be_empty
           end
 
@@ -79,7 +79,7 @@ module Polytrix
         describe '#code_block' do
           it 'generates markdown code blocks by default' do
             expected = "\n```ruby\n" + source + "\n```\n\n"
-            code_block = challenge.code_block(challenge.source, 'ruby')
+            code_block = scenario.code_block(scenario.source, 'ruby')
             expect(code_block).to eq(expected)
           end
 
@@ -88,15 +88,15 @@ module Polytrix
               "  #{line}"
             end.join("\n")
             expected = ".. code-block:: ruby\n" + indented_source + "\n"
-            code_block = challenge.code_block(challenge.source, 'ruby', format: :rst)
+            code_block = scenario.code_block(scenario.source, 'ruby', format: :rst)
             expect(code_block).to eq(expected)
           end
         end
 
         def generate_doc_for(template_file, source_file)
           doc_gen = DocumentationGenerator.new(template_file, 'testing')
-          challenge = Fabricate(:challenge, name: 'test', source_file: source_file)
-          doc_gen.process(challenge)
+          scenario = Fabricate(:scenario, name: 'test', source_file: source_file)
+          doc_gen.process(scenario)
         end
 
         def with_files(files)

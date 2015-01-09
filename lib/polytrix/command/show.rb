@@ -15,21 +15,21 @@ module Polytrix
       def call
         setup
         @reporter = Polytrix::Reporters.reporter(options[:format], shell)
-        challenges = parse_subcommand(args.shift, args.shift)
+        scenarios = parse_subcommand(args.shift, args.shift)
 
-        challenges.each do | challenge |
-          status_color = challenge.status_color.to_sym
-          status(challenge.slug, colorize(challenge.status_description, status_color), status_color)
+        scenarios.each do | scenario |
+          status_color = scenario.status_color.to_sym
+          status(scenario.slug, colorize(scenario.status_description, status_color), status_color)
           indent do
-            status('Test suite', challenge.suite)
-            status('Test scenario', challenge.name)
-            status('Project', challenge.project.name)
-            source_file = challenge.absolute_source_file ? relativize(challenge.absolute_source_file, Dir.pwd) : colorize('<No code sample>', :red)
+            status('Test suite', scenario.suite)
+            status('Test scenario', scenario.name)
+            status('Project', scenario.project.name)
+            source_file = scenario.absolute_source_file ? relativize(scenario.absolute_source_file, Dir.pwd) : colorize('<No code sample>', :red)
             status('Source', source_file)
-            display_source(challenge)
-            display_execution_result(challenge)
-            display_validations(challenge)
-            display_spy_data(challenge)
+            display_source(scenario)
+            display_execution_result(scenario)
+            display_validations(scenario)
+            display_spy_data(scenario)
           end
         end
       end

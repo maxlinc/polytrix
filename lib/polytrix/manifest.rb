@@ -62,16 +62,16 @@ module Polytrix
     property :suites
     coerce_key :suites, Hashie::Hash[String => Suite]
 
-    attr_accessor :challenges
+    attr_accessor :scenarios
 
-    def build_challenges
-      @challenges ||= Challenges.new
+    def build_scenarios
+      @scenarios ||= Scenarios.new
 
       suites.each do | suite_name, suite |
         suite.samples.each do | sample |
           projects.each_value do | project |
-            challenge = project.build_challenge suite: suite_name, name: sample, vars: suite.env
-            @challenges[challenge.slug] = challenge
+            scenario = project.build_scenario suite: suite_name, name: sample, vars: suite.env
+            @scenarios[scenario.slug] = scenario
           end
         end
       end
