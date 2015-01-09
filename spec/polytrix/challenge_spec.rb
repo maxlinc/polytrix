@@ -1,8 +1,8 @@
 module Polytrix
   describe Challenge do
     subject(:challenge) do
-      implementor = Polytrix::Implementor.new name: 'some_sdk', basedir: 'spec/fixtures'
-      implementor.build_challenge name: 'factorial', vars: {}
+      project = Polytrix::Project.new name: 'some_sdk', basedir: 'spec/fixtures'
+      project.build_challenge name: 'factorial', vars: {}
     end
 
     describe '#exec' do

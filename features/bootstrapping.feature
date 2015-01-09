@@ -1,21 +1,21 @@
 Feature: Boostrapping
 
-  Polytrix uses the [script/bootstrap](http://wynnnetherland.com/linked/2013012801/bootstrapping-consistency) pattern to prepare SDKs for testing. You can hook into any package manager, compiler, build tool, or any other toolchain to prepare to build and run samples.
+  Polytrix uses the [script/bootstrap](http://wynnnetherland.com/linked/2013012801/bootstrapping-consistency) pattern to prepare projects for testing. You can hook into any package manager, compiler, build tool, or any other toolchain to prepare to build and run samples.
 
-  Scenario: Bootstrapping all SDKs
-    Given the ruby SDK
-    And the java SDK
-    And the python SDK
+  Scenario: Bootstrapping all projects
+    Given the ruby project
+    And the java project
+    And the python project
     And the hello_world polytrix config
     When I run `bundle exec polytrix bootstrap`
     Then the output should contain "-----> Bootstrapping java"
     Then the output should contain "-----> Bootstrapping python"
     Then the output should contain "-----> Bootstrapping ruby"
 
-  Scenario: Bootstrapping selected SDKs
-    Given the ruby SDK
-    And the java SDK
-    And the python SDK
+  Scenario: Bootstrapping selected projects
+    Given the ruby project
+    And the java project
+    And the python project
     And the hello_world polytrix config
     When I run `bundle exec polytrix bootstrap "(java|ruby)"`
     Then the output should contain "-----> Bootstrapping java"
@@ -23,9 +23,9 @@ Feature: Boostrapping
     Then the output should contain "-----> Bootstrapping ruby"
 
   Scenario: Bootstrapping by scenario
-    Given the ruby SDK
-    And the java SDK
-    And the python SDK
+    Given the ruby project
+    And the java project
+    And the python project
     And the hello_world polytrix config
     When I run `bundle exec polytrix bootstrap all hello`
     Then the output should contain "-----> Bootstrapping java"

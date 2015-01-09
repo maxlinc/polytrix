@@ -41,7 +41,7 @@ module Polytrix
         end
 
         def highlighted_code(formatter = 'terminal256')
-          highlight(source, language: implementor.language, filename: absolute_source_file, formatter: formatter)
+          highlight(source, language: project.language, filename: absolute_source_file, formatter: formatter)
         end
 
         def code_block(source_code, language, opts = { format: :markdown })

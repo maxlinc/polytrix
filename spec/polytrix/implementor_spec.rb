@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 module Polytrix
-  describe Implementor do
-    subject(:implementor) { described_class.new(name: 'test', language: 'ruby', basedir: expected_sdk_dir) }
-    let(:expected_sdk_dir) { 'samples/sdks/foo' }
+  describe Project do
+    subject(:project) { described_class.new(name: 'test', language: 'ruby', basedir: expected_project_dir) }
+    let(:expected_project_dir) { 'samples/sdks/foo' }
     let(:runner) { double('runner') }
     let(:global_runner) { double('global runner') }
-    let(:expected_sdk_path) { Pathname.new(File.absolute_path(expected_sdk_dir)) }
+    let(:expected_project_path) { Pathname.new(File.absolute_path(expected_project_dir)) }
 
     before do
       subject.runner = runner
@@ -14,54 +14,54 @@ module Polytrix
     end
 
     describe '#bootstrap' do
-      # Need an implementor that's already cloned
-      let(:expected_sdk_dir) { 'samples/sdks/ruby' }
+      # Need an project that's already cloned
+      let(:expected_project_dir) { 'samples/sdks/ruby' }
 
       it 'executes script/bootstrap' do
         expect(runner).to receive(:execute_task).with('bootstrap')
-        implementor.bootstrap
+        project.bootstrap
       end
     end
 
     describe '#clone' do
       it 'does nothing if there is no clone option' do
         expect(runner).to_not receive(:execute)
-        implementor.clone
+        project.clone
 
-        implementor.clone
+        project.clone
       end
 
       context 'with git as a simple string' do
         it 'clones the repo specified by the string' do
-          implementor.git = 'git@github.com/foo/bar'
-          expect(global_runner).to receive(:execute).with("git clone git@github.com/foo/bar -b master #{expected_sdk_path}")
-          implementor.clone
+          project.git = 'git@github.com/foo/bar'
+          expect(global_runner).to receive(:execute).with("git clone git@github.com/foo/bar -b master #{expected_project_path}")
+          project.clone
         end
       end
 
       context 'with git as a hash' do
         it 'clones the repo specified by the repo parameter' do
-          implementor.git = { repo: 'git@github.com/foo/bar' }
-          expect(global_runner).to receive(:execute).with("git clone git@github.com/foo/bar -b master #{expected_sdk_path}")
-          implementor.clone
+          project.git = { repo: 'git@github.com/foo/bar' }
+          expect(global_runner).to receive(:execute).with("git clone git@github.com/foo/bar -b master #{expected_project_path}")
+          project.clone
         end
 
         it 'clones the repo on the branch specified by the brach parameter' do
-          implementor.git = { repo: 'git@github.com/foo/bar', branch: 'quuz' }
-          expect(global_runner).to receive(:execute).with("git clone git@github.com/foo/bar -b quuz #{expected_sdk_path}")
-          implementor.clone
+          project.git = { repo: 'git@github.com/foo/bar', branch: 'quuz' }
+          expect(global_runner).to receive(:execute).with("git clone git@github.com/foo/bar -b quuz #{expected_project_path}")
+          project.clone
         end
 
         it 'clones the repo to the location specified by the to parameter' do
-          implementor.git = { repo: 'git@github.com/foo/bar', to: 'sdks/foo' }
+          project.git = { repo: 'git@github.com/foo/bar', to: 'sdks/foo' }
           expect(global_runner).to receive(:execute).with('git clone git@github.com/foo/bar -b master sdks/foo')
-          implementor.clone
+          project.clone
         end
       end
     end
 
     describe '#build_challenge' do
-      subject(:implementor) { Polytrix::Implementor.new name: 'some_sdk', basedir: File.absolute_path('spec/fixtures') }
+      subject(:project) { Polytrix::Project.new name: 'some_project', basedir: File.absolute_path('spec/fixtures') }
       let(:challenge) { Fabricate(:challenge, name: 'factorial', vars: {}) }
 
       it 'builds a Challenge' do

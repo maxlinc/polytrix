@@ -5,7 +5,7 @@ require 'hashie/extensions/deep_merge'
 
 module Polytrix
   # Polytrix::Manifest acts as a test manifest. It defines the test scenarios that should be run,
-  # and may be shared across multiple implementors when used for a compliance suite.
+  # and may be shared across multiple projects when used for a compliance suite.
   #
   # A manifest is generally defined and loaded from YAML. Here's an example manifest:
   #   ---
@@ -38,8 +38,8 @@ module Polytrix
 
     def initialize(hash = {})
       super
-      implementors.each do | name, implementor |
-        implementor.name = name
+      projects.each do | name, project |
+        project.name = name
       end
     end
 
@@ -55,8 +55,8 @@ module Polytrix
       property :results
     end
 
-    property :implementors, required: true
-    coerce_key :implementors, Hashie::Hash[String => Polytrix::Implementor]
+    property :projects, required: true
+    coerce_key :projects, Hashie::Hash[String => Polytrix::Project]
     property :global_env
     coerce_key :global_env, Environment
     property :suites
@@ -69,8 +69,8 @@ module Polytrix
 
       suites.each do | suite_name, suite |
         suite.samples.each do | sample |
-          implementors.each_value do | implementor |
-            challenge = implementor.build_challenge suite: suite_name, name: sample, vars: suite.env
+          projects.each_value do | project |
+            challenge = project.build_challenge suite: suite_name, name: sample, vars: suite.env
             @challenges[challenge.slug] = challenge
           end
         end

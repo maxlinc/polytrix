@@ -1,9 +1,9 @@
 Feature: Show
 
   Scenario: Initial state
-    Given the ruby SDK
-    And the java SDK
-    And the python SDK
+    Given the ruby project
+    And the java project
+    And the python project
     And the hello_world polytrix config
     When I run `bundle exec polytrix show ruby 'hello world'`
     Then the output should contain:
@@ -11,7 +11,7 @@ Feature: Show
     katas-hello_world-ruby:                            <Not Found>
       Test suite:                                        Katas
       Test scenario:                                     hello world
-      Implementor:                                       ruby
+      Project:                                           ruby
       Source:                                            sdks/ruby/katas/hello_world.rb
     """
 
@@ -24,7 +24,7 @@ Feature: Show
     katas-hello_world-ruby:                            Fully Verified (1 of 1)
       Test suite:                                        Katas
       Test scenario:                                     hello world
-      Implementor:                                       ruby
+      Project:                                           ruby
       Source:                                            sdks/ruby/katas/hello_world.rb
       Execution result:
         Exit Status:                                       0

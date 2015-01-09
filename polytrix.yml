@@ -1,5 +1,5 @@
 ---
-implementors:
+projects:
   polytrix:
     language: 'ruby'
     basedir: 'samples/'

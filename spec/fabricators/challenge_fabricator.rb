@@ -6,5 +6,5 @@ Fabricator(:challenge, from: Polytrix::Challenge) do
   suite { LANGUAGES.sample }
   source_file { 'spec/fixtures/factorial.py' }
   basedir { 'spec/fixtures' }
-  implementor
+  project
 end

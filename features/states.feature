@@ -1,17 +1,17 @@
 Feature: States
 
   Scenario: Initial state
-    Given the ruby SDK
-    And the java SDK
-    And the python SDK
+    Given the ruby project
+    And the java project
+    And the python project
     And the hello_world polytrix config
     When I run `bundle exec polytrix list`
     Then the output should contain:
     """
-    Test ID                   Suite  Scenario     Implementor  Status
-    katas-hello_world-ruby    Katas  hello world  ruby         <Not Found>
-    katas-hello_world-java    Katas  hello world  java         <Not Found>
-    katas-hello_world-python  Katas  hello world  python       <Not Found>
+    Test ID                   Suite  Scenario     Project  Status
+    katas-hello_world-ruby    Katas  hello world  ruby     <Not Found>
+    katas-hello_world-java    Katas  hello world  java     <Not Found>
+    katas-hello_world-python  Katas  hello world  python   <Not Found>
     """
 
   @no-clobber
@@ -20,10 +20,10 @@ Feature: States
     When I run `bundle exec polytrix list`
     Then the output should contain:
     """
-    Test ID                   Suite  Scenario     Implementor  Status
-    katas-hello_world-ruby    Katas  hello world  ruby         <Not Found>
-    katas-hello_world-java    Katas  hello world  java         <Not Found>
-    katas-hello_world-python  Katas  hello world  python       Executed
+    Test ID                   Suite  Scenario     Project  Status
+    katas-hello_world-ruby    Katas  hello world  ruby     <Not Found>
+    katas-hello_world-java    Katas  hello world  java     <Not Found>
+    katas-hello_world-python  Katas  hello world  python   Executed
     """
 
   @no-clobber
@@ -32,8 +32,8 @@ Feature: States
     When I run `bundle exec polytrix list`
     Then the output should contain:
     """
-    Test ID                   Suite  Scenario     Implementor  Status
-    katas-hello_world-ruby    Katas  hello world  ruby         Fully Verified (1 of 1)
-    katas-hello_world-java    Katas  hello world  java         <Not Found>
-    katas-hello_world-python  Katas  hello world  python       Executed
+    Test ID                   Suite  Scenario     Project  Status
+    katas-hello_world-ruby    Katas  hello world  ruby     Fully Verified (1 of 1)
+    katas-hello_world-java    Katas  hello world  java     <Not Found>
+    katas-hello_world-python  Katas  hello world  python   Executed
     """

@@ -7,7 +7,7 @@ module Polytrix
       super "Feature #{feature} is not implemented"
     end
   end
-  class Implementor < Polytrix::ManifestSection
+  class Project < Polytrix::ManifestSection
     class GitOptions < Polytrix::ManifestSection
       property :repo, required: true
       property :branch
@@ -65,7 +65,7 @@ module Polytrix
       else
         banner "Running task #{task_name} for #{name}"
       end
-      fail "Implementor #{task_name} has not been cloned" unless cloned?
+      fail "Project #{task_name} has not been cloned" unless cloned?
       runner.execute_task(task_name)
     rescue Psychic::Runner::TaskNotImplementedError => e
       logger.error("Could not run task #{task_name} for #{name}: #{e.message}")
@@ -80,7 +80,7 @@ module Polytrix
 
     def build_challenge(challenge_data)
       challenge_data[:basedir] ||= basedir
-      challenge_data[:implementor] ||= self
+      challenge_data[:project] ||= self
       challenge_data[:suite] ||= ''
       begin
         challenge_data[:source_file] ||= find_file basedir, challenge_data[:name]

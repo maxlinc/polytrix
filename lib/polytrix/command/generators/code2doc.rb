@@ -18,7 +18,7 @@ module Polytrix
                      desc: 'The Polytrix test manifest file location',
                      default: 'polytrix.yml'
         class_option :solo,
-                     desc: 'Enable solo mode - Polytrix will auto-configure a single implementor and its scenarios'
+                     desc: 'Enable solo mode - Polytrix will auto-configure a single project and its scenarios'
         # , default: 'polytrix.yml'
         class_option :solo_glob,
                      desc: 'The globbing pattern to find code samples in solo mode'

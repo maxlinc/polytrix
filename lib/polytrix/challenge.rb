@@ -27,8 +27,8 @@ module Polytrix
     include Polytrix::Documentation::Helpers::CodeHelper
 
     property :name
-    property :implementor, required: true
-    coerce_key :implementor, Polytrix::Implementor
+    property :project, required: true
+    coerce_key :project, Polytrix::Project
     property :suite, required: true
     property :source_file
     coerce_key :source_file, Pathname
@@ -62,7 +62,7 @@ module Polytrix
       end
       super
       evidence(evidence_hash)
-      self.basedir ||= implementor.basedir
+      self.basedir ||= project.basedir
     end
 
     def runner
@@ -88,7 +88,7 @@ module Polytrix
     end
 
     def logger
-      implementor.logger
+      project.logger
     end
 
     def full_name
@@ -96,7 +96,7 @@ module Polytrix
     end
 
     def slug
-      slugify(suite, name, implementor.name)
+      slugify(suite, name, project.name)
     end
 
     def absolute_source_file
@@ -110,7 +110,7 @@ module Polytrix
     end
 
     def detect!
-      fail FeatureNotImplementedError, "Implementor #{name} has not been cloned" unless implementor.cloned?
+      fail FeatureNotImplementedError, "Project #{name} has not been cloned" unless project.cloned?
       self.source_file = runner.find_sample(name)
       fail FeatureNotImplementedError, name if source_file.nil?
       fail FeatureNotImplementedError, name unless File.exist?(absolute_source_file)

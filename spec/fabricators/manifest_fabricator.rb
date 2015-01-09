@@ -6,8 +6,8 @@ Fabricator(:manifest, from: Polytrix::Manifest) do
   initialize_with { @_klass.new to_hash } # Hash based initialization
   transient suite_count: 3
   transient samples_per_suite: 3
-  implementors do
-    Fabricate(:implementor)
+  projects do
+    Fabricate(:project)
   end
   global_env do
     {

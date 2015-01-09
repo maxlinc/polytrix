@@ -5,7 +5,7 @@ Polytrix.validate 'Expected output for show', suite: 'Reports', scenario: 'show'
 katas-hello_world-ruby:                            Fully Verified (2 of 2)
   Test suite:                                        Katas
   Test scenario:                                     hello world
-  Implementor:                                       ruby
+  Project:                                       ruby
   Source:                                            sdks/ruby/katas/hello_world.rb
   Execution result:
     Exit Status:                                       0

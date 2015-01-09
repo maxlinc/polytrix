@@ -58,7 +58,7 @@ module Polytrix
                     desc: 'Only list tests that have sample code / do not have sample code'
     end
 
-    desc 'list [SDK|REGEXP|all] [SCENARIO|REGEXP|all]', 'Lists one or more scenarios'
+    desc 'list [PROJECT|REGEXP|all] [SCENARIO|REGEXP|all]', 'Lists one or more scenarios'
     method_option :log_level,
                   aliases: '-l',
                   desc: 'Set the log level (debug, info, warn, error, fatal)'
@@ -75,7 +75,7 @@ module Polytrix
                   desc: 'The Polytrix test directory',
                   default: 'tests/polytrix'
     method_option :solo,
-                  desc: 'Enable solo mode - Polytrix will auto-configure a single implementor and its scenarios'
+                  desc: 'Enable solo mode - Polytrix will auto-configure a single project and its scenarios'
     # , default: 'polytrix.yml'
     method_option :solo_glob,
                   desc: 'The globbing pattern to find code samples in solo mode'
@@ -88,7 +88,7 @@ module Polytrix
       perform('list', 'list', args, options)
     end
 
-    desc 'show [SDK|REGEXP|all] [SCENARIO|REGEXP|all]', 'Show detailed status for one or more scenarios'
+    desc 'show [PROJECT|REGEXP|all] [SCENARIO|REGEXP|all]', 'Show detailed status for one or more scenarios'
     method_option :log_level,
                   aliases: '-l',
                   desc: 'Set the log level (debug, info, warn, error, fatal)'
@@ -105,7 +105,7 @@ module Polytrix
                   desc: 'The Polytrix test directory',
                   default: 'tests/polytrix'
     method_option :solo,
-                  desc: 'Enable solo mode - Polytrix will auto-configure a single implementor and its scenarios'
+                  desc: 'Enable solo mode - Polytrix will auto-configure a single project and its scenarios'
     # , default: 'polytrix.yml'
     method_option :solo_glob,
                   desc: 'The globbing pattern to find code samples in solo mode'
@@ -119,7 +119,7 @@ module Polytrix
       clone: 'Change scenario state to cloned. ' \
                     'Clone the code sample from git',
       bootstrap: 'Change scenario state to bootstraped. ' \
-                    'Running bootstrap scripts for the implementor',
+                    'Running bootstrap scripts for the project',
       detect: 'Find sample code that matches a test scenario. ' \
                     'Attempts to locate a code sample with a filename that the test scenario name.',
       exec: 'Change instance state to executed. ' \
@@ -130,7 +130,7 @@ module Polytrix
                    'Delete all information for one or more scenarios'
     }.each do |action, short_desc|
       desc(
-        "#{action} [SDK|REGEXP|all] [SCENARIO|REGEXP|all]",
+        "#{action} [PROJECT|REGEXP|all] [SCENARIO|REGEXP|all]",
         short_desc
       )
       long_desc <<-DESC
@@ -158,7 +158,7 @@ module Polytrix
                     desc: 'The Polytrix test directory',
                     default: 'tests/polytrix'
       method_option :solo,
-                    desc: 'Enable solo mode - Polytrix will auto-configure a single implementor and its scenarios'
+                    desc: 'Enable solo mode - Polytrix will auto-configure a single project and its scenarios'
       method_option :solo_glob,
                     desc: 'The globbing pattern to find code samples in solo mode'
       define_method(action) do |*args|
@@ -168,7 +168,7 @@ module Polytrix
       end
     end
 
-    desc 'test [SDK|REGEXP|all] [SCENARIO|REGEXP|all]',
+    desc 'test [PROJECT|REGEXP|all] [SCENARIO|REGEXP|all]',
          'Test (clone, bootstrap, exec, and verify) one or more scenarios'
     long_desc <<-DESC
       The scenario states are in order: cloned, bootstrapped, executed, verified.
@@ -195,7 +195,7 @@ module Polytrix
                   desc: 'The Polytrix test directory',
                   default: 'tests/polytrix'
     method_option :solo,
-                  desc: 'Enable solo mode - Polytrix will auto-configure a single implementor and its scenarios'
+                  desc: 'Enable solo mode - Polytrix will auto-configure a single project and its scenarios'
     # , default: 'polytrix.yml'
     method_option :solo_glob,
                   desc: 'The globbing pattern to find code samples in solo mode'
@@ -205,7 +205,7 @@ module Polytrix
       perform('test', 'test', args, action_options)
     end
 
-    desc 'task <task_name> [SDK|REGEXP|all]',
+    desc 'task <task_name> [PROJECT|REGEXP|all]',
          'Run a task in one or more projects'
     long_desc <<-DESC
       Runs the task in all projects or the projects specified.
@@ -227,7 +227,7 @@ module Polytrix
     def task(*args)
       update_config!
       action_options = options.dup
-      perform('task', 'implementor_action', args, action_options)
+      perform('task', 'project_action', args, action_options)
     end
 
     desc 'version', "Print Polytrix's version information"

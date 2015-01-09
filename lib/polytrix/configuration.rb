@@ -9,8 +9,8 @@ module Polytrix
     property :dry_run,      default: false
     property :log_root,     default: '.polytrix/logs'
     property :log_level,    default: :info
-    property :implementors, default: []
-    # coerce_key :implementors, Polytrix::Implementor
+    property :projects, default: []
+    # coerce_key :projects, Polytrix::Project
 
     # TODO: This should probably be configurable, or tied to Thor color options.
     if RSpec.respond_to?(:configuration)

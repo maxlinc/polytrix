@@ -82,13 +82,13 @@ module Polytrix
       #   `"all"`, or `nil`
       # @return [Array<Instance>] an array of scenarios
       # @api private
-      def parse_subcommand(sdk_regexp = 'all', scenario_regexp = 'all', options = {})
-        sdks = Polytrix.filter_sdks(sdk_regexp, options)
-        die "No SDKs matching regex `#{sdk_regexp}', known SDKs: #{Polytrix.implementors.map(&:name)}" if sdks.empty?
+      def parse_subcommand(project_regexp = 'all', scenario_regexp = 'all', options = {})
+        projects = Polytrix.filter_projects(project_regexp, options)
+        die "No projects matching regex `#{project_regexp}', known projects: #{Polytrix.projects.map(&:name)}" if projects.empty?
         scenarios = Polytrix.filter_scenarios(scenario_regexp, options)
         die "No scenarios for regex `#{scenario_regexp}', try running `polytrix list'" if scenarios.empty?
         scenarios.keep_if do |s|
-          sdks.include? s.implementor
+          projects.include? s.project
         end
       rescue RegexpError => e
         die 'Invalid Ruby regular expression, ' \

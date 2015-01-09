@@ -23,7 +23,7 @@ module Polytrix
           indent do
             status('Test suite', challenge.suite)
             status('Test scenario', challenge.name)
-            status('Implementor', challenge.implementor.name)
+            status('Project', challenge.project.name)
             source_file = challenge.absolute_source_file ? relativize(challenge.absolute_source_file, Dir.pwd) : colorize('<No code sample>', :red)
             status('Source', source_file)
             display_source(challenge)

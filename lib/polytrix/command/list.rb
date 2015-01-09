@@ -23,7 +23,7 @@ module Polytrix
         row << colorize('Test ID', :green)
         row << colorize('Suite', :green)
         row << colorize('Scenario', :green)
-        row << colorize('Implementor', :green)
+        row << colorize('Project', :green)
         row << colorize('Status', :green)
         row << colorize('Source', :green) if options[:source]
         row
@@ -34,7 +34,7 @@ module Polytrix
         row << color_pad(challenge.slug)
         row << color_pad(challenge.suite)
         row << color_pad(challenge.name)
-        row << color_pad(challenge.implementor.name)
+        row << color_pad(challenge.project.name)
         row << format_status(challenge)
         if options[:source]
           source_file = challenge.absolute_source_file ? relativize(challenge.absolute_source_file, Dir.pwd) : colorize('<No code sample>', :red)

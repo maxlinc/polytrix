@@ -33,9 +33,9 @@ module Polytrix
       self.level = options[:level] || default_log_level
     end
 
-    def self.new_logger(implementor) # (test, implementor, index)
-      name = implementor.name # instance_name(test, implementor)
-      index = Polytrix.implementors.index(implementor) || 0
+    def self.new_logger(project) # (test, project, index)
+      name = project.name # instance_name(test, project)
+      index = Polytrix.projects.index(project) || 0
       Logger.new(
         stdout: STDOUT,
         color: Color::COLORS[index % Color::COLORS.size].to_sym,

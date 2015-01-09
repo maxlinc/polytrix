@@ -14,9 +14,9 @@ module Polytrix
           include Padrino::Helpers::OutputHelpers
           include Padrino::Helpers::AssetTagHelpers
 
-          def implementors
-            Polytrix.implementors.map do |implementor|
-              slugify(implementor.name)
+          def projects
+            Polytrix.projects.map do |project|
+              slugify(project.name)
             end
           end
 
@@ -30,9 +30,9 @@ module Polytrix
                 suite: suite,
                 scenario: name
               }
-              Polytrix.implementors.each do |implementor|
-                challenge = challenges.find { |c| c.implementor == implementor }
-                row[slugify(implementor.name)] = challenge.status_description
+              Polytrix.projects.each do |project|
+                challenge = challenges.find { |c| c.project == project }
+                row[slugify(project.name)] = challenge.status_description
               end
               rows << row
             end

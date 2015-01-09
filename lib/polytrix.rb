@@ -13,7 +13,7 @@ require 'polytrix/validation'
 require 'polytrix/result'
 require 'polytrix/evidence'
 require 'polytrix/spies'
-require 'polytrix/implementor'
+require 'polytrix/project'
 require 'polytrix/challenge'
 require 'polytrix/challenges'
 require 'polytrix/manifest'
@@ -95,7 +95,7 @@ module Polytrix
         suite.samples << scenario_name
       end
       @manifest = Polytrix.configuration.manifest = Polytrix::Manifest.new(
-        implementors: {
+        projects: {
           File.basename(solo_basedir) => {
             basedir: solo_basedir
           }
@@ -129,18 +129,18 @@ module Polytrix
       end
     end
 
-    def filter_sdks(regexp, _options = {})
+    def filter_projects(regexp, _options = {})
       regexp ||= 'all'
-      sdks = if regexp == 'all'
-               Polytrix.implementors
+      projects = if regexp == 'all'
+               Polytrix.projects
              else
-               Polytrix.implementors.find { |s| s.name == regexp } ||
-               Polytrix.implementors.select { |s| s.name =~ /#{regexp}/i }
+               Polytrix.projects.find { |s| s.name == regexp } ||
+               Polytrix.projects.select { |s| s.name =~ /#{regexp}/i }
              end
-      if sdks.is_a? Array
-        sdks
+      if projects.is_a? Array
+        projects
       else
-        [sdks]
+        [projects]
       end
     end
 
@@ -177,9 +177,9 @@ module Polytrix
       configuration.manifest
     end
 
-    # The set of {Polytrix::Implementor}s registered with Polytrix.
-    def implementors
-      manifest.implementors.values
+    # The set of {Polytrix::Project}s registered with Polytrix.
+    def projects
+      manifest.projects.values
     end
 
     # Registers a {Polytrix::Validator} that will be used during test

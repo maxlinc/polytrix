@@ -1,6 +1,6 @@
 require 'yaml'
 
-Given(/^the (\w+) SDK$/) do |sdk|
+Given(/^the (\w+) project$/) do |sdk|
   FileUtils.mkdir_p "#{current_dir}/sdks"
   FileUtils.cp_r "samples/sdks/#{sdk}", "#{current_dir}/sdks"
 end

@@ -1,5 +1,5 @@
 ---
-  implementors:
+  projects:
     ruby:
       language: 'ruby'
       basedir: 'sdks/ruby'

@@ -2,7 +2,7 @@ require 'benchmark'
 
 module Polytrix
   module Command
-    class ImplementorAction < Polytrix::Command::Base
+    class ProjectAction < Polytrix::Command::Base
       include RunAction
 
       # Invoke the command.
@@ -11,9 +11,9 @@ module Polytrix
         elapsed = Benchmark.measure do
           setup
           task = args.shift
-          sdk_regex = args.shift
-          sdks = Polytrix.filter_sdks(sdk_regex)
-          run_action(action, sdks, task)
+          project_regex = args.shift
+          projects = Polytrix.filter_projects(project_regex)
+          run_action(action, projects, task)
         end
         banner "Polytrix is finished. #{Util.duration(elapsed.real)}"
       end

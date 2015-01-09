@@ -4,17 +4,17 @@ This document is a small collection of quines.  This documentation is generated 
 
 Examples for <%= scenario %> scenario:
 
-<% Polytrix.implementors.each do |implementor| %>
-## <%= implementor %> <%#= implementor.name %>
+<% Polytrix.projects.each do |project| %>
+## <%= project %> <%#= project.name %>
 
 Source:
 
-```<%#= implementor.language %>
-<%#= implementor.sample_code_for scenario %>
+```<%#= project.language %>
+<%#= project.sample_code_for scenario %>
 ```
 
 Output:
 ```
-<%#= implementor.result_for scenario %>
+<%#= project.result_for scenario %>
 ```
 <% end %>

@@ -26,7 +26,7 @@
         <ul class="list-group">
           <li class="list-group-item"><%= status('Test suite:', @challenge.suite) %></li>
           <li class="list-group-item"><%= status('Test scenario:', @challenge.name) %></li>
-          <li class="list-group-item"><%= status('Implementor:', @challenge.implementor.name) %></li>
+          <li class="list-group-item"><%= status('Implementor:', @challenge.project.name) %></li>
           <li class="list-group-item"><%= status('Duration:', Polytrix::Util.duration(@challenge.duration)) %></li>
           <li class="list-group-item">
             <strong class="list-group-item-heading">Test Input</strong>

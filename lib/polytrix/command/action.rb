@@ -5,7 +5,7 @@ module Polytrix
     class Action < Polytrix::Command::Base
       include RunAction
 
-      IMPLEMENTOR_ACTIONS = [:clone, :bootstrap, :task] # These are run once per implementor, not per test
+      IMPLEMENTOR_ACTIONS = [:clone, :bootstrap, :task] # These are run once per project, not per test
 
       # Invoke the command.
       def call
@@ -13,9 +13,9 @@ module Polytrix
         elapsed = Benchmark.measure do
           setup
           tests = parse_subcommand(args.shift, args.shift)
-          implementors = tests.map(&:implementor).uniq
-          if IMPLEMENTOR_ACTIONS.include? action # actions on implementors
-            run_action(action, implementors)
+          projects = tests.map(&:project).uniq
+          if IMPLEMENTOR_ACTIONS.include? action # actions on projects
+            run_action(action, projects)
           else # actions on tests
             run_action(action, tests)
           end
