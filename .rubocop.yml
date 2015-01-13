@@ -1,16 +1,2 @@
 inherit_from: .rubocop_todo.yml
 
-Encoding:
-  Enabled: false
-  # EnforcedStyle: when_needed
-
-AllCops:
-  Include:
-    - Guardfile
-    - Rakefile
-    - pacto.gemspec
-  Exclude:
-    - bin/**/*
-    - tmp/**/*
-    - tmp/**/*.rb
-    - samples/tests/crosstest/generators/**/*
