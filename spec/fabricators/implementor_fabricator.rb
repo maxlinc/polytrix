@@ -1,6 +1,6 @@
-# Fabricates test manifests (.polytrix.yml files)
+# Fabricates test manifests (.crosstest.yml files)
 
-Fabricator(:project, from: Polytrix::Project) do
+Fabricator(:project, from: Crosstest::Project) do
   initialize_with { @_klass.new to_hash } # Hash based initialization
   language { LANGUAGES.sample }
   name do |attr|

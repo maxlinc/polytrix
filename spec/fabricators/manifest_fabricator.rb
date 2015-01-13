@@ -1,8 +1,8 @@
 require 'hashie/mash'
 
-# Fabricates test manifests (.polytrix.yml files)
+# Fabricates test manifests (.crosstest.yml files)
 
-Fabricator(:manifest, from: Polytrix::Manifest) do
+Fabricator(:manifest, from: Crosstest::Manifest) do
   initialize_with { @_klass.new to_hash } # Hash based initialization
   transient suite_count: 3
   transient samples_per_suite: 3

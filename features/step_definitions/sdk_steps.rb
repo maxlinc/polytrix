@@ -5,8 +5,8 @@ Given(/^the (\w+) project$/) do |sdk|
   FileUtils.cp_r "samples/sdks/#{sdk}", "#{current_dir}/sdks"
 end
 
-Given(/^the (\w+) polytrix config$/) do |config|
-  FileUtils.cp_r "features/fixtures/configs/#{config}.yml", "#{current_dir}/polytrix.yml"
+Given(/^the (\w+) crosstest config$/) do |config|
+  FileUtils.cp_r "features/fixtures/configs/#{config}.yml", "#{current_dir}/crosstest.yml"
 end
 
 Then(/^the file "(.*?)" should contain yaml matching:$/) do |file, content|

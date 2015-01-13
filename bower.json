@@ -1,7 +1,7 @@
 {
-  "name": "polytrix",
+  "name": "crosstest",
   "version": "0.1.4",
-  "homepage": "https://github.com/rackerlabs/polytrix",
+  "homepage": "https://github.com/crosstest/crosstest",
   "authors": [
     "Max Lincoln <max@devopsy.com>"
   ],

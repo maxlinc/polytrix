@@ -1,10 +1,10 @@
-# Polytrix - the Polyglot Testing Matrix
+# Crosstest - the Polyglot Testing Matrix
 
-Polytrix is a polyglot test runner and documentation generator. It aims to let you run sample code written in any language. It's especially useful if you want to run similar code samples in multiple languages, a project that has been ported to several languages, or API clients for the same service that are provided in several languages.
+Crosstest is a polyglot test runner and documentation generator. It aims to let you run sample code written in any language. It's especially useful if you want to run similar code samples in multiple languages, a project that has been ported to several languages, or API clients for the same service that are provided in several languages.
 
-Polytrix was influenced by a number of polyglot projects, including [Travis-CI](travis-ci.org), [Docco](https://github.com/jashkenas/docco), [Slate](https://github.com/tripit/slate), and polyglot test-suites like the [JSON Schema Test Suite](https://github.com/json-schema/JSON-Schema-Test-Suite) and the [JSON-LD Test Suite](http://json-ld.org/test-suite/).
+Crosstest was influenced by a number of polyglot projects, including [Travis-CI](travis-ci.org), [Docco](https://github.com/jashkenas/docco), [Slate](https://github.com/tripit/slate), and polyglot test-suites like the [JSON Schema Test Suite](https://github.com/json-schema/JSON-Schema-Test-Suite) and the [JSON-LD Test Suite](http://json-ld.org/test-suite/).
 
-A lot of Polytrix was influenced by and based on [test-kitchen](http://kitchen.ci/). Polytrix is attempting to do for multi-language testing of code samples what test-kitchen does for multi-platform testing of infrastructure code.
+A lot of Crosstest was influenced by and based on [test-kitchen](http://kitchen.ci/). Crosstest is attempting to do for multi-language testing of code samples what test-kitchen does for multi-platform testing of infrastructure code.
 
 ## Features
 
@@ -22,19 +22,19 @@ A lot of Polytrix was influenced by and based on [test-kitchen](http://kitchen.c
   - Generate to-do lists for pending features
   - Custom reports or documentation generation for anything else
 
-## Installing Polytrix
+## Installing Crosstest
 
-Polytrix is distributed as a Ruby Gem. It is ideally installed using Bundler by adding this line to your Gemfile:
+Crosstest is distributed as a Ruby Gem. It is ideally installed using Bundler by adding this line to your Gemfile:
 
 ```shell
-gem 'polytrix', '~> 0.1'
+gem 'crosstest', '~> 0.1'
 ```
 
 And then running `bundle install`.
 
-It can also be installed without Bundler by running `gem install polytrix`.
+It can also be installed without Bundler by running `gem install crosstest`.
 
-**Note**: If installed with bundler it's best to always run `bundle exec polytrix ...` rather than just `polytrix ...`. The bundler documentation explains:
+**Note**: If installed with bundler it's best to always run `bundle exec crosstest ...` rather than just `crosstest ...`. The bundler documentation explains:
 
 > In some cases, running executables without `bundle exec` may work, if the executable happens to be installed in your system and does not pull in any gems that conflict with your bundle.
 >
@@ -44,7 +44,7 @@ It can also be installed without Bundler by running `gem install polytrix`.
 
 ### Setup
 
-The Polytrix test suites are defined by `polytrix.yml`. This file defines the implementors you want to test and the test scenarios that they share. A simple Polytrix setup looks like this:
+The Crosstest test suites are defined by `crosstest.yml`. This file defines the implementors you want to test and the test scenarios that they share. A simple Crosstest setup looks like this:
 
 ```yaml
 ---
@@ -77,57 +77,57 @@ The `implementors` defines the projects you want to test, and `suites` defines t
 
 ### CLI - Testing
 
-Polytrix provides a CLI for driving tests, quickly viewing test results, or to generate test reports.
+Crosstest provides a CLI for driving tests, quickly viewing test results, or to generate test reports.
 
-In order to see all available commands, simply run `bundle exec polytrix`:
+In order to see all available commands, simply run `bundle exec crosstest`:
 
 ```bash
-$ bundle exec polytrix
+$ bundle exec crosstest
 
   Commands:
-  polytrix bootstrap [INSTANCE|REGEXP|all]  # Change scenario state to bootstraped. Running bootstrap scripts for the implementor
-  polytrix clone [INSTANCE|REGEXP|all]      # Change scenario state to cloned. Clone the code sample from git
-  polytrix destroy [INSTANCE|REGEXP|all]    # Change scenario state to destroyed. Delete all information for one or more scenarios
-  polytrix detect [INSTANCE|REGEXP|all]     # Find sample code that matches a test scenario. Attempts to locate a code sample with a filename that the test scenario name.
-  polytrix exec [INSTANCE|REGEXP|all]       # Change instance state to executed. Execute the code sample and capture the results.
-  polytrix help [COMMAND]                   # Describe available commands or one specific command
-  polytrix list [INSTANCE|REGEXP|all]       # Lists one or more scenarios
-  polytrix report                           # Generate reports
-  polytrix show [INSTANCE|REGEXP|all]       # Show detailed status for one or more scenarios
-  polytrix test [INSTANCE|REGEXP|all]       # Test (clone, bootstrap, exec, and verify) one or more scenarios
-  polytrix verify [INSTANCE|REGEXP|all]     # Change instance state to verified. Assert that the captured results match the expectations for the scenario.
-  polytrix version                          # Print Polytrix's version information
+  crosstest bootstrap [INSTANCE|REGEXP|all]  # Change scenario state to bootstraped. Running bootstrap scripts for the implementor
+  crosstest clone [INSTANCE|REGEXP|all]      # Change scenario state to cloned. Clone the code sample from git
+  crosstest destroy [INSTANCE|REGEXP|all]    # Change scenario state to destroyed. Delete all information for one or more scenarios
+  crosstest detect [INSTANCE|REGEXP|all]     # Find sample code that matches a test scenario. Attempts to locate a code sample with a filename that the test scenario name.
+  crosstest exec [INSTANCE|REGEXP|all]       # Change instance state to executed. Execute the code sample and capture the results.
+  crosstest help [COMMAND]                   # Describe available commands or one specific command
+  crosstest list [INSTANCE|REGEXP|all]       # Lists one or more scenarios
+  crosstest report                           # Generate reports
+  crosstest show [INSTANCE|REGEXP|all]       # Show detailed status for one or more scenarios
+  crosstest test [INSTANCE|REGEXP|all]       # Test (clone, bootstrap, exec, and verify) one or more scenarios
+  crosstest verify [INSTANCE|REGEXP|all]     # Change instance state to verified. Assert that the captured results match the expectations for the scenario.
+  crosstest version                          # Print Crosstest's version information
 ```
 
-The `INSTANCE` or `REGEXP` used in commands is matched against `Test ID`, which is an unique ID derived from the suite, scenario, and implementor names for a test. You can see the `Test ID`s via `polytrix show`.
+The `INSTANCE` or `REGEXP` used in commands is matched against `Test ID`, which is an unique ID derived from the suite, scenario, and implementor names for a test. You can see the `Test ID`s via `crosstest show`.
 
 #### List and Show
 
-The command `polytrix list [INSTANCE|REGEXP|all]` or `polytrix show [INSTANCE|REGEXP|all]` can be used to give you an overview (list) or detailed information (show) about all tests or a subset of tests.
+The command `crosstest list [INSTANCE|REGEXP|all]` or `crosstest show [INSTANCE|REGEXP|all]` can be used to give you an overview (list) or detailed information (show) about all tests or a subset of tests.
 
 Initially the tests will have a status of "<Not Found>", but the status will change and details will become available as you run the commands below.
 
 #### Cloning
 
-The command `polytrix clone [INSTANCE|REGEXP|all]` will fetch code samples for an implementor from a git repo. This step is skipped if no git repo is specified for the implementor, or if it already appears to be cloned.
+The command `crosstest clone [INSTANCE|REGEXP|all]` will fetch code samples for an implementor from a git repo. This step is skipped if no git repo is specified for the implementor, or if it already appears to be cloned.
 
 #### Bootstrapping
 
-The command `polytrix clone [INSTANCE|REGEXP|all]` will "bootstrap" the implementors.
+The command `crosstest clone [INSTANCE|REGEXP|all]` will "bootstrap" the implementors.
 
 Bootstrapping ensures the implementor has the resources it needs to run samples, especially third-party libraries. Bootstrapping behavior is controlled by:
 
 - The presence of a [bootstrap script](http://wynnnetherland.com/linked/2013012801/bootstrapping-consistency) in `script/bootstrap`
-- A bootstrap command defined within the implementor in the `polytrix.yml`
+- A bootstrap command defined within the implementor in the `crosstest.yml`
 - Default behavior for the implementors language
 
 #### Detecting
 
-The command `polytrix clone [INSTANCE|REGEXP|all]` will search each implementor for code samples that correspond with test scenarios.
+The command `crosstest clone [INSTANCE|REGEXP|all]` will search each implementor for code samples that correspond with test scenarios.
 
-Polytrix searches for samples by:
+Crosstest searches for samples by:
 
-- Checking the implementor definition (in `polytrix.yml`) a static mapping of test scenarios to files.
+- Checking the implementor definition (in `crosstest.yml`) a static mapping of test scenarios to files.
 - Searching files matching the scenario name, using a rather lax search pattern
   - Search for a partial name match
   - Case-insensitive
@@ -146,11 +146,11 @@ Successfully completing this stage will set a test's status to `Sample Found`.
 
 #### Executing
 
-The command `polytrix exec [INSTANCE|REGEXP|all]` will execute a code sample while capturing data via spies.
+The command `crosstest exec [INSTANCE|REGEXP|all]` will execute a code sample while capturing data via spies.
 
-If the code sample is executable (e.g. many Bash, Ruby, or Python scripts) then Polytrix can execute it directly. If it is not direclty executable you can create a `script/wrapper`. Polytrix will execute the wrapper script with the first argument set to the path to the code sample. You can use this to defer to `bundle exec`, `node`, `java`, or any other program or script necessary to run the code sample.
+If the code sample is executable (e.g. many Bash, Ruby, or Python scripts) then Crosstest can execute it directly. If it is not direclty executable you can create a `script/wrapper`. Crosstest will execute the wrapper script with the first argument set to the path to the code sample. You can use this to defer to `bundle exec`, `node`, `java`, or any other program or script necessary to run the code sample.
 
-Polytrix has a built-in spy to capture the processes exit status, stdout, and stderr. You can register custom spies to capture additional information. For example, a [Pacto](https://github.com/thoughtworks/pacto) spy has been used to capture HTTP requests that are made by code samples and match them to known services defined via [Swagger](http://swagger.io/).
+Crosstest has a built-in spy to capture the processes exit status, stdout, and stderr. You can register custom spies to capture additional information. For example, a [Pacto](https://github.com/thoughtworks/pacto) spy has been used to capture HTTP requests that are made by code samples and match them to known services defined via [Swagger](http://swagger.io/).
 
 TODO: Documentation on custom spies.
 
@@ -158,7 +158,7 @@ Successfully completing this stage will set a test's status to `Executed`.
 
 #### Validating
 
-The command `polytrix verify [INSTANCE|REGEXP|all]` will check the captured data from executing a code sample against the validators for that test scenario.
+The command `crosstest verify [INSTANCE|REGEXP|all]` will check the captured data from executing a code sample against the validators for that test scenario.
 
 The validators are shared across all implementors, acting as a compliance test suite. A default validator is used if a test does not have any specific validators. A scenario can have more than one validator.
 
@@ -168,13 +168,13 @@ This stage will set the test's status to `Partially Verified (n of m)` or `Fully
 
 #### Cleaning
 
-The command `polytrix destroy [INSTANCE|REGEXP|all]` clears out the saved test status and captured data.
+The command `crosstest destroy [INSTANCE|REGEXP|all]` clears out the saved test status and captured data.
 
 This will set the status back to `<Not Found>`.
 
 #### Testing
 
-The command `polytrix test [INSTANCE|REGEXP|all]` combines the commands above into a single command. It runs in order:
+The command `crosstest test [INSTANCE|REGEXP|all]` combines the commands above into a single command. It runs in order:
 
 destroy->detect->exec->verify
 
@@ -182,12 +182,12 @@ destroy->detect->exec->verify
 
 #### Dashboard
 
-The command `polytrix report dashboard` will generate an HTML feature matrix where each result is a link to more information about the test execution.
+The command `crosstest report dashboard` will generate an HTML feature matrix where each result is a link to more information about the test execution.
 
 #### Code2doc
 
-The command `polytrix report code2doc [INSTANCE|REGEXP|all]` will convert annotated code samples to documentation. It is similar to projects like [docco](https://github.com/jashkenas/docco), except that it generates Markdown or reStructuredText rather than fully-styled HTML. The idea is that you can more easily drop these files into static site generators like [middlemanapp](http://middlemanapp.com/), documentation tools like [slate](https://github.com/tripit/slate), or services like [viewdocs](http://progrium.viewdocs.io/viewdocs) or [readthedocs](https://readthedocs.org/), which already handle styling and syntax highlighting.
+The command `crosstest report code2doc [INSTANCE|REGEXP|all]` will convert annotated code samples to documentation. It is similar to projects like [docco](https://github.com/jashkenas/docco), except that it generates Markdown or reStructuredText rather than fully-styled HTML. The idea is that you can more easily drop these files into static site generators like [middlemanapp](http://middlemanapp.com/), documentation tools like [slate](https://github.com/tripit/slate), or services like [viewdocs](http://progrium.viewdocs.io/viewdocs) or [readthedocs](https://readthedocs.org/), which already handle styling and syntax highlighting.
 
 ## Solo mode
 
-TODO: Polytrix' experimental solo mode for running samples w/out a `polytrix.yml`.
+TODO: Crosstest' experimental solo mode for running samples w/out a `crosstest.yml`.

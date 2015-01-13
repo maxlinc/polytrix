@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-# This example shows the default behavior of `Polytrix#bootstrap`
-require 'polytrix'
+# This example shows the default behavior of `Crosstest#bootstrap`
+require 'crosstest'
 
 # Snippet: bootstrap
-Polytrix.bootstrap
+Crosstest.bootstrap

@@ -4,8 +4,8 @@ Feature: Show
     Given the ruby project
     And the java project
     And the python project
-    And the hello_world polytrix config
-    When I run `bundle exec polytrix show ruby 'hello world'`
+    And the hello_world crosstest config
+    When I run `bundle exec crosstest show ruby 'hello world'`
     Then the output should contain:
     """
     katas-hello_world-ruby:                            <Not Found>
@@ -17,8 +17,8 @@ Feature: Show
 
   @no-clobber
   Scenario: State after testing
-    Given I run `bundle exec polytrix test ruby`
-    When I run `bundle exec polytrix show ruby 'hello world'`
+    Given I run `bundle exec crosstest test ruby`
+    When I run `bundle exec crosstest show ruby 'hello world'`
     Then the output should contain:
     """
     katas-hello_world-ruby:                            Fully Verified (1 of 1)

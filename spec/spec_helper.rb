@@ -1,19 +1,19 @@
 require 'simplecov'
 SimpleCov.start
 
-require 'polytrix'
+require 'crosstest'
 require 'fabrication'
 require 'thor_spy'
 
-Polytrix.configure do |polytrix|
+Crosstest.configure do |crosstest|
   Dir['sdks/*'].each do |sdk|
-    polytrix.build_project sdk
+    crosstest.build_project sdk
   end
 end
 
 RSpec.configure do |c|
   c.before(:each) do
-    Polytrix.reset
+    Crosstest.reset
   end
   c.expose_current_running_example_as :example
 end

@@ -27,7 +27,7 @@
           <li class="list-group-item"><%= status('Test suite:', @scenario.suite) %></li>
           <li class="list-group-item"><%= status('Test scenario:', @scenario.name) %></li>
           <li class="list-group-item"><%= status('Implementor:', @scenario.project.name) %></li>
-          <li class="list-group-item"><%= status('Duration:', Polytrix::Util.duration(@scenario.duration)) %></li>
+          <li class="list-group-item"><%= status('Duration:', Crosstest::Util.duration(@scenario.duration)) %></li>
           <li class="list-group-item">
             <strong class="list-group-item-heading">Test Input</strong>
             <% source_file = @scenario.absolute_source_file ? relativize(@scenario.absolute_source_file, Dir.pwd) : '<No code sample>' %>

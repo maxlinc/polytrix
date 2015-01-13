@@ -7,10 +7,10 @@ pacto.log
 **/tmp/
 node_modules/
 .tokens.json
-/polytrix/
+/crosstest/
 pkg/
 coverage/
 .yardoc/
-.polytrix/
+.crosstest/
 bower_components/
 samples/sdks/

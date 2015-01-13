@@ -13,4 +13,4 @@ AllCops:
     - bin/**/*
     - tmp/**/*
     - tmp/**/*.rb
-    - samples/tests/polytrix/generators/**/*
+    - samples/tests/crosstest/generators/**/*

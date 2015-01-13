@@ -1,4 +1,4 @@
 #!/usr/bin/env bash -e
-bundle exec polytrix destroy
-bundle exec polytrix test ruby
-bundle exec polytrix show ruby 'hello world'
+bundle exec crosstest destroy
+bundle exec crosstest test ruby
+bundle exec crosstest show ruby 'hello world'

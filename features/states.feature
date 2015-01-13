@@ -4,8 +4,8 @@ Feature: States
     Given the ruby project
     And the java project
     And the python project
-    And the hello_world polytrix config
-    When I run `bundle exec polytrix list`
+    And the hello_world crosstest config
+    When I run `bundle exec crosstest list`
     Then the output should contain:
     """
     Test ID                   Suite  Scenario     Project  Status
@@ -16,8 +16,8 @@ Feature: States
 
   @no-clobber
   Scenario: State after execution
-    Given I run `bundle exec polytrix exec python`
-    When I run `bundle exec polytrix list`
+    Given I run `bundle exec crosstest exec python`
+    When I run `bundle exec crosstest list`
     Then the output should contain:
     """
     Test ID                   Suite  Scenario     Project  Status
@@ -28,8 +28,8 @@ Feature: States
 
   @no-clobber
   Scenario: State after verification
-    Given I run `bundle exec polytrix verify ruby`
-    When I run `bundle exec polytrix list`
+    Given I run `bundle exec crosstest verify ruby`
+    When I run `bundle exec crosstest list`
     Then the output should contain:
     """
     Test ID                   Suite  Scenario     Project  Status

@@ -1,4 +1,4 @@
-This code will cause Polytrix to bootstrap:
+This code will cause Crosstest to bootstrap:
 
 <% challenges.compact.each do |challenge| %>
 ``` <%= challenge.implementor.language %>

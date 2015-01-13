@@ -1,6 +1,6 @@
 # Influences
 
-This project was influenced by many other projects. The following projects are worth checking out, either as alternatives you might want to use instead of Polytrix, or to understand the domain better before contributing.
+This project was influenced by many other projects. The following projects are worth checking out, either as alternatives you might want to use instead of Crosstest, or to understand the domain better before contributing.
 
 # Polyglot Testing
 
@@ -16,13 +16,13 @@ The most important Travis components for Polyglot testing are:
 
 I've seen several compliance test suites, but the [JSON-LD suite](http://json-ld.org/test-suite/) is one of my favorites, including the [earl-report](https://github.com/gkellogg/earl-report) gem it uses to create reports.
 
-The main difference between Polytrix and JSON-LD's test suite (and similar compliance tests for other projects) is that JSON-LD is data-driven and Polytrix is driven by sample code. The JSON-LD approach is good for standards about a data format like JSON-LD, while Polytrix is more for testing the functional completeness of similar SDKs.
+The main difference between Crosstest and JSON-LD's test suite (and similar compliance tests for other projects) is that JSON-LD is data-driven and Crosstest is driven by sample code. The JSON-LD approach is good for standards about a data format like JSON-LD, while Crosstest is more for testing the functional completeness of similar SDKs.
 
 ## Codecademy
 
-Codecademy's [Course Creation](http://www.codecademy.com/docs/creation) documentation explains how they test code samples written in different languages. You can think of Polytrix as serving a similar function to Codecademy's [Submission Tests](http://www.codecademy.com/docs/submission_tests), with two important differences:
+Codecademy's [Course Creation](http://www.codecademy.com/docs/creation) documentation explains how they test code samples written in different languages. You can think of Crosstest as serving a similar function to Codecademy's [Submission Tests](http://www.codecademy.com/docs/submission_tests), with two important differences:
 
-- Polytrix aims for a single submission test for all languages: so could share a "Hello, world!" submission correctness test for Ruby, Java, and PHP.
-- Polytrix is being used for automated test suites where the code submissions are pre-written and repeatedly tested, though creating a course with Polytrix may be possible.
+- Crosstest aims for a single submission test for all languages: so could share a "Hello, world!" submission correctness test for Ruby, Java, and PHP.
+- Crosstest is being used for automated test suites where the code submissions are pre-written and repeatedly tested, though creating a course with Crosstest may be possible.
 
-This of course has some limitations. Since Polytrix is polyglot, we generally test only the effect of running the sample and not the syntax. Polytrix is not suitable for testing each variation when [there's more than one way to do it](http://en.wikipedia.org/wiki/There's_more_than_one_way_to_do_it), but you can use it to test that at least one way is possible.
+This of course has some limitations. Since Crosstest is polyglot, we generally test only the effect of running the sample and not the syntax. Crosstest is not suitable for testing each variation when [there's more than one way to do it](http://en.wikipedia.org/wiki/There's_more_than_one_way_to_do_it), but you can use it to test that at least one way is possible.

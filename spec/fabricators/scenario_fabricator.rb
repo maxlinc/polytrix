@@ -1,6 +1,6 @@
-# Fabricates test manifests (.polytrix_tests.yml files)
+# Fabricates test manifests (.crosstest_tests.yml files)
 
-Fabricator(:scenario, from: Polytrix::Scenario) do
+Fabricator(:scenario, from: Crosstest::Scenario) do
   initialize_with { @_klass.new to_hash } # Hash based initialization
   name { SCENARIO_NAMES.sample }
   suite { LANGUAGES.sample }

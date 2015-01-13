@@ -1,5 +1,0 @@
-#!/usr/bin/env ruby
-require 'polytrix/error'
-require 'polytrix/cli'
-
-Polytrix.with_friendly_errors { Polytrix::CLI.start }
