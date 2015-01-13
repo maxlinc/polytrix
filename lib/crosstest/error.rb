@@ -164,7 +164,7 @@ module Crosstest
     # or provisioner coding issues or bugs, or internal code issues. Given
     # a stable release of Crosstest and a solid set of drivers and provisioners,
     # the most likely cause of this is user configuration error originating in
-    # the `.crosstest.yml` setup. For this reason, the exception is written to
+    # the `.crosstest.yaml` setup. For this reason, the exception is written to
     # `STDERR`, a full formatted exception trace is written to the common
     # Crosstest file logger, and a message is displayed on `STDERR` to the user
     # informing them to check the log files and check their configuration with

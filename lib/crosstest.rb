@@ -33,7 +33,7 @@ module Crosstest
   class << self
     include Crosstest::Util::FileSystem
 
-    DEFAULT_MANIFEST_FILE = 'crosstest.yml'
+    DEFAULT_MANIFEST_FILE = 'crosstest.yaml'
 
     # @return [Mutex] a common mutex for global coordination
     attr_accessor :mutex

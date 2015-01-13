@@ -1,4 +1,4 @@
-# Fabricates test manifests (.crosstest_tests.yml files)
+# Fabricates test manifests (.crosstest_tests.yaml files)
 
 Fabricator(:scenario, from: Crosstest::Scenario) do
   initialize_with { @_klass.new to_hash } # Hash based initialization

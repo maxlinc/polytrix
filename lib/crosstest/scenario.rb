@@ -6,7 +6,7 @@ require 'crosstest/documentation/helpers/code_helper'
 # There's a few things happening here:
 #   There's the "Scenario" - probably better named "Scenario" - this
 #   is *what* we want to test, i.e. "Fog - Upload Directory". It should
-#   only rely on parsing crosstest.yml.
+#   only rely on parsing crosstest.yaml.
 #
 #   Then there's the "Code Sample" - the code to be tested to verify the
 #   scenario. This can probably be moved to Psychic, since Psychic finds
@@ -79,7 +79,7 @@ module Crosstest
     end
 
     def evidence(initial_data = {})
-      evidence_file = Pathname.new(Dir.pwd).join('.crosstest', "#{slug}.yml").expand_path
+      evidence_file = Pathname.new(Dir.pwd).join('.crosstest', "#{slug}.yaml").expand_path
       @evidence ||= Evidence.load(evidence_file, initial_data)
     end
 

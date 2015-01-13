@@ -69,14 +69,14 @@ module Crosstest
     method_option :manifest,
                   aliases: '-m',
                   desc: 'The Crosstest test manifest file location',
-                  default: 'crosstest.yml'
+                  default: 'crosstest.yaml'
     method_option :test_dir,
                   aliases: '-t',
                   desc: 'The Crosstest test directory',
                   default: 'tests/crosstest'
     method_option :solo,
                   desc: 'Enable solo mode - Crosstest will auto-configure a single project and its scenarios'
-    # , default: 'crosstest.yml'
+    # , default: 'crosstest.yaml'
     method_option :solo_glob,
                   desc: 'The globbing pattern to find code samples in solo mode'
     method_option :source,
@@ -99,14 +99,14 @@ module Crosstest
     method_option :manifest,
                   aliases: '-m',
                   desc: 'The Crosstest test manifest file location',
-                  default: 'crosstest.yml'
+                  default: 'crosstest.yaml'
     method_option :test_dir,
                   aliases: '-t',
                   desc: 'The Crosstest test directory',
                   default: 'tests/crosstest'
     method_option :solo,
                   desc: 'Enable solo mode - Crosstest will auto-configure a single project and its scenarios'
-    # , default: 'crosstest.yml'
+    # , default: 'crosstest.yaml'
     method_option :solo_glob,
                   desc: 'The globbing pattern to find code samples in solo mode'
     filter_options
@@ -152,7 +152,7 @@ module Crosstest
       method_option :manifest,
                     aliases: '-m',
                     desc: 'The Crosstest test manifest file location',
-                    default: 'crosstest.yml'
+                    default: 'crosstest.yaml'
       method_option :test_dir,
                     aliases: '-t',
                     desc: 'The Crosstest test directory',
@@ -189,14 +189,14 @@ module Crosstest
     method_option :manifest,
                   aliases: '-m',
                   desc: 'The Crosstest test manifest file location',
-                  default: 'crosstest.yml'
+                  default: 'crosstest.yaml'
     method_option :test_dir,
                   aliases: '-t',
                   desc: 'The Crosstest test directory',
                   default: 'tests/crosstest'
     method_option :solo,
                   desc: 'Enable solo mode - Crosstest will auto-configure a single project and its scenarios'
-    # , default: 'crosstest.yml'
+    # , default: 'crosstest.yaml'
     method_option :solo_glob,
                   desc: 'The globbing pattern to find code samples in solo mode'
     def test(*args)
@@ -223,7 +223,7 @@ module Crosstest
     method_option :manifest,
                   aliases: '-m',
                   desc: 'The Crosstest test manifest file location',
-                  default: 'crosstest.yml'
+                  default: 'crosstest.yaml'
     def task(*args)
       update_config!
       action_options = options.dup

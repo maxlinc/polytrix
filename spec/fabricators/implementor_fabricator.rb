@@ -1,4 +1,4 @@
-# Fabricates test manifests (.crosstest.yml files)
+# Fabricates test manifests (.crosstest.yaml files)
 
 Fabricator(:project, from: Crosstest::Project) do
   initialize_with { @_klass.new to_hash } # Hash based initialization

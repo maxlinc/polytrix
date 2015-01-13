@@ -1,7 +1,7 @@
 module Crosstest
   describe Manifest do
     describe '#from_yaml' do
-      subject(:manifest) { described_class.from_yaml 'spec/fixtures/crosstest.yml' }
+      subject(:manifest) { described_class.from_yaml 'spec/fixtures/crosstest.yaml' }
 
       it 'initializes a manifest' do
         expect(manifest).to be_an_instance_of Crosstest::Manifest

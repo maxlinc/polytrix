@@ -1,6 +1,6 @@
 require 'hashie/mash'
 
-# Fabricates test manifests (.crosstest.yml files)
+# Fabricates test manifests (.crosstest.yaml files)
 
 Fabricator(:manifest, from: Crosstest::Manifest) do
   initialize_with { @_klass.new to_hash } # Hash based initialization

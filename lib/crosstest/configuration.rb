@@ -24,7 +24,7 @@ module Crosstest
     end
 
     def manifest
-      @manifest ||= load_manifest('crosstest.yml')
+      @manifest ||= load_manifest('crosstest.yaml')
     end
 
     def manifest=(manifest_data)

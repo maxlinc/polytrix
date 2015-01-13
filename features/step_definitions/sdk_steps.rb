@@ -6,7 +6,7 @@ Given(/^the (\w+) project$/) do |sdk|
 end
 
 Given(/^the (\w+) crosstest config$/) do |config|
-  FileUtils.cp_r "features/fixtures/configs/#{config}.yml", "#{current_dir}/crosstest.yml"
+  FileUtils.cp_r "features/fixtures/configs/#{config}.yaml", "#{current_dir}/crosstest.yaml"
 end
 
 Then(/^the file "(.*?)" should contain yaml matching:$/) do |file, content|
