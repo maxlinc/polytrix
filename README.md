@@ -1,26 +1,17 @@
-# Crosstest - the Polyglot Testing Matrix
+# Crosstest - the polyglot testing tool
 
-Crosstest is a polyglot test runner and documentation generator. It aims to let you run sample code written in any language. It's especially useful if you want to run similar code samples in multiple languages, a project that has been ported to several languages, or API clients for the same service that are provided in several languages.
+Crosstest is a tool from running tests and other tasks across a set of related projects. It's a tool for polyglots - the tests and tasks can be written in any language, using any tool. Crosstest may be useful for:
+- Testing a set of related open-source projects (e.g. a set of plugins for a framework)
+- Teams working on microservices or other sets of small projects
+- Testing tools, SDKs or API bindings that have been ported to several programming languages
+
+Crosstest can be used as a tool to run unrelated tests in each project, but it can also be used to build a compliance suite for projects that
+are expected to implement the same features, like an SDK that has been ported to multiple programming languages. In those cases corsstest can
+be used to build a compatibility test suite across the projects, including reports that compare the working features and detected behavior.
 
 Crosstest was influenced by a number of polyglot projects, including [Travis-CI](travis-ci.org), [Docco](https://github.com/jashkenas/docco), [Slate](https://github.com/tripit/slate), and polyglot test-suites like the [JSON Schema Test Suite](https://github.com/json-schema/JSON-Schema-Test-Suite) and the [JSON-LD Test Suite](http://json-ld.org/test-suite/).
 
-A lot of Crosstest was influenced by and based on [test-kitchen](http://kitchen.ci/). Crosstest is attempting to do for multi-language testing of code samples what test-kitchen does for multi-platform testing of infrastructure code.
-
-## Features
-
-- Validate sample code by running it through a series of stages:
-  * Clone: Fetch existing code samples from other git repos
-  * Detect: Match code samples for specific implementors to shared test scenarios
-  * Bootstrap: Install runtime dependencies for each implementor
-  * Exec: Invoke each test sample and capture the results (with built-in or custom spies)
-  * Validate: Ensure execution results (and data captured by spies) matches expectations
-- Use spies to capture data on how each code sample behaves when executed
-- Generate reports or documentation:
-  - A feature matrix comparing several implementations
-  - A test dashboard with detailed results and captured data for each code sample that was tested
-  - Convert code samples to documentation
-  - Generate to-do lists for pending features
-  - Custom reports or documentation generation for anything else
+A lot of the crosstest implementation was influenced by [test-kitchen](http://kitchen.ci/), because in many ways crosstest is attempting to do for cross-project testing what test-kitchen does for cross-platform testing.
 
 ## Installing Crosstest
 
@@ -39,6 +30,181 @@ It can also be installed without Bundler by running `gem install crosstest`.
 > In some cases, running executables without `bundle exec` may work, if the executable happens to be installed in your system and does not pull in any gems that conflict with your bundle.
 >
 > However, this is unreliable and is the source of considerable pain. Even if it looks like it works, it may not work in the future or on another machine.
+
+## Defining a project set
+
+You need to define a set of projects so crosstest can run tasks or tests across them. This is done with a `crosstest.yaml` file. The file defines the
+name and location of each project, optionally including version control information.
+
+Here's an example that defines projects named "ruby", "java" and "python":
+
+```yaml
+---
+  projects:
+    ruby:
+      language: 'ruby'
+      basedir: 'sdks/ruby'
+      git:
+        repo: 'https://github.com/crosstest/ruby_samples'
+    java:
+      language: 'java'
+      basedir: 'sdks/java'
+      git:
+        repo: 'https://github.com/crosstest/java_samples'
+    python:
+      language: 'python'
+      basedir: 'sdks/python'
+      git:
+        repo: 'https://github.com/crosstest/python_samples'
+```
+
+## Getting the projects
+
+Crosstest needs to have a copy of the project before it can run any tasks or tests. If you already have the projects locally and configured
+the `basedir` of each project to point to the existing location you can move on to the next step. If you don't have the projects locally but
+configured the git repo then you can fetch them with the `crosstest clone` command.
+
+```sh
+$ bundle exec crosstest clone
+-----> Starting Crosstest (v0.2.0)
+       Cloning: git clone https://github.com/crosstest/ruby_samples -b master /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/ruby
+       Executing git clone https://github.com/crosstest/ruby_samples -b master /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/ruby
+       Cloning into '/Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/ruby'...
+       Cloning: git clone https://github.com/crosstest/java_samples -b master /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java
+       Executing git clone https://github.com/crosstest/java_samples -b master /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java
+       Cloning into '/Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java'...
+       Cloning: git clone https://github.com/crosstest/python_samples -b master /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/python
+       Executing git clone https://github.com/crosstest/python_samples -b master /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/python
+       Cloning into '/Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/python'...
+-----> Crosstest is finished. (0m1.12s)
+```
+
+## Crosstasking
+
+Crosstest needs to be able to run tasks in any of the projects before it can run tests. Crosstest uses [psychic](https://github.com/crosstest/psychic-runner), to run tasks. Psychic creates a uniform interface for running similar tasks in different projects, delegating to project specific task runners (like Rake, Make, npm run, or gradle) when necessary.
+
+The first task you probably want to run is `bootstrap` in order to make sure the projects project is ready to test. Generally the `bootstrap` task will invoke a dependency manager like Bundler, npm, or pip.
+
+```sh
+$ bundle exec crosstest bootstrap
+-----> Starting Crosstest (v0.2.0)
+-----> Bootstrapping ruby
+       Executing bundle install
+       Resolving dependencies...
+       Your bundle is complete!
+       Use `bundle show [gemname]` to see where a bundled gem is installed.
+-----> Bootstrapping java
+       Executing mvn clean install
+       :compileJava UP-TO-DATE
+       :processResources UP-TO-DATE
+       :classes UP-TO-DATE
+       :jar
+       :assemble
+       :compileTestJava UP-TO-DATE
+       :processTestResources UP-TO-DATE
+       :testClasses UP-TO-DATE
+       :test UP-TO-DATE
+       :check UP-TO-DATE
+       :build
+
+       BUILD SUCCESSFUL
+
+       Total time: 4.4 secs
+```
+
+### Custom tasks
+
+There are a few default tasks like `bootstrap` that are built into crosstest (and psychic). The default tasks exist to match common test workflows (like the Travis-CI stages or Maven lifecycle), but you can also have crosstest invoke custom tasks.
+
+So you could tell crosstest to invoke custom tasks like `documentation`, `metrics`, or `lint`:
+
+```sh
+$ bundle exec crosstest task lint
+-----> Starting Crosstest (v0.2.0)
+-----> Running task lint for ruby
+       Executing bundle exec rubocop -D
+       warning: parser/current is loading parser/ruby21, which recognizes
+       warning: 2.1.5-compliant syntax, but you are running 2.1.4.
+       Inspecting 2 files
+       ..
+
+       2 files inspected, no offenses detected
+-----> Running task lint for java
+       Executing gradle checkstyleMain
+       :compileJava UP-TO-DATE
+       :processResources UP-TO-DATE
+       :classes UP-TO-DATE
+       :checkstyleMain[ant:checkstyle] /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java/src/main/java/HelloWorld.java:0: Missing package-info.java file.
+       [ant:checkstyle] /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java/src/main/java/HelloWorld.java:1: Line is longer than 100 characters (found 101).
+       [ant:checkstyle] /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java/src/main/java/HelloWorld.java:3: Missing a Javadoc comment.
+       [ant:checkstyle] /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java/src/main/java/Quine.java:1: Missing a Javadoc comment.
+       [ant:checkstyle] /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java/src/main/java/Quine.java:2:1: warning: '{' should be on the previous line.
+       [ant:checkstyle] /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java/src/main/java/Quine.java:4:3: warning: '{' should be on the previous line.
+       [ant:checkstyle] /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java/src/main/java/Quine.java:24: warning: 'for' construct must use '{}'s.
+       [ant:checkstyle] /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java/src/main/java/Quine.java:24:8: 'for' is not followed by whitespace.
+       [ant:checkstyle] /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java/src/main/java/Quine.java:24:30: warning: ')' is preceded with whitespace.
+       [ant:checkstyle] /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java/src/main/java/Quine.java:26: warning: 'for' construct must use '{}'s.
+       [ant:checkstyle] /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java/src/main/java/Quine.java:26:8: 'for' is not followed by whitespace.
+       [ant:checkstyle] /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java/src/main/java/Quine.java:27:28: warning: '(' is followed by whitespace.
+       [ant:checkstyle] /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java/src/main/java/Quine.java:27:54: warning: ')' is preceded with whitespace.
+       [ant:checkstyle] /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java/src/main/java/Quine.java:28: warning: 'for' construct must use '{}'s.
+       [ant:checkstyle] /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java/src/main/java/Quine.java:28:8: 'for' is not followed by whitespace.
+       [ant:checkstyle] /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java/src/main/java/Quine.java:29:28: warning: '(' is followed by whitespace.
+       [ant:checkstyle] /Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java/src/main/java/Quine.java:29:33: warning: ')' is preceded with whitespace.
+        FAILED
+
+       FAILURE: Build failed with an exception.
+
+       * What went wrong:
+       Execution failed for task ':checkstyleMain'.
+       > Checkstyle rule violations were found. See the report at: file:///Users/Thoughtworker/repos/rackspace/polytrix/samples/sdks/java/build/reports/checkstyle/main.xml
+
+       * Try:
+       Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output.
+
+       BUILD FAILED
+
+       Total time: 4.904 secs
+-----> Running task lint for python
+       Executing ./scripts/lint.sh
+       New python executable in crosstest_python/bin/python
+       Installing setuptools, pip...done.
+       katas/hello_world.py:2:22: W292 no newline at end of file
+       katas/quine.py:2:8: E228 missing whitespace around modulo operator
+-----> Crosstest is finished. (0m8.49s)
+```
+
+This is equivalent to running `psychic task lint` in each directory. See [psychic](https://github.com/crosstest/psychic-runner) for more details about how psychic decides what command to invoke for any given task.
+
+## Crosstesting
+
+
+
+### Built-in tasks
+
+
+
+
+Now that the projects are defined you need to fetch the code before you can run any tasks or tests on the projects. If you already have
+
+Once hte set of
+In order to be able run tests in any project we first need to be able to run tasks in any project.
+
+## Features
+
+- Validate sample code by running it through a series of stages:
+  * Clone: Fetch existing code samples from other git repos
+  * Detect: Match code samples for specific implementors to shared test scenarios
+  * Bootstrap: Install runtime dependencies for each implementor
+  * Exec: Invoke each test sample and capture the results (with built-in or custom spies)
+  * Validate: Ensure execution results (and data captured by spies) matches expectations
+- Use spies to capture data on how each code sample behaves when executed
+- Generate reports or documentation:
+  - A feature matrix comparing several implementations
+  - A test dashboard with detailed results and captured data for each code sample that was tested
+  - Convert code samples to documentation
+  - Generate to-do lists for pending features
+  - Custom reports or documentation generation for anything else
 
 ## Usage
 
